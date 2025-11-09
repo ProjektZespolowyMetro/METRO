@@ -6,6 +6,14 @@ export default function RoadsMap() {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
+  // List of GeoJSON files
+  const geojsonFiles = [
+    "cracow-streets1.geojson",
+    "cracow-streets2.geojson",
+    "cracow-streets3.geojson",
+    "cracow-streets4.geojson",
+  ];
+
   useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
       // init and center on cracow
@@ -17,17 +25,22 @@ export default function RoadsMap() {
         attribution: "© OpenStreetMap contributors",
       }).addTo(mapRef.current);
 
-      // roads from geojson
-      fetch("cracow-streets.geojson")
-        .then((res) => res.json())
-        .then((geojson) => {
-          const roadsLayer = L.geoJSON(geojson, {
-            style: { color: "red", weight: 2 },
-          }).addTo(mapRef.current!);
+      const layers: L.Layer[] = [];
 
-          mapRef.current!.fitBounds(roadsLayer.getBounds());
-        })
-        .catch((err) => console.error("Failed to load GeoJSON:", err));
+      geojsonFiles.forEach((file) => {
+        fetch(file)
+          .then((res) => res.json())
+          .then((geojson) => {
+            const layer = L.geoJSON(geojson, {
+              style: { color: "red", weight: 2 },
+            }).addTo(mapRef.current!);
+            layers.push(layer);
+
+            const group = L.featureGroup(layers);
+            mapRef.current!.fitBounds(group.getBounds());
+          })
+          .catch((err) => console.error(`Failed to load ${file}:`, err));
+      });
     }
   }, []);
 
