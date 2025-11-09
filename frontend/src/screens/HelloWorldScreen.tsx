@@ -6,15 +6,14 @@ export default function RoadsMap() {
   const mapRef = useRef<L.Map | null>(null);
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-  // List of GeoJSON files
-  const geojsonFiles = [
+  useEffect(() => {
+    const geojsonFiles = [
     "cracow-streets1.geojson",
     "cracow-streets2.geojson",
     "cracow-streets3.geojson",
     "cracow-streets4.geojson",
-  ];
+    ];
 
-  useEffect(() => {
     if (!mapRef.current && mapContainerRef.current) {
       // init and center on cracow
       mapRef.current = L.map(mapContainerRef.current).setView([50.0647, 19.945], 13);
