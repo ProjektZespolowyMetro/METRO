@@ -1,11 +1,11 @@
 import React from "react";
 import "./App.css";
-import HelloWorldScreen from "./screens/HelloWorldScreen";
+import MainMap from "./screens/MainMap";
 
 function App() {
   return (
     <div className="App">
-      <HelloWorldScreen />
+      <MainMap />
     </div>
   );
 }
