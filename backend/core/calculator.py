@@ -28,7 +28,7 @@ def get_file_path(filename):
         search_path = search_path.parent
 
     # 3. Fallback - zwróć samą nazwę (może zadziała jeśli CWD jest ustawione)
-    print(f"⚠️ OSTRZEŻENIE: Nie znaleziono pliku {filename}, próbuję ścieżki względnej.")
+    print(f"OSTRZEŻENIE: Nie znaleziono pliku {filename}, próbuję ścieżki względnej.")
     return filename
 
 
