@@ -1,12 +1,8 @@
-import networkx as nx
-import osmnx as ox
 import distance
 import os
-from datetime import timedelta
 
 import matplotlib
 matplotlib.use('TkAgg')
-import matplotlib.pyplot as plt
 import osmnx as ox
 
 def write_graph_image_to_file(G, file_path):
