@@ -1,0 +1,651 @@
+ID,Location1,Location2,Distance_km,Travel_Time_hr
+1,al. Mickiewicza – Piłsudskiego – Focha,al. Mickiewicza – Reymonta,0.5823717463662728,0:00:41.930766
+2,al. Mickiewicza – Piłsudskiego – Focha,al. Słowackiego – Prądnicka – Długa,2.0511732580460755,0:02:27.684475
+3,al. Mickiewicza – Piłsudskiego – Focha,Beliny-Prażmowskiego – Brodowicza,4.639557246211297,0:05:31.755647
+4,al. Mickiewicza – Piłsudskiego – Focha,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),2.9128010349109483,0:02:53.623565
+5,al. Mickiewicza – Piłsudskiego – Focha,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,2.0646425143706604,0:02:27.244036
+6,al. Mickiewicza – Piłsudskiego – Focha,Zakopiańska – Wadowicka – Tischnera – Brożka,3.6878288998207123,0:03:49.425572
+7,al. Mickiewicza – Piłsudskiego – Focha,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,3.815069113307655,0:04:18.594284
+8,al. Mickiewicza – Piłsudskiego – Focha,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,5.007176710486283,0:04:42.842843
+9,al. Mickiewicza – Piłsudskiego – Focha,Bratysławska – Doktora Twardego – Wybickiego,3.386844476632765,0:04:03.852802
+10,al. Mickiewicza – Piłsudskiego – Focha,Piastowska – Lea,2.5758848132470966,0:03:05.463707
+11,al. Mickiewicza – Piłsudskiego – Focha,Armii Krajowej – Zarzecze,3.840552408377875,0:04:36.519773
+12,al. Mickiewicza – Piłsudskiego – Focha,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,4.461205860831076,0:04:59.337515
+13,al. Mickiewicza – Piłsudskiego – Focha,Piastowska – Armii Krajowej – Nawojki,2.3266894353589866,0:02:47.521639
+14,al. Mickiewicza – Piłsudskiego – Focha,Herberta – Turowicza – Trasa Łagiewnicka,5.462685795967639,0:05:20.061545
+15,al. Mickiewicza – Piłsudskiego – Focha,Witosa – Nowosądecka – Łużycka,6.206788450031549,0:06:39.886866
+16,al. Mickiewicza – Piłsudskiego – Focha,Wielicka – Nowosądecka,6.065143031875012,0:05:56.661653
+17,al. Mickiewicza – Piłsudskiego – Focha,Wielicka – Teligi – Kostaneckiego,7.883476213662435,0:07:30.092500
+18,al. Mickiewicza – Piłsudskiego – Focha,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,12.883341989939327,0:12:35.862046
+19,al. Mickiewicza – Piłsudskiego – Focha,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,7.650379740232209,0:07:22.180756
+20,al. Mickiewicza – Piłsudskiego – Focha,al. 29 Listopada – Opolska – Lublańska,4.299339737895727,0:04:30.910328
+21,al. Mickiewicza – Piłsudskiego – Focha,Ks. Józefa – Jodłowa,4.410180471642341,0:06:15.747145
+22,al. Mickiewicza – Piłsudskiego – Focha,Zakopiańska – Jugowicka – Zawiła,6.2726714368811445,0:06:17.526989
+23,al. Mickiewicza – Piłsudskiego – Focha,Mogilska – Lema – al. Jana Pawła II – Meissnera,6.174274297478775,0:07:22.255275
+24,al. Mickiewicza – Piłsudskiego – Focha,Księcia Józefa – Most Zwierzyniecki,2.1102564087920666,0:03:20.437083
+25,al. Mickiewicza – Piłsudskiego – Focha,Pachońskiego – Sosabowskiego – Trasa Wolbromska,4.919996984861743,0:05:51.332805
+26,al. Mickiewicza – Reymonta,al. Mickiewicza – Piłsudskiego – Focha,0.5312557461407912,0:00:38.250414
+27,al. Mickiewicza – Reymonta,al. Słowackiego – Prądnicka – Długa,1.5341486345464472,0:01:50.458702
+28,al. Mickiewicza – Reymonta,Beliny-Prażmowskiego – Brodowicza,4.1225326227116685,0:04:54.529874
+29,al. Mickiewicza – Reymonta,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),3.44405678105174,0:03:31.873979
+30,al. Mickiewicza – Reymonta,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,2.595898260511452,0:03:05.494450
+31,al. Mickiewicza – Reymonta,Zakopiańska – Wadowicka – Tischnera – Brożka,4.219084645961504,0:04:27.675985
+32,al. Mickiewicza – Reymonta,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,4.346324859448446,0:04:56.844698
+33,al. Mickiewicza – Reymonta,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,5.538432456627076,0:05:21.093257
+34,al. Mickiewicza – Reymonta,Bratysławska – Doktora Twardego – Wybickiego,2.869819853133137,0:03:26.627029
+35,al. Mickiewicza – Reymonta,Piastowska – Lea,1.9935130668808239,0:02:23.532941
+36,al. Mickiewicza – Reymonta,Armii Krajowej – Zarzecze,3.258180662011602,0:03:54.589008
+37,al. Mickiewicza – Reymonta,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,4.992461606971868,0:05:37.587929
+38,al. Mickiewicza – Reymonta,Piastowska – Armii Krajowej – Nawojki,1.7443176889927132,0:02:05.590874
+39,al. Mickiewicza – Reymonta,Herberta – Turowicza – Trasa Łagiewnicka,5.99394154210843,0:05:58.311959
+40,al. Mickiewicza – Reymonta,Witosa – Nowosądecka – Łużycka,6.738044196172341,0:07:18.137279
+41,al. Mickiewicza – Reymonta,Wielicka – Nowosądecka,6.5963987780158035,0:06:34.912067
+42,al. Mickiewicza – Reymonta,Wielicka – Teligi – Kostaneckiego,8.414731959803229,0:08:08.342914
+43,al. Mickiewicza – Reymonta,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,12.3663173664397,0:11:58.636273
+44,al. Mickiewicza – Reymonta,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,7.133355116732581,0:06:44.954983
+45,al. Mickiewicza – Reymonta,al. 29 Listopada – Opolska – Lublańska,3.7823151143960985,0:03:53.684555
+46,al. Mickiewicza – Reymonta,Ks. Józefa – Jodłowa,4.9414362177831315,0:06:53.997559
+47,al. Mickiewicza – Reymonta,Zakopiańska – Jugowicka – Zawiła,6.803927183021936,0:06:55.777403
+48,al. Mickiewicza – Reymonta,Mogilska – Lema – al. Jana Pawła II – Meissnera,5.6572496739791465,0:06:45.029502
+49,al. Mickiewicza – Reymonta,Księcia Józefa – Most Zwierzyniecki,2.6415121549328573,0:03:58.687496
+50,al. Mickiewicza – Reymonta,Pachońskiego – Sosabowskiego – Trasa Wolbromska,4.4029723613621154,0:05:14.107032
+51,al. Słowackiego – Prądnicka – Długa,al. Mickiewicza – Piłsudskiego – Focha,2.0407675061102424,0:02:26.935260
+52,al. Słowackiego – Prądnicka – Długa,al. Mickiewicza – Reymonta,1.5095117599694516,0:01:48.684847
+53,al. Słowackiego – Prądnicka – Długa,Beliny-Prażmowskiego – Brodowicza,2.6539898456124336,0:03:08.794794
+54,al. Słowackiego – Prądnicka – Długa,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),4.953568541021191,0:05:20.558826
+55,al. Słowackiego – Prądnicka – Długa,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,4.105410020480904,0:04:54.179296
+56,al. Słowackiego – Prądnicka – Długa,Zakopiańska – Wadowicka – Tischnera – Brożka,5.728596405930954,0:06:16.360832
+57,al. Słowackiego – Prądnicka – Długa,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,5.8558366194178975,0:06:45.529545
+58,al. Słowackiego – Prądnicka – Długa,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,5.388989934350543,0:06:15.485808
+59,al. Słowackiego – Prądnicka – Długa,Bratysławska – Doktora Twardego – Wybickiego,1.33567121858669,0:01:36.168328
+60,al. Słowackiego – Prądnicka – Długa,Piastowska – Lea,2.7918736012837835,0:03:21.014899
+61,al. Słowackiego – Prądnicka – Długa,Armii Krajowej – Zarzecze,4.342206266524156,0:05:12.638851
+62,al. Słowackiego – Prądnicka – Długa,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,6.501973366941319,0:07:26.272776
+63,al. Słowackiego – Prądnicka – Długa,Piastowska – Armii Krajowej – Nawojki,2.828343293505267,0:03:23.640717
+64,al. Słowackiego – Prądnicka – Długa,Herberta – Turowicza – Trasa Łagiewnicka,7.503453302077881,0:07:46.996805
+65,al. Słowackiego – Prądnicka – Długa,Witosa – Nowosądecka – Łużycka,8.24755595614179,0:09:06.822126
+66,al. Słowackiego – Prądnicka – Długa,Wielicka – Nowosądecka,8.105910537985256,0:08:23.596914
+67,al. Słowackiego – Prądnicka – Długa,Wielicka – Teligi – Kostaneckiego,9.92424371977268,0:09:57.027760
+68,al. Słowackiego – Prądnicka – Długa,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,10.897774589340463,0:10:12.901193
+69,al. Słowackiego – Prądnicka – Długa,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,5.664812339633346,0:04:59.219903
+70,al. Słowackiego – Prądnicka – Długa,al. 29 Listopada – Opolska – Lublańska,2.313772337296864,0:02:07.949475
+71,al. Słowackiego – Prądnicka – Długa,Ks. Józefa – Jodłowa,6.450947977752584,0:08:42.682406
+72,al. Słowackiego – Prądnicka – Długa,Zakopiańska – Jugowicka – Zawiła,8.313438942991386,0:08:44.462250
+73,al. Słowackiego – Prądnicka – Długa,Mogilska – Lema – al. Jana Pawła II – Meissnera,4.1887068968799115,0:04:59.294422
+74,al. Słowackiego – Prądnicka – Długa,Księcia Józefa – Most Zwierzyniecki,4.15102391490231,0:05:47.372343
+75,al. Słowackiego – Prądnicka – Długa,Pachońskiego – Sosabowskiego – Trasa Wolbromska,2.8688237268156676,0:03:23.648331
+76,Beliny-Prażmowskiego – Brodowicza,al. Mickiewicza – Piłsudskiego – Focha,4.564080078769328,0:05:22.638769
+77,Beliny-Prażmowskiego – Brodowicza,al. Mickiewicza – Reymonta,4.032824332628535,0:04:44.388355
+78,Beliny-Prażmowskiego – Brodowicza,al. Słowackiego – Prądnicka – Długa,2.523312572659084,0:02:55.703508
+79,Beliny-Prażmowskiego – Brodowicza,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),4.688663700389655,0:05:31.599342
+80,Beliny-Prażmowskiego – Brodowicza,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,4.69148133295355,0:05:24.276174
+81,Beliny-Prażmowskiego – Brodowicza,Zakopiańska – Wadowicka – Tischnera – Brożka,5.463691565299419,0:06:27.401348
+82,Beliny-Prażmowskiego – Brodowicza,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,6.441907931890544,0:07:15.626423
+83,Beliny-Prażmowskiego – Brodowicza,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,3.702524375297023,0:04:16.352762
+84,Beliny-Prażmowskiego – Brodowicza,Bratysławska – Doktora Twardego – Wybickiego,3.8244465413517905,0:04:29.385154
+85,Beliny-Prażmowskiego – Brodowicza,Piastowska – Lea,5.315186173942868,0:06:16.718408
+86,Beliny-Prażmowskiego – Brodowicza,Armii Krajowej – Zarzecze,6.86551883918324,0:08:08.342360
+87,Beliny-Prażmowskiego – Brodowicza,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,7.088044679413965,0:07:56.369654
+88,Beliny-Prażmowskiego – Brodowicza,Piastowska – Armii Krajowej – Nawojki,5.351655866164351,0:06:19.344226
+89,Beliny-Prażmowskiego – Brodowicza,Herberta – Turowicza – Trasa Łagiewnicka,7.25647998054167,0:07:31.186825
+90,Beliny-Prażmowskiego – Brodowicza,Witosa – Nowosądecka – Łużycka,7.808478586658503,0:08:21.076218
+91,Beliny-Prażmowskiego – Brodowicza,Wielicka – Nowosądecka,6.1281581617514576,0:06:45.727311
+92,Beliny-Prażmowskiego – Brodowicza,Wielicka – Teligi – Kostaneckiego,7.946491343538881,0:08:19.158158
+93,Beliny-Prażmowskiego – Brodowicza,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,7.671659802093952,0:08:22.931315
+94,Beliny-Prażmowskiego – Brodowicza,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,4.602892474998597,0:04:46.073676
+95,Beliny-Prażmowskiego – Brodowicza,al. 29 Listopada – Opolska – Lublańska,2.6936992521069656,0:02:57.601771
+96,Beliny-Prażmowskiego – Brodowicza,Ks. Józefa – Jodłowa,8.476640353743903,0:09:56.710954
+97,Beliny-Prażmowskiego – Brodowicza,Zakopiańska – Jugowicka – Zawiła,8.048534102359849,0:08:55.502766
+98,Beliny-Prażmowskiego – Brodowicza,Mogilska – Lema – al. Jana Pawła II – Meissnera,2.5022413378263915,0:03:00.161376
+99,Beliny-Prażmowskiego – Brodowicza,Księcia Józefa – Most Zwierzyniecki,6.176716290893633,0:07:01.400892
+100,Beliny-Prażmowskiego – Brodowicza,Pachońskiego – Sosabowskiego – Trasa Wolbromska,4.926831485235494,0:05:06.866071
+101,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),al. Mickiewicza – Piłsudskiego – Focha,2.836569625757708,0:02:56.664953
+102,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),al. Mickiewicza – Reymonta,3.3545324577349445,0:03:33.958277
+103,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),al. Słowackiego – Prądnicka – Długa,4.8233339694147475,0:05:19.711985
+104,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Beliny-Prażmowskiego – Brodowicza,4.71585772547594,0:05:31.637284
+105,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,2.463256081765587,0:02:35.694701
+106,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Zakopiańska – Wadowicka – Tischnera – Brożka,0.9360492351516944,0:01:07.395545
+107,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,1.6935804619072232,0:02:01.842225
+108,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,2.2553970458172667,0:02:00.812817
+109,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Bratysławska – Doktora Twardego – Wybickiego,6.159005188001437,0:06:55.880313
+110,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Piastowska – Lea,5.348045524615766,0:05:57.491217
+111,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Armii Krajowej – Zarzecze,6.612713119746546,0:07:28.547284
+112,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,2.713409563595283,0:03:02.371208
+113,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Piastowska – Armii Krajowej – Nawojki,5.098850146727657,0:05:39.549150
+114,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Herberta – Turowicza – Trasa Łagiewnicka,2.7109061312986213,0:02:38.031518
+115,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Witosa – Nowosądecka – Łużycka,3.4550087853625313,0:03:57.856839
+116,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Wielicka – Nowosądecka,3.3133633672059952,0:03:14.631627
+117,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Wielicka – Teligi – Kostaneckiego,5.131696548993417,0:04:48.062473
+118,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,10.529591681054193,0:09:55.870606
+119,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,9.227027988286277,0:08:02.904941
+120,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),al. 29 Listopada – Opolska – Lublańska,7.0715004492643985,0:07:22.937838
+121,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Ks. Józefa – Jodłowa,6.248415102555942,0:07:08.129482
+122,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Zakopiańska – Jugowicka – Zawiła,3.5208917722121256,0:03:35.496962
+123,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Mogilska – Lema – al. Jana Pawła II – Meissnera,6.250574776743417,0:07:22.136911
+124,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Księcia Józefa – Most Zwierzyniecki,3.9484910397056687,0:04:12.819419
+125,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),Pachońskiego – Sosabowskiego – Trasa Wolbromska,7.6921576962304155,0:08:43.360316
+126,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,al. Mickiewicza – Piłsudskiego – Focha,2.251940149114384,0:02:35.954345
+127,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,al. Mickiewicza – Reymonta,2.76990298109162,0:03:13.247668
+128,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,al. Słowackiego – Prądnicka – Długa,4.238704492771424,0:04:59.001377
+129,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Beliny-Prażmowskiego – Brodowicza,4.716522676558991,0:05:47.371406
+130,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),2.484263219769167,0:02:27.366265
+131,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Zakopiańska – Wadowicka – Tischnera – Brożka,2.5827009163570502,0:02:51.273999
+132,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,1.750426598936994,0:01:51.350248
+133,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,4.578638895344503,0:04:16.585542
+134,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Bratysławska – Doktora Twardego – Wybickiego,5.574375711358114,0:06:35.169705
+135,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Piastowska – Lea,4.763416047972443,0:05:36.780609
+136,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Armii Krajowej – Zarzecze,6.028083643103222,0:07:07.836676
+137,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,2.396563346460415,0:02:32.093479
+138,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Piastowska – Armii Krajowej – Nawojki,4.514220670084334,0:05:18.838542
+139,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Herberta – Turowicza – Trasa Łagiewnicka,5.034147980825857,0:04:53.804244
+140,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Witosa – Nowosądecka – Łużycka,5.778250634889767,0:06:13.629565
+141,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Wielicka – Nowosądecka,5.636605216733231,0:05:30.404352
+142,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Wielicka – Teligi – Kostaneckiego,7.454938398520652,0:07:03.835199
+143,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,10.725562424333077,0:12:10.496922
+144,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,9.837910974957556,0:09:53.497659
+145,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,al. 29 Listopada – Opolska – Lublańska,6.486870972621075,0:07:02.227230
+146,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Ks. Józefa – Jodłowa,3.785159020790355,0:04:32.434780
+147,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Zakopiańska – Jugowicka – Zawiła,5.167543453417482,0:05:19.375417
+148,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,6.25123972782647,0:07:37.871033
+149,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Księcia Józefa – Most Zwierzyniecki,1.4852349579400816,0:01:37.124718
+150,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,7.10752821958709,0:08:22.649708
+151,Zakopiańska – Wadowicka – Tischnera – Brożka,al. Mickiewicza – Piłsudskiego – Focha,3.7237891098714537,0:03:46.577888
+152,Zakopiańska – Wadowicka – Tischnera – Brożka,al. Mickiewicza – Reymonta,4.241751941848689,0:04:23.871212
+153,Zakopiańska – Wadowicka – Tischnera – Brożka,al. Słowackiego – Prądnicka – Długa,5.710553453528493,0:06:09.624921
+154,Zakopiańska – Wadowicka – Tischnera – Brożka,Beliny-Prażmowskiego – Brodowicza,5.442055839347753,0:06:09.956680
+155,Zakopiańska – Wadowicka – Tischnera – Brożka,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),0.8872194841137451,0:00:49.912935
+156,Zakopiańska – Wadowicka – Tischnera – Brożka,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,2.512359250392902,0:02:48.700381
+157,Zakopiańska – Wadowicka – Tischnera – Brożka,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,0.8099460843955641,0:00:58.220550
+158,Zakopiańska – Wadowicka – Tischnera – Brożka,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,2.6476093126003653,0:02:28.828455
+159,Zakopiańska – Wadowicka – Tischnera – Brożka,Bratysławska – Doktora Twardego – Wybickiego,7.046224672115183,0:07:45.793248
+160,Zakopiańska – Wadowicka – Tischnera – Brożka,Piastowska – Lea,6.235265008729512,0:06:47.404153
+161,Zakopiańska – Wadowicka – Tischnera – Brożka,Armii Krajowej – Zarzecze,7.499932603860292,0:08:18.460219
+162,Zakopiańska – Wadowicka – Tischnera – Brożka,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,1.829775186083623,0:01:58.749533
+163,Zakopiańska – Wadowicka – Tischnera – Brożka,Piastowska – Armii Krajowej – Nawojki,5.986069630841404,0:06:29.462085
+164,Zakopiańska – Wadowicka – Tischnera – Brożka,Herberta – Turowicza – Trasa Łagiewnicka,2.1740599671993186,0:02:12.205150
+165,Zakopiańska – Wadowicka – Tischnera – Brożka,Witosa – Nowosądecka – Łużycka,3.8155517873344786,0:03:45.597356
+166,Zakopiańska – Wadowicka – Tischnera – Brożka,Wielicka – Nowosądecka,3.7783352246984396,0:03:47.885955
+167,Zakopiańska – Wadowicka – Tischnera – Brożka,Wielicka – Teligi – Kostaneckiego,5.596668406485862,0:05:21.316802
+168,Zakopiańska – Wadowicka – Tischnera – Brożka,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,10.921803947837292,0:10:23.886245
+169,Zakopiańska – Wadowicka – Tischnera – Brożka,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,9.619240255069375,0:08:30.920579
+170,Zakopiańska – Wadowicka – Tischnera – Brożka,al. 29 Listopada – Opolska – Lublańska,7.958719933378144,0:08:12.850774
+171,Zakopiańska – Wadowicka – Tischnera – Brożka,Ks. Józefa – Jodłowa,6.297518271183257,0:07:21.135162
+172,Zakopiańska – Wadowicka – Tischnera – Brożka,Zakopiańska – Jugowicka – Zawiła,2.637257394700466,0:02:31.875287
+173,Zakopiańska – Wadowicka – Tischnera – Brożka,Mogilska – Lema – al. Jana Pawła II – Meissnera,7.454343962634166,0:07:59.344679
+174,Zakopiańska – Wadowicka – Tischnera – Brożka,Księcia Józefa – Most Zwierzyniecki,3.997594208332983,0:04:25.825099
+175,Zakopiańska – Wadowicka – Tischnera – Brożka,Pachońskiego – Sosabowskiego – Trasa Wolbromska,8.57937718034416,0:09:33.273251
+176,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,al. Mickiewicza – Piłsudskiego – Focha,3.9500119052496823,0:04:26.303049
+177,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,al. Mickiewicza – Reymonta,4.4679747372269185,0:05:03.596373
+178,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,al. Słowackiego – Prądnicka – Długa,5.936776248906722,0:06:49.350081
+179,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Beliny-Prażmowskiego – Brodowicza,6.27433015676781,0:07:09.880431
+180,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),1.7194938015338008,0:01:49.836686
+181,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,1.7726621120150317,0:01:55.442187
+182,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Zakopiańska – Wadowicka – Tischnera – Brożka,0.8322743174200558,0:00:59.923751
+183,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,3.427468772380386,0:03:24.978336
+184,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Bratysławska – Doktora Twardego – Wybickiego,7.27244746749341,0:08:25.518409
+185,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Piastowska – Lea,6.461487804107742,0:07:27.129313
+186,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Armii Krajowej – Zarzecze,7.72615539923852,0:08:58.185380
+187,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,1.0198291016880592,0:01:00.528983
+188,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Piastowska – Armii Krajowej – Nawojki,6.212292426219631,0:07:09.187246
+189,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Herberta – Turowicza – Trasa Łagiewnicka,2.95391942697934,0:03:08.355031
+190,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Witosa – Nowosądecka – Łużycka,4.595411247114501,0:04:41.747237
+191,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Wielicka – Nowosądecka,4.558194684478462,0:04:44.035836
+192,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Wielicka – Teligi – Kostaneckiego,6.376527866265882,0:06:17.466683
+193,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,11.70166340761731,0:11:20.036126
+194,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,10.399099714849395,0:09:27.070460
+195,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,al. 29 Listopada – Opolska – Lublańska,8.184942728756372,0:08:52.575934
+196,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Ks. Józefa – Jodłowa,5.557821132805388,0:06:27.876968
+197,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Zakopiańska – Jugowicka – Zawiła,3.417116854480487,0:03:28.025168
+198,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,8.234203422414186,0:08:55.494560
+199,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Księcia Józefa – Most Zwierzyniecki,3.257897069955113,0:03:32.566905
+200,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,8.805599975722389,0:10:12.998412
+201,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,al. Mickiewicza – Piłsudskiego – Focha,4.642704272873631,0:04:39.736660
+202,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,al. Mickiewicza – Reymonta,5.160667104850867,0:05:17.029984
+203,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,al. Słowackiego – Prądnicka – Długa,4.897846135445257,0:06:36.019728
+204,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Beliny-Prażmowskiego – Brodowicza,3.6808503700840722,0:04:12.872205
+205,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),1.8061346471159225,0:01:43.071707
+206,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,4.26939072888151,0:04:18.766409
+207,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Zakopiańska – Wadowicka – Tischnera – Brożka,2.560483521559883,0:02:34.878713
+208,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,3.3704296059554473,0:03:33.099263
+209,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Bratysławska – Doktora Twardego – Wybickiego,6.198980104137965,0:08:09.701374
+210,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Piastowska – Lea,7.1541801717316895,0:07:40.562925
+211,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Armii Krajowej – Zarzecze,8.41884776686247,0:09:11.618992
+212,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,4.390258707643507,0:04:33.628246
+213,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Piastowska – Armii Krajowej – Nawojki,6.904984793843581,0:07:22.620858
+214,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Herberta – Turowicza – Trasa Łagiewnicka,3.625994137164035,0:03:20.020837
+215,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Witosa – Nowosądecka – Łużycka,4.1523374684543315,0:04:08.063050
+216,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Wielicka – Nowosądecka,2.472017043547286,0:02:32.714144
+217,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Wielicka – Teligi – Kostaneckiego,4.2903502253347074,0:04:06.144990
+218,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,8.320891270056247,0:08:03.651577
+219,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,7.018327577288332,0:06:10.685912
+220,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,al. 29 Listopada – Opolska – Lublańska,6.416074139003214,0:07:00.707826
+221,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Ks. Józefa – Jodłowa,8.054549749671866,0:08:51.201189
+222,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Zakopiańska – Jugowicka – Zawiła,5.19774091626035,0:05:06.754000
+223,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,4.853431284853123,0:05:39.110012
+224,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Księcia Józefa – Most Zwierzyniecki,5.754625686821592,0:05:55.891126
+225,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,8.64920637213174,0:09:09.972126
+226,Bratysławska – Doktora Twardego – Wybickiego,al. Mickiewicza – Piłsudskiego – Focha,3.397624890340965,0:04:04.628992
+227,Bratysławska – Doktora Twardego – Wybickiego,al. Mickiewicza – Reymonta,2.8663691442001737,0:03:26.378578
+228,Bratysławska – Doktora Twardego – Wybickiego,al. Słowackiego – Prądnicka – Długa,1.356857384230722,0:01:37.693732
+229,Bratysławska – Doktora Twardego – Wybickiego,Beliny-Prażmowskiego – Brodowicza,4.010847229843156,0:04:46.488526
+230,Bratysławska – Doktora Twardego – Wybickiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),6.310425925251914,0:06:58.252558
+231,Bratysławska – Doktora Twardego – Wybickiego,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,5.462267404711626,0:06:31.873028
+232,Bratysławska – Doktora Twardego – Wybickiego,Zakopiańska – Wadowicka – Tischnera – Brożka,7.085453790161677,0:07:54.054564
+233,Bratysławska – Doktora Twardego – Wybickiego,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,7.21269400364862,0:08:23.223276
+234,Bratysławska – Doktora Twardego – Wybickiego,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,6.745847318581266,0:07:53.179539
+235,Bratysławska – Doktora Twardego – Wybickiego,Piastowska – Lea,3.0150642370938225,0:03:48.730776
+236,Bratysławska – Doktora Twardego – Wybickiego,Armii Krajowej – Zarzecze,4.944417331417384,0:05:28.855714
+237,Bratysławska – Doktora Twardego – Wybickiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,7.858830751172041,0:09:03.966508
+238,Bratysławska – Doktora Twardego – Wybickiego,Piastowska – Armii Krajowej – Nawojki,3.274315778089709,0:04:07.396887
+239,Bratysławska – Doktora Twardego – Wybickiego,Herberta – Turowicza – Trasa Łagiewnicka,8.860310686308605,0:09:24.690537
+240,Bratysławska – Doktora Twardego – Wybickiego,Witosa – Nowosądecka – Łużycka,9.60441334037251,0:10:44.515858
+241,Bratysławska – Doktora Twardego – Wybickiego,Wielicka – Nowosądecka,9.462767922215976,0:10:01.290645
+242,Bratysławska – Doktora Twardego – Wybickiego,Wielicka – Teligi – Kostaneckiego,11.281101104003401,0:11:34.721492
+243,Bratysławska – Doktora Twardego – Wybickiego,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,10.886069519029226,0:10:26.699296
+244,Bratysławska – Doktora Twardego – Wybickiego,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,5.65310726932211,0:05:13.018006
+245,Bratysławska – Doktora Twardego – Wybickiego,al. 29 Listopada – Opolska – Lublańska,2.3060140487891876,0:02:27.733295
+246,Bratysławska – Doktora Twardego – Wybickiego,Ks. Józefa – Jodłowa,7.807805361983306,0:10:20.376137
+247,Bratysławska – Doktora Twardego – Wybickiego,Zakopiańska – Jugowicka – Zawiła,9.670296327222108,0:10:22.155981
+248,Bratysławska – Doktora Twardego – Wybickiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,5.2900652186125106,0:05:39.158693
+249,Bratysławska – Doktora Twardego – Wybickiego,Księcia Józefa – Most Zwierzyniecki,5.5078812991330315,0:07:25.066075
+250,Bratysławska – Doktora Twardego – Wybickiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,1.5331525082289776,0:01:47.480003
+251,Piastowska – Lea,al. Mickiewicza – Piłsudskiego – Focha,2.556416684300779,0:03:04.062001
+252,Piastowska – Lea,al. Mickiewicza – Reymonta,2.025160938159988,0:02:25.811588
+253,Piastowska – Lea,al. Słowackiego – Prądnicka – Długa,2.8252643030091233,0:03:23.419030
+254,Piastowska – Lea,Beliny-Prażmowskiego – Brodowicza,5.413648291174344,0:06:27.490202
+255,Piastowska – Lea,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),5.469217719211728,0:05:57.685567
+256,Piastowska – Lea,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,4.621059198671441,0:05:31.306037
+257,Piastowska – Lea,Zakopiańska – Wadowicka – Tischnera – Brożka,6.244245584121492,0:06:53.487573
+258,Piastowska – Lea,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,6.371485797608434,0:07:22.656286
+259,Piastowska – Lea,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,7.5635933947870635,0:07:46.904845
+260,Piastowska – Lea,Bratysławska – Doktora Twardego – Wybickiego,3.0044807179743604,0:03:48.456753
+261,Piastowska – Lea,Armii Krajowej – Zarzecze,1.7731145140147746,0:02:07.664245
+262,Piastowska – Lea,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,7.017622545131856,0:08:03.399517
+263,Piastowska – Lea,Piastowska – Armii Krajowej – Nawojki,0.2592515409958862,0:00:18.666111
+264,Piastowska – Lea,Herberta – Turowicza – Trasa Łagiewnicka,8.019102480268417,0:08:24.123546
+265,Piastowska – Lea,Witosa – Nowosądecka – Łużycka,8.76320513433233,0:09:43.948867
+266,Piastowska – Lea,Wielicka – Nowosądecka,8.62155971617579,0:09:00.723655
+267,Piastowska – Lea,Wielicka – Teligi – Kostaneckiego,10.439892897963214,0:10:34.154501
+268,Piastowska – Lea,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,13.657433034902375,0:13:31.596601
+269,Piastowska – Lea,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,8.424470785195258,0:08:17.915312
+270,Piastowska – Lea,al. 29 Listopada – Opolska – Lublańska,5.073430782858774,0:05:26.644883
+271,Piastowska – Lea,Ks. Józefa – Jodłowa,6.134004793253707,0:08:12.499557
+272,Piastowska – Lea,Zakopiańska – Jugowicka – Zawiła,8.829088121181924,0:09:21.588990
+273,Piastowska – Lea,Mogilska – Lema – al. Jana Pawła II – Meissnera,6.948365342441823,0:08:17.989830
+274,Piastowska – Lea,Księcia Józefa – Most Zwierzyniecki,3.8340807304034334,0:05:17.189495
+275,Piastowska – Lea,Pachońskiego – Sosabowskiego – Trasa Wolbromska,4.0139121988883835,0:05:03.230077
+276,Armii Krajowej – Zarzecze,al. Mickiewicza – Piłsudskiego – Focha,3.854240576081642,0:04:37.505321
+277,Armii Krajowej – Zarzecze,al. Mickiewicza – Reymonta,3.3229848299408506,0:03:59.254908
+278,Armii Krajowej – Zarzecze,al. Słowackiego – Prądnicka – Długa,4.260344945232046,0:05:06.744836
+279,Armii Krajowej – Zarzecze,Beliny-Prażmowskiego – Brodowicza,6.8487289333972665,0:08:10.816009
+280,Armii Krajowej – Zarzecze,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),6.76704161099259,0:07:31.128887
+281,Armii Krajowej – Zarzecze,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,5.918883090452303,0:07:04.749357
+282,Armii Krajowej – Zarzecze,Zakopiańska – Wadowicka – Tischnera – Brożka,7.5420694759023545,0:08:26.930893
+283,Armii Krajowej – Zarzecze,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,7.669309689389297,0:08:56.099606
+284,Armii Krajowej – Zarzecze,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,8.861417286567926,0:09:20.348165
+285,Armii Krajowej – Zarzecze,Bratysławska – Doktora Twardego – Wybickiego,4.838835502880692,0:05:19.110851
+286,Armii Krajowej – Zarzecze,Piastowska – Lea,1.848492953347261,0:02:13.091493
+287,Armii Krajowej – Zarzecze,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,8.315446436912719,0:09:36.842837
+288,Armii Krajowej – Zarzecze,Piastowska – Armii Krajowej – Nawojki,1.5992975754591507,0:01:55.149425
+289,Armii Krajowej – Zarzecze,Herberta – Turowicza – Trasa Łagiewnicka,9.316926372049283,0:09:57.566866
+290,Armii Krajowej – Zarzecze,Witosa – Nowosądecka – Łużycka,10.061029026113193,0:11:17.392187
+291,Armii Krajowej – Zarzecze,Wielicka – Nowosądecka,9.919383607956654,0:10:34.166975
+292,Armii Krajowej – Zarzecze,Wielicka – Teligi – Kostaneckiego,11.737716789744077,0:12:07.597821
+293,Armii Krajowej – Zarzecze,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,14.6413403749201,0:13:54.742402
+294,Armii Krajowej – Zarzecze,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,9.40837812521298,0:08:41.061113
+295,Armii Krajowej – Zarzecze,al. 29 Listopada – Opolska – Lublańska,6.061284904680059,0:05:55.776401
+296,Armii Krajowej – Zarzecze,Ks. Józefa – Jodłowa,4.776029792293279,0:08:38.372241
+297,Armii Krajowej – Zarzecze,Zakopiańska – Jugowicka – Zawiła,10.126912012962787,0:10:55.032311
+298,Armii Krajowej – Zarzecze,Mogilska – Lema – al. Jana Pawła II – Meissnera,9.045336074503382,0:09:07.201799
+299,Armii Krajowej – Zarzecze,Księcia Józefa – Most Zwierzyniecki,5.131904622184297,0:06:50.632815
+300,Armii Krajowej – Zarzecze,Pachońskiego – Sosabowskiego – Trasa Wolbromska,4.387963430258014,0:04:39.355176
+301,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,al. Mickiewicza – Piłsudskiego – Focha,4.61186020332543,0:05:13.875927
+302,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,al. Mickiewicza – Reymonta,5.129823035302664,0:05:51.169251
+303,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,al. Słowackiego – Prądnicka – Długa,6.598624546982469,0:07:36.922959
+304,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Beliny-Prażmowskiego – Brodowicza,7.311143721073944,0:08:16.637321
+305,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),2.7563073658399353,0:02:56.593576
+306,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,2.4345104100907786,0:02:43.015065
+307,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Zakopiańska – Wadowicka – Tischnera – Brożka,1.86908788172619,0:02:06.680641
+308,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,1.0814031831638105,0:01:09.871774
+309,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,4.464282336686519,0:04:31.735225
+310,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Bratysławska – Doktora Twardego – Wybickiego,7.934295765569158,0:09:13.091287
+311,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Piastowska – Lea,7.123336102183488,0:08:14.702191
+312,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Armii Krajowej – Zarzecze,8.388003697314266,0:09:45.758258
+313,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Piastowska – Armii Krajowej – Nawojki,6.874140724295378,0:07:56.760124
+314,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Herberta – Turowicza – Trasa Łagiewnicka,3.121859649561913,0:03:03.831069
+315,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Witosa – Nowosądecka – Łużycka,4.610611465816787,0:04:28.364798
+316,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Wielicka – Nowosądecka,5.595008248784594,0:05:50.792726
+317,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Wielicka – Teligi – Kostaneckiego,7.413341430572016,0:07:24.223572
+318,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,12.738476971923447,0:12:26.793015
+319,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,11.435913279155532,0:10:33.827350
+320,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,al. 29 Listopada – Opolska – Lublańska,8.84679102683212,0:09:40.148812
+321,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Ks. Józefa – Jodłowa,6.219669430881134,0:07:15.449846
+322,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Zakopiańska – Jugowicka – Zawiła,3.427773252163157,0:03:26.125238
+323,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Mogilska – Lema – al. Jana Pawła II – Meissnera,9.271016986720323,0:10:02.251450
+324,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Księcia Józefa – Most Zwierzyniecki,3.91974536803086,0:04:20.139783
+325,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,Pachońskiego – Sosabowskiego – Trasa Wolbromska,9.467448273798134,0:11:00.571290
+326,Piastowska – Armii Krajowej – Nawojki,al. Mickiewicza – Piłsudskiego – Focha,2.2971651433048934,0:02:45.395890
+327,Piastowska – Armii Krajowej – Nawojki,al. Mickiewicza – Reymonta,1.7659093971641018,0:02:07.145477
+328,Piastowska – Armii Krajowej – Nawojki,al. Słowackiego – Prądnicka – Długa,2.8799089089769243,0:03:27.353441
+329,Piastowska – Armii Krajowej – Nawojki,Beliny-Prażmowskiego – Brodowicza,5.468292897142145,0:06:31.424614
+330,Piastowska – Armii Krajowej – Nawojki,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),5.209966178215842,0:05:39.019456
+331,Piastowska – Armii Krajowej – Nawojki,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,4.361807657675554,0:05:12.639926
+332,Piastowska – Armii Krajowej – Nawojki,Zakopiańska – Wadowicka – Tischnera – Brożka,5.984994043125606,0:06:34.821462
+333,Piastowska – Armii Krajowej – Nawojki,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,6.112234256612549,0:07:03.990175
+334,Piastowska – Armii Krajowej – Nawojki,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,7.304341853791177,0:07:28.238734
+335,Piastowska – Armii Krajowej – Nawojki,Bratysławska – Doktora Twardego – Wybickiego,3.2958982385448716,0:04:09.438814
+336,Piastowska – Armii Krajowej – Nawojki,Piastowska – Lea,0.2914175205705121,0:00:20.982061
+337,Piastowska – Armii Krajowej – Nawojki,Armii Krajowej – Zarzecze,1.5138629730188886,0:01:48.998134
+338,Piastowska – Armii Krajowej – Nawojki,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,6.75837100413597,0:07:44.733406
+339,Piastowska – Armii Krajowej – Nawojki,Herberta – Turowicza – Trasa Łagiewnicka,7.759850939272532,0:08:05.457435
+340,Piastowska – Armii Krajowej – Nawojki,Witosa – Nowosądecka – Łużycka,8.503953593336439,0:09:25.282756
+341,Piastowska – Armii Krajowej – Nawojki,Wielicka – Nowosądecka,8.362308175179903,0:08:42.057544
+342,Piastowska – Armii Krajowej – Nawojki,Wielicka – Teligi – Kostaneckiego,10.180641356967328,0:10:15.488390
+343,Piastowska – Armii Krajowej – Nawojki,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,13.712077640870177,0:13:35.531013
+344,Piastowska – Armii Krajowej – Nawojki,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,8.47911539116306,0:08:21.849723
+345,Piastowska – Armii Krajowej – Nawojki,al. 29 Listopada – Opolska – Lublańska,5.128075388826575,0:05:30.579294
+346,Piastowska – Armii Krajowej – Nawojki,Ks. Józefa – Jodłowa,5.874753252257821,0:07:53.833446
+347,Piastowska – Armii Krajowej – Nawojki,Zakopiańska – Jugowicka – Zawiła,8.569836580186037,0:09:02.922879
+348,Piastowska – Armii Krajowej – Nawojki,Mogilska – Lema – al. Jana Pawła II – Meissnera,7.003009948409625,0:08:21.924242
+349,Piastowska – Armii Krajowej – Nawojki,Księcia Józefa – Most Zwierzyniecki,3.574829189407547,0:04:58.523384
+350,Piastowska – Armii Krajowej – Nawojki,Pachońskiego – Sosabowskiego – Trasa Wolbromska,4.3053297194588955,0:05:24.212139
+351,Herberta – Turowicza – Trasa Łagiewnicka,al. Mickiewicza – Piłsudskiego – Focha,5.529759780574726,0:05:26.236098
+352,Herberta – Turowicza – Trasa Łagiewnicka,al. Mickiewicza – Reymonta,6.047722612551962,0:06:03.529422
+353,Herberta – Turowicza – Trasa Łagiewnicka,al. Słowackiego – Prądnicka – Długa,7.516524124231765,0:07:49.283130
+354,Herberta – Turowicza – Trasa Łagiewnicka,Beliny-Prażmowskiego – Brodowicza,7.244334239750648,0:07:08.371212
+355,Herberta – Turowicza – Trasa Łagiewnicka,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),2.6931901548170165,0:02:29.571145
+356,Herberta – Turowicza – Trasa Łagiewnicka,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,5.156446236582604,0:05:05.265846
+357,Herberta – Turowicza – Trasa Łagiewnicka,Zakopiańska – Wadowicka – Tischnera – Brożka,2.2553961778791596,0:02:17.220191
+358,Herberta – Turowicza – Trasa Łagiewnicka,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,3.065342262274724,0:03:15.440741
+359,Herberta – Turowicza – Trasa Łagiewnicka,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,3.563483869666575,0:02:55.499007
+360,Herberta – Turowicza – Trasa Łagiewnicka,Bratysławska – Doktora Twardego – Wybickiego,8.852195342818453,0:09:25.451458
+361,Herberta – Turowicza – Trasa Łagiewnicka,Piastowska – Lea,8.041235679432786,0:08:27.062362
+362,Herberta – Turowicza – Trasa Łagiewnicka,Armii Krajowej – Zarzecze,9.305903274563564,0:09:58.118429
+363,Herberta – Turowicza – Trasa Łagiewnicka,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,3.073306323436341,0:03:03.625619
+364,Herberta – Turowicza – Trasa Łagiewnicka,Piastowska – Armii Krajowej – Nawojki,7.792040301544675,0:08:09.120295
+365,Herberta – Turowicza – Trasa Łagiewnicka,Witosa – Nowosądecka – Łużycka,1.5490181904229434,0:01:41.070937
+366,Herberta – Turowicza – Trasa Łagiewnicka,Wielicka – Nowosądecka,3.3104113999127516,0:03:21.890001
+367,Herberta – Turowicza – Trasa Łagiewnicka,Wielicka – Teligi – Kostaneckiego,5.128744581700173,0:04:55.320847
+368,Herberta – Turowicza – Trasa Łagiewnicka,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,11.8376785049035,0:10:50.556797
+369,Herberta – Turowicza – Trasa Łagiewnicka,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,10.535114812135584,0:08:57.591131
+370,Herberta – Turowicza – Trasa Łagiewnicka,al. 29 Listopada – Opolska – Lublańska,9.764690604081414,0:09:52.508983
+371,Herberta – Turowicza – Trasa Łagiewnicka,Ks. Józefa – Jodłowa,8.941605257372958,0:09:37.700627
+372,Herberta – Turowicza – Trasa Łagiewnicka,Zakopiańska – Jugowicka – Zawiła,2.6509846903528613,0:02:50.074790
+373,Herberta – Turowicza – Trasa Łagiewnicka,Mogilska – Lema – al. Jana Pawła II – Meissnera,8.370218519700376,0:08:26.015231
+374,Herberta – Turowicza – Trasa Łagiewnicka,Księcia Józefa – Most Zwierzyniecki,6.641681194522685,0:06:42.390564
+375,Herberta – Turowicza – Trasa Łagiewnicka,Pachońskiego – Sosabowskiego – Trasa Wolbromska,10.385347851047435,0:11:12.931461
+376,Witosa – Nowosądecka – Łużycka,al. Mickiewicza – Piłsudskiego – Focha,6.216654762913148,0:06:47.170078
+377,Witosa – Nowosądecka – Łużycka,al. Mickiewicza – Reymonta,6.734617594890382,0:07:24.463402
+378,Witosa – Nowosądecka – Łużycka,al. Słowackiego – Prądnicka – Długa,8.203419106570188,0:09:10.217111
+379,Witosa – Nowosądecka – Łużycka,Beliny-Prażmowskiego – Brodowicza,7.851486505461093,0:08:25.843026
+380,Witosa – Nowosądecka – Łużycka,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),3.3800851371554383,0:03:50.505125
+381,Witosa – Nowosądecka – Łużycka,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,6.258753442806325,0:06:20.109178
+382,Witosa – Nowosądecka – Łużycka,Zakopiańska – Wadowicka – Tischnera – Brożka,3.7463941924134243,0:03:31.408797
+383,Witosa – Nowosądecka – Łużycka,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,4.556340276808987,0:04:29.629347
+384,Witosa – Nowosądecka – Łużycka,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,4.170636135377021,0:04:12.970821
+385,Witosa – Nowosądecka – Łużycka,Bratysławska – Doktora Twardego – Wybickiego,9.539090325156872,0:10:46.385438
+386,Witosa – Nowosądecka – Łużycka,Piastowska – Lea,8.728130661771205,0:09:47.996342
+387,Witosa – Nowosądecka – Łużycka,Armii Krajowej – Zarzecze,9.992798256901983,0:11:19.052409
+388,Witosa – Nowosądecka – Łużycka,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,4.564304337970606,0:04:17.814225
+389,Witosa – Nowosądecka – Łużycka,Piastowska – Armii Krajowej – Nawojki,8.478935283883095,0:09:30.054275
+390,Witosa – Nowosądecka – Łużycka,Herberta – Turowicza – Trasa Łagiewnicka,1.4928557161180331,0:01:26.809019
+391,Witosa – Nowosądecka – Łużycka,Wielicka – Nowosądecka,1.780304931800124,0:01:42.180708
+392,Witosa – Nowosądecka – Łużycka,Wielicka – Teligi – Kostaneckiego,3.598638113587546,0:03:15.611554
+393,Witosa – Nowosądecka – Łużycka,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,16.75622868838322,0:11:52.932645
+394,Witosa – Nowosądecka – Łużycka,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,11.162177663629956,0:10:21.728138
+395,Witosa – Nowosądecka – Łużycka,al. 29 Listopada – Opolska – Lublańska,10.451585586419835,0:11:13.442963
+396,Witosa – Nowosądecka – Łużycka,Ks. Józefa – Jodłowa,10.04391246359668,0:10:52.543959
+397,Witosa – Nowosądecka – Łużycka,Zakopiańska – Jugowicka – Zawiła,4.508854547803763,0:04:11.961712
+398,Witosa – Nowosądecka – Łużycka,Mogilska – Lema – al. Jana Pawła II – Meissnera,8.997281371194749,0:09:50.152238
+399,Witosa – Nowosądecka – Łużycka,Księcia Józefa – Most Zwierzyniecki,7.743988400746409,0:07:57.233896
+400,Witosa – Nowosądecka – Łużycka,Pachońskiego – Sosabowskiego – Trasa Wolbromska,11.072242833385854,0:12:33.865441
+401,Wielicka – Nowosądecka,al. Mickiewicza – Piłsudskiego – Focha,6.032714755364817,0:06:07.935016
+402,Wielicka – Nowosądecka,al. Mickiewicza – Reymonta,6.550677587342051,0:06:45.228340
+403,Wielicka – Nowosądecka,al. Słowackiego – Prądnicka – Długa,8.019479099021856,0:08:30.982048
+404,Wielicka – Nowosądecka,Beliny-Prażmowskiego – Brodowicza,6.071181573660969,0:06:43.662319
+405,Wielicka – Nowosądecka,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),3.1961451296071073,0:03:11.270063
+406,Wielicka – Nowosądecka,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,5.659401211372695,0:05:46.964764
+407,Wielicka – Nowosądecka,Zakopiańska – Wadowicka – Tischnera – Brożka,4.032850500484471,0:04:10.776252
+408,Wielicka – Nowosądecka,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,4.842796584880035,0:05:08.996802
+409,Wielicka – Nowosądecka,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,2.3903312035768964,0:02:30.790113
+410,Wielicka – Nowosądecka,Bratysławska – Doktora Twardego – Wybickiego,9.355150317608544,0:10:07.150376
+411,Wielicka – Nowosądecka,Piastowska – Lea,8.544190654222875,0:09:08.761280
+412,Wielicka – Nowosądecka,Armii Krajowej – Zarzecze,9.808858249353653,0:10:39.817347
+413,Wielicka – Nowosądecka,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,6.324507733469459,0:05:58.061239
+414,Wielicka – Nowosądecka,Piastowska – Armii Krajowej – Nawojki,8.294995276334765,0:08:50.819213
+415,Wielicka – Nowosądecka,Herberta – Turowicza – Trasa Łagiewnicka,3.253059111616887,0:03:07.056033
+416,Wielicka – Nowosądecka,Witosa – Nowosądecka – Łużycka,1.7602033954988536,0:01:40.247014
+417,Wielicka – Nowosądecka,Wielicka – Teligi – Kostaneckiego,1.8811121598666356,0:01:37.283052
+418,Wielicka – Nowosądecka,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,15.03870273466231,0:10:14.604143
+419,Wielicka – Nowosądecka,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,9.381872731829834,0:08:39.547430
+420,Wielicka – Nowosądecka,al. 29 Listopada – Opolska – Lublańska,8.80640534258011,0:09:31.497940
+421,Wielicka – Nowosądecka,Ks. Józefa – Jodłowa,9.444560232163049,0:10:19.399545
+422,Wielicka – Nowosądecka,Zakopiańska – Jugowicka – Zawiła,6.269057943302616,0:05:52.208726
+423,Wielicka – Nowosądecka,Mogilska – Lema – al. Jana Pawła II – Meissnera,7.216976439394624,0:08:07.971530
+424,Wielicka – Nowosądecka,Księcia Józefa – Most Zwierzyniecki,7.1446361693127765,0:07:24.089482
+425,Wielicka – Nowosądecka,Pachońskiego – Sosabowskiego – Trasa Wolbromska,11.03953757570864,0:11:40.762239
+426,Wielicka – Teligi – Kostaneckiego,al. Mickiewicza – Piłsudskiego – Focha,7.849552553328786,0:07:41.372388
+427,Wielicka – Teligi – Kostaneckiego,al. Mickiewicza – Reymonta,8.367515385306024,0:08:18.665712
+428,Wielicka – Teligi – Kostaneckiego,al. Słowackiego – Prądnicka – Długa,9.836316896985823,0:10:04.419421
+429,Wielicka – Teligi – Kostaneckiego,Beliny-Prażmowskiego – Brodowicza,7.8880193716249405,0:08:17.099691
+430,Wielicka – Teligi – Kostaneckiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),5.012982927571078,0:04:44.707435
+431,Wielicka – Teligi – Kostaneckiego,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,7.476239009336664,0:07:20.402137
+432,Wielicka – Teligi – Kostaneckiego,Zakopiańska – Wadowicka – Tischnera – Brożka,5.849688298448441,0:05:44.213625
+433,Wielicka – Teligi – Kostaneckiego,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,6.659634382844005,0:06:42.434175
+434,Wielicka – Teligi – Kostaneckiego,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,4.2071690015408665,0:04:04.227486
+435,Wielicka – Teligi – Kostaneckiego,Bratysławska – Doktora Twardego – Wybickiego,11.171988115572512,0:11:40.587749
+436,Wielicka – Teligi – Kostaneckiego,Piastowska – Lea,10.361028452186845,0:10:42.198653
+437,Wielicka – Teligi – Kostaneckiego,Armii Krajowej – Zarzecze,11.625696047317621,0:12:13.254720
+438,Wielicka – Teligi – Kostaneckiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,8.14134553143343,0:07:31.498611
+439,Wielicka – Teligi – Kostaneckiego,Piastowska – Armii Krajowej – Nawojki,10.111833074298733,0:10:24.256586
+440,Wielicka – Teligi – Kostaneckiego,Herberta – Turowicza – Trasa Łagiewnicka,5.069896909580857,0:04:40.493406
+441,Wielicka – Teligi – Kostaneckiego,Witosa – Nowosądecka – Łużycka,3.577041193462824,0:03:13.684387
+442,Wielicka – Teligi – Kostaneckiego,Wielicka – Nowosądecka,1.8168377979639703,0:01:33.437372
+443,Wielicka – Teligi – Kostaneckiego,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,13.214678443700645,0:08:41.014993
+444,Wielicka – Teligi – Kostaneckiego,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,11.198710529793804,0:10:12.984802
+445,Wielicka – Teligi – Kostaneckiego,al. 29 Listopada – Opolska – Lublańska,10.623243140544082,0:11:04.935312
+446,Wielicka – Teligi – Kostaneckiego,Ks. Józefa – Jodłowa,11.261398030127017,0:11:52.836917
+447,Wielicka – Teligi – Kostaneckiego,Zakopiańska – Jugowicka – Zawiła,8.085895741266587,0:07:25.646099
+448,Wielicka – Teligi – Kostaneckiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,9.033814237358596,0:09:41.408902
+449,Wielicka – Teligi – Kostaneckiego,Księcia Józefa – Most Zwierzyniecki,8.961473967276746,0:08:57.526854
+450,Wielicka – Teligi – Kostaneckiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,12.85637537367261,0:13:14.199612
+451,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,al. Mickiewicza – Piłsudskiego – Focha,11.138120179146005,0:12:20.192769
+452,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,al. Mickiewicza – Reymonta,10.790614189969801,0:11:57.777995
+453,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,al. Słowackiego – Prądnicka – Długa,9.281102430000349,0:10:09.093148
+454,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Beliny-Prażmowskiego – Brodowicza,7.176607543209396,0:07:43.544513
+455,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),10.204128796236473,0:09:47.871183
+456,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,10.761928420047786,0:11:59.015286
+457,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Zakopiańska – Wadowicka – Tischnera – Brożka,10.95847767068043,0:10:39.678188
+458,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,11.768423755075997,0:11:37.898738
+459,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,8.452585447156217,0:08:08.730048
+460,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Bratysławska – Doktora Twardego – Wybickiego,10.857147860875642,0:10:23.472191
+461,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Piastowska – Lea,12.072976031284135,0:13:30.108047
+462,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Armii Krajowej – Zarzecze,14.675918958370195,0:13:53.491473
+463,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,12.788252856764057,0:12:38.427721
+464,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Piastowska – Armii Krajowej – Nawojki,12.109445723505619,0:13:32.733865
+465,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Herberta – Turowicza – Trasa Łagiewnicka,12.023988286284585,0:11:24.820312
+466,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Witosa – Nowosądecka – Łużycka,16.185276054523545,0:11:30.693688
+467,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Wielicka – Nowosądecka,14.425072659024687,0:09:50.446674
+468,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Wielicka – Teligi – Kostaneckiego,12.608234861060717,0:08:17.009301
+469,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,5.181090398707501,0:05:04.317837
+470,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,al. 29 Listopada – Opolska – Lublańska,8.559389510653522,0:08:05.672481
+471,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Ks. Józefa – Jodłowa,14.54708744083814,0:16:31.450066
+472,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Zakopiańska – Jugowicka – Zawiła,13.595735065380898,0:13:11.553476
+473,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,5.160051818822689,0:05:18.352501
+474,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Księcia Józefa – Most Zwierzyniecki,12.24716337798787,0:13:36.140004
+475,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,10.795202234414623,0:10:08.074223
+476,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,al. Mickiewicza – Piłsudskiego – Focha,7.67949856007822,0:07:36.732773
+477,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,al. Mickiewicza – Reymonta,7.148242813937428,0:06:58.482359
+478,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,al. Słowackiego – Prądnicka – Długa,5.638731053967977,0:05:09.797512
+479,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Beliny-Prażmowskiego – Brodowicza,5.12285357846657,0:05:25.987547
+480,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),8.756479391959392,0:07:49.414618
+481,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,9.314279015770706,0:10:00.558721
+482,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Zakopiańska – Wadowicka – Tischnera – Brożka,9.510828266403351,0:08:41.221624
+483,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,10.320774350798915,0:09:39.442174
+484,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,7.004936042879136,0:06:10.273484
+485,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Bratysławska – Doktora Twardego – Wybickiego,5.676057462168143,0:05:19.154354
+486,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Piastowska – Lea,8.43060465525176,0:08:30.812412
+487,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Armii Krajowej – Zarzecze,9.494828559662695,0:08:49.173635
+488,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,11.340603452486974,0:10:39.971156
+489,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Piastowska – Armii Krajowej – Nawojki,8.467074347473245,0:08:33.438230
+490,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Herberta – Turowicza – Trasa Łagiewnicka,10.576338882007503,0:09:26.363747
+491,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Witosa – Nowosądecka – Łużycka,11.110890254240616,0:10:14.996940
+492,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Wielicka – Nowosądecka,9.43056982933357,0:08:39.648033
+493,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Wielicka – Teligi – Kostaneckiego,11.248903011120994,0:10:13.078879
+494,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,5.2926715712663865,0:05:17.980361
+495,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,al. 29 Listopada – Opolska – Lublańska,3.3782991119460184,0:03:01.354644
+496,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Ks. Józefa – Jodłowa,12.089679031720557,0:13:52.479918
+497,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Zakopiańska – Jugowicka – Zawiła,12.148085661103819,0:11:13.096911
+498,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Mogilska – Lema – al. Jana Pawła II – Meissnera,3.1062978540798607,0:03:00.795535
+499,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Księcia Józefa – Most Zwierzyniecki,9.789754968870286,0:10:57.169855
+500,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,Pachońskiego – Sosabowskiego – Trasa Wolbromska,5.6141118357071225,0:05:03.756386
+501,al. 29 Listopada – Opolska – Lublańska,al. Mickiewicza – Piłsudskiego – Focha,4.301199448132201,0:04:35.378129
+502,al. 29 Listopada – Opolska – Lublańska,al. Mickiewicza – Reymonta,3.769943701991409,0:03:57.127715
+503,al. 29 Listopada – Opolska – Lublańska,al. Słowackiego – Prądnicka – Długa,2.260431942021957,0:02:08.442869
+504,al. 29 Listopada – Opolska – Lublańska,Beliny-Prażmowskiego – Brodowicza,3.5011724973835947,0:03:42.862839
+505,al. 29 Listopada – Opolska – Lublańska,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),7.214000483043148,0:07:29.001695
+506,al. 29 Listopada – Opolska – Lublańska,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,6.365841962502861,0:07:02.622165
+507,al. 29 Listopada – Opolska – Lublańska,Zakopiańska – Wadowicka – Tischnera – Brożka,7.989028347952913,0:08:24.803701
+508,al. 29 Listopada – Opolska – Lublańska,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,8.116268561439854,0:08:53.972413
+509,al. 29 Listopada – Opolska – Lublańska,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,6.236172586121705,0:06:49.553852
+510,al. 29 Listopada – Opolska – Lublańska,Bratysławska – Doktora Twardego – Wybickiego,2.295077859589547,0:02:24.662268
+511,al. 29 Listopada – Opolska – Lublańska,Piastowska – Lea,5.05230554330574,0:05:29.457768
+512,al. 29 Listopada – Opolska – Lublańska,Armii Krajowej – Zarzecze,6.113848957084099,0:05:54.681549
+513,al. 29 Listopada – Opolska – Lublańska,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,8.762405308963276,0:09:34.715645
+514,al. 29 Listopada – Opolska – Lublańska,Piastowska – Armii Krajowej – Nawojki,5.088775235527225,0:05:32.083586
+515,al. 29 Listopada – Opolska – Lublańska,Herberta – Turowicza – Trasa Łagiewnicka,9.76388524409984,0:09:55.439674
+516,al. 29 Listopada – Opolska – Lublańska,Witosa – Nowosądecka – Łużycka,10.342126797483184,0:10:54.277308
+517,al. 29 Listopada – Opolska – Lublańska,Wielicka – Nowosądecka,8.661806372576141,0:09:18.928401
+518,al. 29 Listopada – Opolska – Lublańska,Wielicka – Teligi – Kostaneckiego,10.480139554363562,0:10:52.359248
+519,al. 29 Listopada – Opolska – Lublańska,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,8.678165088238925,0:08:11.731442
+520,al. 29 Listopada – Opolska – Lublańska,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,3.4452028385318068,0:02:58.050153
+521,al. 29 Listopada – Opolska – Lublańska,Ks. Józefa – Jodłowa,8.71137991977454,0:10:51.125274
+522,al. 29 Listopada – Opolska – Lublańska,Zakopiańska – Jugowicka – Zawiła,10.573870885013342,0:10:52.905118
+523,al. 29 Listopada – Opolska – Lublańska,Mogilska – Lema – al. Jana Pawła II – Meissnera,3.082160787822207,0:03:24.190839
+524,al. 29 Listopada – Opolska – Lublańska,Księcia Józefa – Most Zwierzyniecki,6.411455856924269,0:07:55.815212
+525,al. 29 Listopada – Opolska – Lublańska,Pachońskiego – Sosabowskiego – Trasa Wolbromska,2.2331322331285284,0:02:09.264300
+526,Ks. Józefa – Jodłowa,al. Mickiewicza – Piłsudskiego – Focha,4.842102629792285,0:06:51.400560
+527,Ks. Józefa – Jodłowa,al. Mickiewicza – Reymonta,5.360065461769518,0:07:28.693884
+528,Ks. Józefa – Jodłowa,al. Słowackiego – Prądnicka – Długa,6.8288669734493235,0:09:14.447592
+529,Ks. Józefa – Jodłowa,Beliny-Prażmowskiego – Brodowicza,8.475363285345338,0:10:03.109017
+530,Ks. Józefa – Jodłowa,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),6.243103828555514,0:06:43.103876
+531,Ks. Józefa – Jodłowa,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,3.8129683163386443,0:04:19.357784
+532,Ks. Józefa – Jodłowa,Zakopiańska – Wadowicka – Tischnera – Brożka,6.341541525143397,0:07:07.011611
+533,Ks. Józefa – Jodłowa,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,5.509267207723341,0:06:07.087860
+534,Ks. Józefa – Jodłowa,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,8.33747950413085,0:08:32.323154
+535,Ks. Józefa – Jodłowa,Bratysławska – Doktora Twardego – Wybickiego,8.164538192036012,0:10:50.615920
+536,Ks. Józefa – Jodłowa,Piastowska – Lea,6.0119765436714445,0:09:23.091331
+537,Ks. Józefa – Jodłowa,Armii Krajowej – Zarzecze,4.776029792293281,0:08:38.372241
+538,Ks. Józefa – Jodłowa,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,6.155403955246762,0:06:47.831091
+539,Ks. Józefa – Jodłowa,Piastowska – Armii Krajowej – Nawojki,5.762781165783335,0:09:05.149264
+540,Ks. Józefa – Jodłowa,Herberta – Turowicza – Trasa Łagiewnicka,8.792988589612204,0:09:09.541856
+541,Ks. Józefa – Jodłowa,Witosa – Nowosądecka – Łużycka,9.537091243676114,0:10:29.367176
+542,Ks. Józefa – Jodłowa,Wielicka – Nowosądecka,9.395445825519577,0:09:46.141964
+543,Ks. Józefa – Jodłowa,Wielicka – Teligi – Kostaneckiego,11.213779007306998,0:11:19.572811
+544,Ks. Józefa – Jodłowa,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,14.484403033119424,0:16:26.234534
+545,Ks. Józefa – Jodłowa,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,12.428073455635454,0:14:08.943874
+546,Ks. Józefa – Jodłowa,al. 29 Listopada – Opolska – Lublańska,9.077033453298974,0:11:17.673445
+547,Ks. Józefa – Jodłowa,Zakopiańska – Jugowicka – Zawiła,8.926384062203828,0:09:35.113028
+548,Ks. Józefa – Jodłowa,Mogilska – Lema – al. Jana Pawła II – Meissnera,10.010080336612816,0:11:53.608645
+549,Ks. Józefa – Jodłowa,Księcia Józefa – Most Zwierzyniecki,2.3197761156653067,0:02:56.739411
+550,Ks. Józefa – Jodłowa,Pachońskiego – Sosabowskiego – Trasa Wolbromska,9.697690700264989,0:12:38.095923
+551,Zakopiańska – Jugowicka – Zawiła,al. Mickiewicza – Piłsudskiego – Focha,6.315162838114556,0:06:19.397441
+552,Zakopiańska – Jugowicka – Zawiła,al. Mickiewicza – Reymonta,6.833125670091793,0:06:56.690765
+553,Zakopiańska – Jugowicka – Zawiła,al. Słowackiego – Prądnicka – Długa,8.301927181771596,0:08:42.444474
+554,Zakopiańska – Jugowicka – Zawiła,Beliny-Prażmowskiego – Brodowicza,8.033429567590858,0:08:42.776234
+555,Zakopiańska – Jugowicka – Zawiła,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),3.478593212356848,0:03:22.732489
+556,Zakopiańska – Jugowicka – Zawiła,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,5.103732978636005,0:05:21.519935
+557,Zakopiańska – Jugowicka – Zawiła,Zakopiańska – Wadowicka – Tischnera – Brożka,2.5913737282431026,0:02:32.819553
+558,Zakopiańska – Jugowicka – Zawiła,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,3.401319812638667,0:03:31.040103
+559,Zakopiańska – Jugowicka – Zawiła,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,5.186568183203432,0:04:57.874138
+560,Zakopiańska – Jugowicka – Zawiła,Bratysławska – Doktora Twardego – Wybickiego,9.637598400358284,0:10:18.612802
+561,Zakopiańska – Jugowicka – Zawiła,Piastowska – Lea,8.826638736972619,0:09:20.223706
+562,Zakopiańska – Jugowicka – Zawiła,Armii Krajowej – Zarzecze,10.091306332103395,0:10:51.279773
+563,Zakopiańska – Jugowicka – Zawiła,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,3.4180488202829302,0:03:28.022365
+564,Zakopiańska – Jugowicka – Zawiła,Piastowska – Armii Krajowej – Nawojki,8.577443359084507,0:09:02.281639
+565,Zakopiańska – Jugowicka – Zawiła,Herberta – Turowicza – Trasa Łagiewnicka,2.9450528529873528,0:02:56.274124
+566,Zakopiańska – Jugowicka – Zawiła,Witosa – Nowosądecka – Łużycka,4.433804669242226,0:04:20.807853
+567,Zakopiańska – Jugowicka – Zawiła,Wielicka – Nowosądecka,6.195197878732034,0:06:01.626916
+568,Zakopiańska – Jugowicka – Zawiła,Wielicka – Teligi – Kostaneckiego,8.013531060519455,0:07:35.057763
+569,Zakopiańska – Jugowicka – Zawiła,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,19.621684240828625,0:12:45.167843
+570,Zakopiańska – Jugowicka – Zawiła,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,12.158199125672443,0:10:59.966263
+571,Zakopiańska – Jugowicka – Zawiła,al. 29 Listopada – Opolska – Lublańska,10.550093661621247,0:10:45.670327
+572,Zakopiańska – Jugowicka – Zawiła,Ks. Józefa – Jodłowa,8.888891999426358,0:09:53.954715
+573,Zakopiańska – Jugowicka – Zawiła,Mogilska – Lema – al. Jana Pawła II – Meissnera,9.993302833237234,0:10:28.390363
+574,Zakopiańska – Jugowicka – Zawiła,Księcia Józefa – Most Zwierzyniecki,6.588967936576086,0:06:58.644652
+575,Zakopiańska – Jugowicka – Zawiła,Pachońskiego – Sosabowskiego – Trasa Wolbromska,11.170750908587262,0:12:06.092805
+576,Mogilska – Lema – al. Jana Pawła II – Meissnera,al. Mickiewicza – Piłsudskiego – Focha,6.2156370104810295,0:07:21.550868
+577,Mogilska – Lema – al. Jana Pawła II – Meissnera,al. Mickiewicza – Reymonta,5.684381264340238,0:06:43.300454
+578,Mogilska – Lema – al. Jana Pawła II – Meissnera,al. Słowackiego – Prądnicka – Długa,4.174869504370787,0:04:54.615608
+579,Mogilska – Lema – al. Jana Pawła II – Meissnera,Beliny-Prażmowskiego – Brodowicza,2.0703746175798328,0:02:29.066972
+580,Mogilska – Lema – al. Jana Pawła II – Meissnera,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),8.280178439968275,0:07:24.295669
+581,Mogilska – Lema – al. Jana Pawła II – Meissnera,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,6.343038264665252,0:07:23.188273
+582,Mogilska – Lema – al. Jana Pawła II – Meissnera,Zakopiańska – Wadowicka – Tischnera – Brożka,9.034527314412234,0:08:16.102675
+583,Mogilska – Lema – al. Jana Pawła II – Meissnera,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,9.844473398807798,0:09:14.323225
+584,Mogilska – Lema – al. Jana Pawła II – Meissnera,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,6.528635090888018,0:05:45.154535
+585,Mogilska – Lema – al. Jana Pawła II – Meissnera,Bratysławska – Doktora Twardego – Wybickiego,5.436357855474249,0:05:46.297905
+586,Mogilska – Lema – al. Jana Pawła II – Meissnera,Piastowska – Lea,6.96674310565457,0:08:15.630507
+587,Mogilska – Lema – al. Jana Pawła II – Meissnera,Armii Krajowej – Zarzecze,9.2551289529688,0:09:16.317186
+588,Mogilska – Lema – al. Jana Pawła II – Meissnera,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,8.739601611125666,0:09:55.281753
+589,Mogilska – Lema – al. Jana Pawła II – Meissnera,Piastowska – Armii Krajowej – Nawojki,7.0032127978760546,0:08:18.256325
+590,Mogilska – Lema – al. Jana Pawła II – Meissnera,Herberta – Turowicza – Trasa Łagiewnicka,10.100037930016384,0:09:01.244798
+591,Mogilska – Lema – al. Jana Pawła II – Meissnera,Witosa – Nowosądecka – Łużycka,10.634589302249498,0:09:49.877991
+592,Mogilska – Lema – al. Jana Pawła II – Meissnera,Wielicka – Nowosądecka,8.95426887734245,0:08:14.529084
+593,Mogilska – Lema – al. Jana Pawła II – Meissnera,Wielicka – Teligi – Kostaneckiego,10.772602059129877,0:09:47.959930
+594,Mogilska – Lema – al. Jana Pawła II – Meissnera,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,5.179943046575824,0:05:23.633245
+595,Mogilska – Lema – al. Jana Pawła II – Meissnera,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,3.279886051132058,0:03:11.513783
+596,Mogilska – Lema – al. Jana Pawła II – Meissnera,al. 29 Listopada – Opolska – Lublańska,3.138599505252124,0:03:28.498195
+597,Mogilska – Lema – al. Jana Pawła II – Meissnera,Ks. Józefa – Jodłowa,10.128197285455608,0:11:55.623054
+598,Mogilska – Lema – al. Jana Pawła II – Meissnera,Zakopiańska – Jugowicka – Zawiła,11.671784709112698,0:10:47.977962
+599,Mogilska – Lema – al. Jana Pawła II – Meissnera,Księcia Józefa – Most Zwierzyniecki,7.828273222605334,0:09:00.312991
+600,Mogilska – Lema – al. Jana Pawła II – Meissnera,Pachońskiego – Sosabowskiego – Trasa Wolbromska,5.374412229013228,0:05:30.899937
+601,Księcia Józefa – Most Zwierzyniecki,al. Mickiewicza – Piłsudskiego – Focha,2.5450982027471736,0:03:56.300711
+602,Księcia Józefa – Most Zwierzyniecki,al. Mickiewicza – Reymonta,3.06306103472441,0:04:33.594035
+603,Księcia Józefa – Most Zwierzyniecki,al. Słowackiego – Prądnicka – Długa,4.531862546404214,0:06:19.347743
+604,Księcia Józefa – Most Zwierzyniecki,Beliny-Prażmowskiego – Brodowicza,6.1783588583002285,0:07:08.009168
+605,Księcia Józefa – Most Zwierzyniecki,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),3.9460994015104043,0:03:48.004027
+606,Księcia Józefa – Most Zwierzyniecki,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,1.5159638892935352,0:01:24.257935
+607,Księcia Józefa – Most Zwierzyniecki,Zakopiańska – Wadowicka – Tischnera – Brożka,4.044537098098288,0:04:11.911762
+608,Księcia Józefa – Most Zwierzyniecki,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,3.212262780678231,0:03:11.988011
+609,Księcia Józefa – Most Zwierzyniecki,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,6.04047507708574,0:05:37.223305
+610,Księcia Józefa – Most Zwierzyniecki,Bratysławska – Doktora Twardego – Wybickiego,5.8675337649909025,0:07:55.516071
+611,Księcia Józefa – Most Zwierzyniecki,Piastowska – Lea,5.056574101605232,0:06:57.126975
+612,Księcia Józefa – Most Zwierzyniecki,Armii Krajowej – Zarzecze,6.321241696736012,0:08:28.183042
+613,Księcia Józefa – Most Zwierzyniecki,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,3.858399528201652,0:03:52.731242
+614,Księcia Józefa – Most Zwierzyniecki,Piastowska – Armii Krajowej – Nawojki,4.8073787237171235,0:06:39.184908
+615,Księcia Józefa – Most Zwierzyniecki,Herberta – Turowicza – Trasa Łagiewnicka,6.495984162567094,0:06:14.442007
+616,Księcia Józefa – Most Zwierzyniecki,Witosa – Nowosądecka – Łużycka,7.240086816631005,0:07:34.267327
+617,Księcia Józefa – Most Zwierzyniecki,Wielicka – Nowosądecka,7.098441398474468,0:06:51.042115
+618,Księcia Józefa – Most Zwierzyniecki,Wielicka – Teligi – Kostaneckiego,8.916774580261892,0:08:24.472962
+619,Księcia Józefa – Most Zwierzyniecki,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,12.187398606074316,0:13:31.134685
+620,Księcia Józefa – Most Zwierzyniecki,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,10.131069028590346,0:11:13.844025
+621,Księcia Józefa – Most Zwierzyniecki,al. 29 Listopada – Opolska – Lublańska,6.780029026253864,0:08:22.573596
+622,Księcia Józefa – Most Zwierzyniecki,Ks. Józefa – Jodłowa,2.2999240628502733,0:02:55.310063
+623,Księcia Józefa – Most Zwierzyniecki,Zakopiańska – Jugowicka – Zawiła,6.629379635158719,0:06:40.013179
+624,Księcia Józefa – Most Zwierzyniecki,Mogilska – Lema – al. Jana Pawła II – Meissnera,7.713075909567706,0:08:58.508796
+625,Księcia Józefa – Most Zwierzyniecki,Pachońskiego – Sosabowskiego – Trasa Wolbromska,7.40068627321988,0:09:42.996074
+626,Pachońskiego – Sosabowskiego – Trasa Wolbromska,al. Mickiewicza – Piłsudskiego – Focha,4.925695117359589,0:05:52.242696
+627,Pachońskiego – Sosabowskiego – Trasa Wolbromska,al. Mickiewicza – Reymonta,4.394439371218797,0:05:13.992282
+628,Pachońskiego – Sosabowskiego – Trasa Wolbromska,al. Słowackiego – Prądnicka – Długa,2.8849276112493456,0:03:25.307435
+629,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Beliny-Prażmowskiego – Brodowicza,5.768307559830888,0:05:58.353370
+630,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Konopnickiej – Kamieńskiego – Kalwaryjska – Wadowicka (rondo Matecznego),7.838496152270537,0:08:45.866261
+631,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Monte Cassino – Kapelanka – Zielińskiego – Nowaczyńskiego,6.990337631730248,0:08:19.486732
+632,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Zakopiańska – Wadowicka – Tischnera – Brożka,8.613524017180302,0:09:41.668267
+633,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Grota-Roweckiego – Kapelanka – Brożka – Lipińskiego,8.74076423066724,0:10:10.836980
+634,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Wielicka – Powstańców Wielkopolskich – Powstańców Śląskich – Limanowskiego,8.503307648569,0:09:05.044384
+635,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Bratysławska – Doktora Twardego – Wybickiego,1.5742402020133262,0:01:50.937942
+636,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Piastowska – Lea,3.9990491619379487,0:05:01.671948
+637,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Armii Krajowej – Zarzecze,4.466190951282562,0:04:44.564142
+638,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Grota-Roweckiego – Trasa Łagiewnicka – Norymberska,9.386900978190663,0:10:51.580211
+639,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Piastowska – Armii Krajowej – Nawojki,4.258300702933835,0:05:20.338059
+640,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Herberta – Turowicza – Trasa Łagiewnicka,10.388380913327229,0:11:12.304241
+641,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Witosa – Nowosądecka – Łużycka,11.132483567391134,0:12:32.129561
+642,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Wielicka – Nowosądecka,10.928941435023432,0:11:34.418933
+643,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Wielicka – Teligi – Kostaneckiego,12.74727461681086,0:13:07.849779
+644,Pachońskiego – Sosabowskiego – Trasa Wolbromska,al. Jana Pawła II – Klasztorna – Bulwarowa – Ptaszyckiego,10.941353368882657,0:10:21.236257
+645,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego,5.708391119175541,0:05:07.554967
+646,Pachońskiego – Sosabowskiego – Trasa Wolbromska,al. 29 Listopada – Opolska – Lublańska,2.361297898642619,0:02:22.270256
+647,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Ks. Józefa – Jodłowa,9.33587558900193,0:12:07.989841
+648,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Zakopiańska – Jugowicka – Zawiła,11.198366554240733,0:12:09.769685
+649,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Mogilska – Lema – al. Jana Pawła II – Meissnera,5.345349068465942,0:05:33.695653
+650,Pachońskiego – Sosabowskiego – Trasa Wolbromska,Księcia Józefa – Most Zwierzyniecki,7.035951526151655,0:09:12.679778

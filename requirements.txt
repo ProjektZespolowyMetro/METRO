@@ -2,3 +2,9 @@ django
 dotenv
 djangorestframework
 django-cors-headers
+pandas
+numpy
+geopy
+networkx
+osmnx
+matplotlib
