@@ -17,3 +17,9 @@ npm start
 ``
 
 ### Frontend odpala sie na localhost:3000 podczas gdy django na 127.0.0.1:8000
+
+### aby kod w typescripcie byl ladny przed commitem mozna odpalic
+``
+npx prettier --write "src/**/*.{js,ts,jsx,tsx}"
+``
+### ustawienia prettier sa w pliku .prettierrc
