@@ -5,9 +5,17 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+#calculator import
+try:
+    from core.scripts.calculator import calculate_total_metro_usage
+except ImportError as e:
+    print(f"Error in importing calculator.py: {e}")
+    calculate_total_metro_usage = None
+
 class HelloWorldView(View):
     def get(self, request):
         return HttpResponse("Hello world!")
+
 
 class ReceivePinsView(APIView):
     """
@@ -78,11 +86,28 @@ class ReceivePinsView(APIView):
         print(segments)
         print("Total length:", total_length)
 
+        #Mateusz, do sth about it
+        metro_usage_results = {}
+
+        if calculate_total_metro_usage:
+            try:
+                print(" call calc total_metro_usage ")
+                # it will print data to console
+                metro_usage_results = calculate_total_metro_usage(pins)
+            except Exception as e:
+                print(f"calculator error {e}")
+                metro_usage_results = {"error": str(e)}
+        else:
+            print("calculator import error")
+
+
         return Response(
             {
                 "pins": pins,
                 "segments": segments,
                 "total_length_meters": round(total_length, 2),
+                # added metro usage below
+                "metro_usage": metro_usage_results,
             },
             status=status.HTTP_200_OK,
         )
