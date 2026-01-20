@@ -137,7 +137,6 @@ def calculate_population_usage(station_ids, overrides=None):
     """
     Oblicza liczbę pasażerów generowaną przez okoliczną ludność.
     """
-    # TU BYŁ BŁĄD: Poprawione rozpakowanie 5 elementów (dodano _, _)
     _, df_pop, traffic_profile, _, _ = DATA
 
     results = {}

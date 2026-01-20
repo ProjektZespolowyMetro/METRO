@@ -10,5 +10,5 @@ class BusTramHandler:
         data = self.data_provider.load_stations()        
         self.search_engine.prepare_data(data)
 
-    def find_closest_station(self, lat, lon):
-        return self.search_engine.find_nearest(lat, lon)
+    def find_closest_station(self, lat, lon, label = {"bus", "tram"}):
+        return self.search_engine.find_nearest(lat, lon, label)
