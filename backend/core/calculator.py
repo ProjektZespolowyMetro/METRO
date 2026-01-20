@@ -16,19 +16,17 @@ except ImportError:
         calculate_population_for_pins = None
 
 
-# ---------------------------------------------------------
+
 # KONFIGURACJA I PLIKI
-# ---------------------------------------------------------
+
 
 def get_file_path(filename):
     """Szuka pliku w katalogu bieżącym lub w folderze data w górę."""
     current_dir = Path(__file__).resolve().parent
 
-    # 1. Szukaj w bieżącym
+
     if (current_dir / filename).exists():
         return str(current_dir / filename)
-
-    # 2. Szukaj w folderach wyżej (np. backend/data)
     search_path = current_dir
     for _ in range(4):
         candidate = search_path / 'data' / filename
@@ -38,7 +36,7 @@ def get_file_path(filename):
             break
         search_path = search_path.parent
 
-    # 3. Fallback: ścieżka względna (może zadziałać w Django)
+    # ścieżka względna
     return filename
 
 
@@ -78,9 +76,7 @@ def load_reference_data():
 REF_TRAFFIC_POINTS, TRAFFIC_PROFILE = load_reference_data()
 
 
-# ---------------------------------------------------------
-# FUNKCJE POMOCNICZE
-# ---------------------------------------------------------
+
 
 def haversine_distance(lat1, lon1, lat2, lon2):
     """Zwraca odległość w kilometrach."""
@@ -272,9 +268,9 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
     return results
 
 
-# ---------------------------------------------------------
+
 # GŁÓWNA FUNKCJA (API)
-# ---------------------------------------------------------
+
 
 def calculate_total_metro_usage(pins):
     """
@@ -304,12 +300,11 @@ def calculate_total_metro_usage(pins):
         total_arr = [int(p + s) for p, s in zip(pop_arr, shift_arr)]  # rzutowanie na int dla czytelności
         total_usage[num] = total_arr
 
-    # --- TUTAJ JEST ZMIANA: WYPISANIE TABELI ---
+
     try:
         print_tabular_results(total_usage, pins)
     except Exception as e:
         print(f"Błąd podczas wypisywania tabeli: {e}")
-    # -------------------------------------------
 
     return total_usage
 
@@ -330,7 +325,6 @@ def print_tabular_results(results_dict, pins):
     df_results.columns = [f"{h}:00" for h in range(24)]
 
     # Tworzymy mapę: Numer Pinu -> Nazwa Pinu (z danych wejściowych)
-    # Dzięki temu w tabeli zobaczysz "1: Stacja Centrum" zamiast samego "1"
     pin_names = {p.get('number'): p.get('name', f"Pin {p.get('number')}") for p in pins}
 
     # Zmieniamy indeks tabeli na czytelny
