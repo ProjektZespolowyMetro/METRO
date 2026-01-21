@@ -3,6 +3,10 @@ import numpy as np
 import math
 import os
 from pathlib import Path
+from BusTramHandler import BusTramHandler
+from DataProvider import JsonFileProvider
+from SearchStrategy import BruteForceSearch
+from core.scripts.bus_tram_availability import calculate_bus_tram_for_pins
 
 # Próba importu funkcji liczącej ludność (zakładamy strukturę Django)
 try:
@@ -110,7 +114,7 @@ def calculate_usage_from_population(pins, profile):
     """
     Oblicza potoki pasażerskie na podstawie ludności wokół pinezek.
     """
-    _, df_pop, traffic_profile, _, _ = DATA# sprawdzic
+    # _, df_pop, traffic_profile, _, _ = DATA# sprawdzic
 
     results = {}
 
@@ -158,7 +162,9 @@ def calculate_usage_from_population(pins, profile):
         # Dla uproszczenia przy dynamicznych punktach przyjmujemy średnią 0.45
         # lub staramy się zgadnąć na podstawie danych z pinu
         # dogadać na nastepnym spodkaniu
-        metro_choice = 0.45
+        # Pobierz informacje o dostępności przystanków
+        bus_tram_info = calculate_bus_tram_for_pins(pins)
+        metro_choice = bus_tram_info[pin_num]['metro_choice']
 
         daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
 
