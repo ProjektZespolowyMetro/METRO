@@ -4,10 +4,12 @@ import math
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from core.calculator import calculate_total_metro_usage
 
 class HelloWorldView(View):
     def get(self, request):
         return HttpResponse("Hello world!")
+
 
 class ReceivePinsView(APIView):
     """
@@ -78,11 +80,25 @@ class ReceivePinsView(APIView):
         print(segments)
         print("Total length:", total_length)
 
+        #Mateusz, do sth about it
+        metro_usage_results = {}
+
+        try:
+            print(" call calc total_metro_usage ")
+            # it will print data to console
+            metro_usage_results = calculate_total_metro_usage(pins)
+        except Exception as e:
+            print(f"calculator error {e}")
+            metro_usage_results = {"error": str(e)}
+
+
         return Response(
             {
                 "pins": pins,
                 "segments": segments,
                 "total_length_meters": round(total_length, 2),
+                # added metro usage below
+                "metro_usage": metro_usage_results,
             },
             status=status.HTTP_200_OK,
         )
