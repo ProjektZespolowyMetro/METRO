@@ -9,22 +9,26 @@ type UsePinSyncProps = {
     addPin: (pin: Pin) => void;
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
+
+    onSelectPinId: (id: string) => void;
+    onRequestEditPinId: (id: string) => void;
 };
 
 export function usePinSync({
-    map,
-    pins,
-    addPin,
-    updatePin,
-    removePin,
-}: UsePinSyncProps) {
+                               map,
+                               pins,
+                               addPin,
+                               updatePin,
+                               removePin,
+                               onSelectPinId,
+                               onRequestEditPinId,
+                           }: UsePinSyncProps) {
     const markersLayerRef = useRef<L.LayerGroup | null>(null);
     const drawnRoadLayerRef = useRef<L.Polyline | null>(null);
 
     useEffect(() => {
         if (!map) return;
 
-        // We use a separate LayerGroup for pins if it doesnt exist
         if (!markersLayerRef.current) {
             markersLayerRef.current = L.layerGroup().addTo(map);
         }
@@ -43,13 +47,11 @@ export function usePinSync({
         return () => {
             map.off('click', handleMapClick);
         };
-    }, [map, addPin]); // Re-binds if map or addPin changes
+    }, [map, addPin]);
 
-    // sync pins and draw road
     useEffect(() => {
         if (!map || !markersLayerRef.current) return;
 
-        // Clear existing markers to redraw based on latest state
         markersLayerRef.current.clearLayers();
 
         pins.forEach((pin) => {
@@ -59,30 +61,13 @@ export function usePinSync({
             }).addTo(markersLayerRef.current!);
 
             marker.on('click', (e) => {
-                // prevent map click from firing when clicking a marker
                 L.DomEvent.stopPropagation(e);
+                onSelectPinId(pin.id);
+            });
 
-                const input = prompt(
-                    'Enter pin number. Anything else deletes the pin:',
-                    pin.number?.toString() ?? ''
-                );
-                const n = Number(input);
-
-                if (!Number.isInteger(n) || n <= 0) {
-                    removePin(pin.id);
-                    return;
-                }
-
-                const name =
-                    prompt('Enter pin name:', pin.name ?? '') ?? undefined;
-
-                // Handle duplicate numbers
-                const existingPin = pins.find(
-                    (p) => p.number === n && p.id !== pin.id
-                );
-                if (existingPin) removePin(existingPin.id);
-
-                updatePin({ ...pin, number: n, name });
+            marker.on('contextmenu', (e) => {
+                L.DomEvent.stopPropagation(e);
+                onRequestEditPinId(pin.id);
             });
 
             marker.on('dragend', (e) => {
@@ -91,7 +76,7 @@ export function usePinSync({
             });
         });
 
-        // redraw the blue road
+        // redraw road (po ponumerowanych)
         if (drawnRoadLayerRef.current) {
             drawnRoadLayerRef.current.remove();
         }
@@ -109,5 +94,5 @@ export function usePinSync({
                 weight: 5,
             }).addTo(map);
         }
-    }, [map, pins, updatePin, removePin]);
+    }, [map, pins, updatePin, removePin, onSelectPinId, onRequestEditPinId]);
 }

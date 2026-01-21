@@ -1,6 +1,16 @@
 import { Pin } from '../contexts/PinsContext';
 
-export function sendPinsToBackend(pins: Pin[]) {
+export type MetroUsageByPinNumber = Record<number, number[]>;
+
+export type SendPinsResponse = {
+    pins: unknown;
+    segments: unknown;
+    total_length_meters: number;
+    metro_usage?: MetroUsageByPinNumber;
+    error?: string;
+};
+
+export async function sendPinsToBackend(pins: Pin[]): Promise<SendPinsResponse> {
     const payload = pins
         .filter((p) => p.number !== undefined)
         .sort((a, b) => a.number! - b.number!)
@@ -11,19 +21,18 @@ export function sendPinsToBackend(pins: Pin[]) {
             lng: p.lng,
         }));
 
-    fetch('http://127.0.0.1:8000/api/pins/', {
+    const res = await fetch('http://127.0.0.1:8000/api/pins/', {
         // shouldnt be hardcoded but temporary for now
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({ pins: payload }),
-    })
-        .then((res) => res.json())
-        .then((data) => {
-            console.log('Backend response:', data);
-        })
-        .catch((err) => {
-            console.error('Failed to send pins:', err);
-        });
+    });
+
+    if (!res.ok) {
+        throw new Error(`Failed to send pins: ${res.status} ${res.statusText}`);
+    }
+
+    return res.json();
 }

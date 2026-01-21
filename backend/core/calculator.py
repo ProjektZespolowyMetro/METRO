@@ -110,7 +110,7 @@ def calculate_usage_from_population(pins, profile):
     """
     Oblicza potoki pasażerskie na podstawie ludności wokół pinezek.
     """
-    _, df_pop, traffic_profile, _, _ = DATA# sprawdzic
+    #_, df_pop, traffic_profile, _, _ = DATA# sprawdzic
 
     results = {}
 
