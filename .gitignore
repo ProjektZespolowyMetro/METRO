@@ -3,3 +3,4 @@ backend/.env
 frontend/node_modules
 backend/db.sqlite3
 **/__pycache__/
+node_modules/
