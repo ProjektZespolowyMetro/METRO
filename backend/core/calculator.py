@@ -3,9 +3,6 @@ import numpy as np
 import math
 import os
 from pathlib import Path
-from BusTramHandler import BusTramHandler
-from DataProvider import JsonFileProvider
-from SearchStrategy import BruteForceSearch
 from core.scripts.bus_tram_availability import calculate_bus_tram_for_pins
 
 # Próba importu funkcji liczącej ludność (zakładamy strukturę Django)

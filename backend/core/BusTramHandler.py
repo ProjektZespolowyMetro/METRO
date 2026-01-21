@@ -1,5 +1,5 @@
-from DataProvider import DataProviderStrategy
-from SearchStrategy import SearchStrategy
+from core.DataProvider import DataProviderStrategy  # Zmień z:  from DataProvider
+from core.SearchStrategy import SearchStrategy      # Zmień z: from SearchStrategy
 
 class BusTramHandler:
     def __init__(self, data_provider: DataProviderStrategy, search_engine: SearchStrategy):
