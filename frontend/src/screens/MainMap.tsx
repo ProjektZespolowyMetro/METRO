@@ -1,5 +1,7 @@
 import React, { useRef, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
+import MetroFinanceTable from '../components/MetroFinanceTable';
+import type { MaintenanceCosts } from '../services/SendPinsToApi';
 import SendPinsButton from '../components/SendPinsButton';
 import DeletePinsButton from '../components/DeletePinsButton';
 import { usePins } from '../contexts/PinsContext';
@@ -13,14 +15,13 @@ import {
 import PinOverlay from '../components/PinOverlay';
 
 export default function MainMap() {
+    const [isAddMode, setIsAddMode] = useState(true);
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
-
+    const [constructionCosts, setConstructionCosts] = useState<any | null>(null);
     const { pins, addPin, updatePin, removePin, clearPins } = usePins();
     const map = useMapInit(mapContainerRef);
-
-    const [metroUsage, setMetroUsage] = useState<MetroUsageByPinNumber | null>(
-        null
-    );
+    const [maintenanceCosts, setMaintenanceCosts] = useState<any>(null);
+    const [metroUsage, setMetroUsage] = useState<any>(null);
 
     const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
     const [forceEditSelectedPin, setForceEditSelectedPin] = useState(false);
@@ -35,6 +36,7 @@ export default function MainMap() {
         updatePin,
         removePin,
         selectedPinId, // <-- do wyróżnienia markera (patrz hooks/Pins.tsx)
+        isAddMode,
         onSelectPinId: (id) => {
             setSelectedPinId(id);
             setForceEditSelectedPin(false);
@@ -79,6 +81,8 @@ export default function MainMap() {
             setSendError(null);
 
             const data = await sendPinsToBackend(pins);
+            setMetroUsage((data as any).metro_usage ?? null);
+            setMaintenanceCosts(data.maintenance_costs ?? null);
             setMetroUsage(data.metro_usage ?? null);
         } catch (e) {
             setSendError(
@@ -153,7 +157,44 @@ export default function MainMap() {
                             <strong>Drag</strong>: przesuń pinezkę
                         </div>
                     </div>
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: 12,
+                            padding: '8px 10px',
+                            border: '1px solid #e5e7eb',
+                            borderRadius: 12,
+                            background: 'rgba(255,255,255,0.7)',
+                            marginBottom: 10,
+                        }}
+                    >
+                        <div style={{ fontSize: 12, color: '#111827', fontWeight: 600 }}>
+                            Tryb dodawania pinów
+                        </div>
 
+                        <button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setIsAddMode((v) => !v);
+                            }}
+                            style={{
+                                padding: '6px 10px',
+                                borderRadius: 10,
+                                border: '1px solid #e5e7eb',
+                                background: isAddMode ? '#16a34a' : '#f3f4f6',
+                                color: isAddMode ? 'white' : '#111827',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                minWidth: 56,
+                            }}
+                            title="Gdy OFF, kliknięcie mapy nie doda pinezki."
+                        >
+                            {isAddMode ? 'ON' : 'OFF'}
+                        </button>
+                    </div>
                     {/* Przyciski + komunikaty */}
                     <div style={{ display: 'grid', gap: 10 }}>
                         {sendError && (
@@ -220,6 +261,11 @@ export default function MainMap() {
                     }}
                 />
             )}
+            <MetroFinanceTable
+                maintenanceCosts={maintenanceCosts}
+                metroUsage={metroUsage}
+                ticketPriceUsd={2.5}
+            />
         </div>
     );
 }

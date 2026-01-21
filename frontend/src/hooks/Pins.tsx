@@ -9,7 +9,7 @@ type UsePinSyncProps = {
     addPin: (pin: Pin) => void;
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
-
+    isAddMode: boolean;
     selectedPinId: string | null;
     onSelectPinId: (id: string) => void;
     onRequestEditPinId: (id: string) => void;
@@ -21,6 +21,7 @@ export function usePinSync({
                                addPin,
                                updatePin,
                                removePin,
+                               isAddMode,
                                selectedPinId,
                                onSelectPinId,
                                onRequestEditPinId,
@@ -36,6 +37,7 @@ export function usePinSync({
         }
 
         const handleMapClick = (e: L.LeafletMouseEvent) => {
+            if (!isAddMode) return;
             const newPin: Pin = {
                 id: crypto.randomUUID(),
                 lat: e.latlng.lat,
@@ -49,8 +51,19 @@ export function usePinSync({
         return () => {
             map.off('click', handleMapClick);
         };
-    }, [map, addPin]);
+    }, [map, addPin, isAddMode]);
+    useEffect(() => {
+        if (!map) return;
 
+        const el = map.getContainer();
+        const prev = el.style.cursor;
+
+        el.style.cursor = isAddMode ? 'crosshair' : '';
+
+        return () => {
+            el.style.cursor = prev;
+        };
+    }, [map, isAddMode]);
     useEffect(() => {
         if (!map || !markersLayerRef.current) return;
 
