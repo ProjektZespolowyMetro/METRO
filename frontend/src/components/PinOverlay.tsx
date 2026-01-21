@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import L from 'leaflet';
 import { Pin } from '../contexts/PinsContext';
 import { MetroUsageByPinNumber } from '../services/SendPinsToApi';
+import { createPortal } from 'react-dom';
 
 type Props = {
     map: L.Map;
@@ -127,7 +128,7 @@ export default function PinOverlay({
         setEditMode(false);
     };
 
-    return (
+    return createPortal(
         <div
             style={{
                 position: 'absolute',
@@ -523,6 +524,7 @@ export default function PinOverlay({
                     )}
                 </div>
             )}
-        </div>
+        </div>,
+    map.getContainer()
     );
 }

@@ -10,6 +10,7 @@ type UsePinSyncProps = {
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
 
+    selectedPinId: string | null;
     onSelectPinId: (id: string) => void;
     onRequestEditPinId: (id: string) => void;
 };
@@ -20,6 +21,7 @@ export function usePinSync({
                                addPin,
                                updatePin,
                                removePin,
+                               selectedPinId,
                                onSelectPinId,
                                onRequestEditPinId,
                            }: UsePinSyncProps) {
@@ -55,9 +57,12 @@ export function usePinSync({
         markersLayerRef.current.clearLayers();
 
         pins.forEach((pin) => {
+            const isSelected = pin.id === selectedPinId;
+
             const marker = L.marker([pin.lat, pin.lng], {
-                icon: createPinIcon(pin.number),
+                icon: createPinIcon(pin.number, isSelected),
                 draggable: true,
+                zIndexOffset: isSelected ? 1000 : 0,
             }).addTo(markersLayerRef.current!);
 
             marker.on('click', (e) => {
@@ -76,7 +81,6 @@ export function usePinSync({
             });
         });
 
-        // redraw road (po ponumerowanych)
         if (drawnRoadLayerRef.current) {
             drawnRoadLayerRef.current.remove();
         }
@@ -94,5 +98,13 @@ export function usePinSync({
                 weight: 5,
             }).addTo(map);
         }
-    }, [map, pins, updatePin, removePin, onSelectPinId, onRequestEditPinId]);
+    }, [
+        map,
+        pins,
+        updatePin,
+        removePin,
+        selectedPinId,
+        onSelectPinId,
+        onRequestEditPinId,
+    ]);
 }

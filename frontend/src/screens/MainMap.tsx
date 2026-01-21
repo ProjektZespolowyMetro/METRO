@@ -5,7 +5,11 @@ import DeletePinsButton from '../components/DeletePinsButton';
 import { usePins } from '../contexts/PinsContext';
 import { useMapInit } from '../hooks/InitMap';
 import { usePinSync } from '../hooks/Pins';
-import { sendPinsToBackend, MetroUsageByPinNumber } from '../services/SendPinsToApi';
+import L from 'leaflet';
+import {
+    sendPinsToBackend,
+    MetroUsageByPinNumber,
+} from '../services/SendPinsToApi';
 import PinOverlay from '../components/PinOverlay';
 
 export default function MainMap() {
@@ -14,12 +18,15 @@ export default function MainMap() {
     const { pins, addPin, updatePin, removePin, clearPins } = usePins();
     const map = useMapInit(mapContainerRef);
 
-    const [metroUsage, setMetroUsage] = useState<MetroUsageByPinNumber | null>(null);
+    const [metroUsage, setMetroUsage] = useState<MetroUsageByPinNumber | null>(
+        null
+    );
 
     const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
     const [forceEditSelectedPin, setForceEditSelectedPin] = useState(false);
 
     const [sendError, setSendError] = useState<string | null>(null);
+    const [isSending, setIsSending] = useState(false);
 
     usePinSync({
         map,
@@ -27,6 +34,7 @@ export default function MainMap() {
         addPin,
         updatePin,
         removePin,
+        selectedPinId, // <-- do wyróżnienia markera (patrz hooks/Pins.tsx)
         onSelectPinId: (id) => {
             setSelectedPinId(id);
             setForceEditSelectedPin(false);
@@ -41,79 +49,161 @@ export default function MainMap() {
 
     const selectedPin = pins.find((p) => p.id === selectedPinId) ?? null;
 
+    const handleSendPins = async () => {
+        if (isSending) return;
+
+        // blokada: każdy pin musi mieć numer
+        const firstMissing = pins.find((p) => p.number === undefined);
+        if (firstMissing) {
+            // 1) przeskok widoku do pina
+            if (map) {
+                const target = L.latLng(firstMissing.lat, firstMissing.lng);
+
+                // flyTo jest "ładniejsze" (animacja). setView jest natychmiastowe.
+                const nextZoom = Math.max(map.getZoom(), 16); // nie oddalaj, tylko ewentualnie przybliż
+                map.flyTo(target, nextZoom, { animate: true, duration: 0.6 });
+            }
+
+            // 2) wybór + wymuszenie edycji
+            setSelectedPinId(firstMissing.id);
+            setForceEditSelectedPin(true);
+
+            setSendError(
+                'Nadaj numer każdej pinezce przed wysłaniem (PPM lub „Edytuj” w dymku).'
+            );
+            return;
+        }
+
+        try {
+            setIsSending(true);
+            setSendError(null);
+
+            const data = await sendPinsToBackend(pins);
+            setMetroUsage(data.metro_usage ?? null);
+        } catch (e) {
+            setSendError(
+                e instanceof Error ? e.message : 'Nie udało się wysłać pinów.'
+            );
+        } finally {
+            setIsSending(false);
+        }
+    };
+
     return (
         <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
+            {/* PANEL UI */}
             <div
                 style={{
                     position: 'absolute',
-                    top: '0px',
-                    right: '10px',
+                    top: 12,
+                    right: 12,
                     zIndex: 1000,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    alignItems: 'flex-end',
                     pointerEvents: 'none',
                 }}
             >
-                <div style={{ pointerEvents: 'auto', marginBottom: '50px' }}>
-                    <SendPinsButton
-                        onClick={async () => {
-                            // blokada: każdy pin musi mieć numer
-                            const firstMissing = pins.find((p) => p.number === undefined);
-                            if (firstMissing) {
-                                setSelectedPinId(firstMissing.id);
-                                setForceEditSelectedPin(true);
-                                setSendError('Nadaj numer każdej pinezce przed wysłaniem (PPM lub „Edytuj” w dymku).');
-                                return;
-                            }
-
-                            try {
-                                const data = await sendPinsToBackend(pins);
-                                setMetroUsage(data.metro_usage ?? null);
-                                setSendError(null);
-                            } catch (e) {
-                                setSendError(
-                                    e instanceof Error ? e.message : 'Nie udało się wysłać pinów.'
-                                );
-                            }
+                <div
+                    style={{
+                        pointerEvents: 'auto',
+                        width: 340,
+                        background: 'rgba(255,255,255,0.92)',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: 14,
+                        padding: 12,
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.12)',
+                        backdropFilter: 'blur(6px)',
+                    }}
+                >
+                    <div
+                        style={{
+                            display: 'flex',
+                            alignItems: 'baseline',
+                            justifyContent: 'space-between',
+                            marginBottom: 8,
                         }}
-                    />
-                    {sendError && (
+                    >
                         <div
                             style={{
-                                position: 'absolute',
-                                top: 'calc(100% + 6px)',
-                                right: 0,
-                                width: 320,
-                                background: 'rgba(255,255,255,0.92)',
-                                border: '1px solid #fecaca',
-                                color: '#991b1b',
-                                padding: '8px 10px',
-                                borderRadius: 10,
-                                fontSize: 12,
-                                boxShadow: '0 6px 18px rgba(0,0,0,0.12)',
+                                fontSize: 14,
+                                fontWeight: 700,
+                                color: '#111827',
                             }}
                         >
-                            {sendError}
+                            METRO
                         </div>
-                    )}
-                </div>
+                        <div style={{ fontSize: 11, color: '#6b7280' }}>
+                            planner
+                        </div>
+                    </div>
 
-                <div style={{ pointerEvents: 'auto' }}>
-                    <DeletePinsButton
-                        onClick={() => {
-                            clearPins();
-                            setSelectedPinId(null);
-                            setForceEditSelectedPin(false);
-                            setMetroUsage(null);
-                            setSendError(null);
+                    <div
+                        style={{
+                            fontSize: 12,
+                            color: '#374151',
+                            lineHeight: 1.35,
+                            marginBottom: 10,
                         }}
-                    />
+                    >
+                        <div>
+                            <strong>LPM</strong>: wybierz pinezkę
+                        </div>
+                        <div>
+                            <strong>PPM</strong>: edytuj numer/nazwę
+                        </div>
+                        <div>
+                            <strong>Drag</strong>: przesuń pinezkę
+                        </div>
+                    </div>
+
+                    {/* Przyciski + komunikaty */}
+                    <div style={{ display: 'grid', gap: 10 }}>
+                        {sendError && (
+                            <div
+                                style={{
+                                    background: 'rgba(255,255,255,0.95)',
+                                    border: '1px solid #fecaca',
+                                    color: '#991b1b',
+                                    padding: '10px 12px',
+                                    borderRadius: 12,
+                                    fontSize: 12,
+                                    boxShadow: '0 6px 18px rgba(0,0,0,0.08)',
+                                    lineHeight: 1.35,
+                                    overflowWrap: 'anywhere',
+                                    textAlign: 'center',
+                                }}
+                            >
+                                {sendError}
+                            </div>
+                        )}
+
+                        <div style={{ display: 'grid', gap: 10, justifyItems: 'center' }}>
+                            <DeletePinsButton
+                                onClick={() => {
+                                    clearPins();
+                                    setSelectedPinId(null);
+                                    setForceEditSelectedPin(false);
+                                    setMetroUsage(null);
+                                    setSendError(null);
+                                }}
+                            />
+
+                            <div style={{ opacity: isSending ? 0.75 : 1, pointerEvents: isSending ? 'none' : 'auto' }}>
+                                <SendPinsButton onClick={handleSendPins} />
+                            </div>
+
+                            {isSending && (
+                                <div style={{ fontSize: 12, color: '#1f2937' }}>
+                                    Liczenie… czekaj
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
 
+            {/* MAPA */}
             <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
 
+            {/* OVERLAY wybranego pina */}
             {map && selectedPin && (
                 <PinOverlay
                     map={map}
