@@ -13,7 +13,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
             20
         );
 
-        // openstreetmap tiles, generates background
+        // OpenStreetMap tiles, generates background
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© OpenStreetMap contributors',
         }).addTo(mapInstance);
@@ -38,7 +38,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
                 .then((geojson) => {
                     if (!mapInstance) return;
                     L.geoJSON(geojson, {
-                        style: { color: 'red', weight: 4 },
+                        style: { color: 'blue', weight: 1.5 },
                         pane: 'streetsPane', // Force into the background pane
                     }).addTo(mapInstance);
                 })

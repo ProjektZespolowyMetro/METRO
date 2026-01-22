@@ -1,0 +1,50 @@
+/* Bazowy wygląd */
+.pin {
+    position: relative;
+    border-radius: 999px;
+    box-sizing: border-box;
+}
+
+/* Pin z numerem */
+.pin--numbered {
+    width: 30px;
+    height: 30px;
+    background: #2563eb;
+    color: white;
+    border: 2px solid white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+.pin__label {
+    font-size: 13px;
+    line-height: 1;
+}
+
+/* Mała kropka (pin bez numeru) */
+.pin--dot {
+    width: 14px;
+    height: 14px;
+    background: deeppink;
+    border: 1px solid white;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
+}
+
+/* Wyróżnienie wybranego pina */
+.pin--selected::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: calc(100% + 14px);
+    height: calc(100% + 14px);
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    background: rgba(37, 99, 235, 0.18);
+    border: 2px solid rgba(37, 99, 235, 0.8);
+    box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.65);
+    pointer-events: none;
+}

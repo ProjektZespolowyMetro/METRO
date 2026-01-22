@@ -1,25 +1,35 @@
 import pandas as pd
 import numpy as np
-from pathlib import Path
+import math
 import os
+from pathlib import Path
+from core.scripts.bus_tram_availability import calculate_bus_tram_for_pins
+
+# Próba importu funkcji liczącej ludność (zakładamy strukturę Django)
+try:
+    from core.scripts.area_population import calculate_population_for_pins
+except ImportError:
+    # Fallback dla testów lokalnych poza Django
+    try:
+        from area_population import calculate_population_for_pins
+    except ImportError:
+        print("UWAGA: Nie można zaimportować area_population. Obliczenia ludności mogą nie działać.")
+        calculate_population_for_pins = None
 
 
-# ---------------------------------------------------------
-# FUNKCJA POMOCNICZA: SZUKANIE PLIKÓW
-# ---------------------------------------------------------
+
+# KONFIGURACJA I PLIKI
+
+
 def get_file_path(filename):
-    """
-    Szuka pliku w bieżącym katalogu lub w folderze 'data' idąc w górę.
-    """
-    # 1. Sprawdź katalog bieżący (tam gdzie skrypt)
+    """Szuka pliku w katalogu bieżącym lub w folderze data w górę."""
     current_dir = Path(__file__).resolve().parent
-    file_path = current_dir / filename
-    if file_path.exists():
-        return str(file_path)
 
-    # 2. Szukaj w górę w folderze 'data'
+
+    if (current_dir / filename).exists():
+        return str(current_dir / filename)
     search_path = current_dir
-    for _ in range(5):
+    for _ in range(4):
         candidate = search_path / 'data' / filename
         if candidate.exists():
             return str(candidate)
@@ -27,246 +37,220 @@ def get_file_path(filename):
             break
         search_path = search_path.parent
 
-    # 3. Fallback - zwróć samą nazwę (może zadziała jeśli CWD jest ustawione)
-    print(f"OSTRZEŻENIE: Nie znaleziono pliku {filename}, próbuję ścieżki względnej.")
+    # ścieżka względna
     return filename
 
 
-# ---------------------------------------------------------
-# KROK 1: WCZYTANIE I PRZYGOTOWANIE DANYCH
-# ---------------------------------------------------------
-
-def load_and_prep_data():
-    """
-    Wczytuje pliki CSV i przygotowuje struktury danych.
-    Zwraca tuple 5-elementową:
-    (df_stations, df_pop, traffic_profile, metro_dist_map, road_time_map)
-    """
-
-    # Definicja plików z użyciem funkcji szukającej
-    files = {
-        'pop': get_file_path('ludnosc_wokolo_punktow.csv'),
-        'traffic_profile': get_file_path('godzinowe_natezenie_ruchu.csv'),
-        'metro_lines': get_file_path('line_distance.csv'),
-        'road_data': get_file_path('roads_distance_speed_output.csv'),
-        'stations_traffic': get_file_path('współrzędne 26 pkt metra.csv')
-    }
+def load_reference_data():
+    """Wczytuje dane referencyjne (profil ruchu i punkty pomiarowe)."""
+    traffic_file = get_file_path('współrzędne 26 pkt metra.csv')
+    profile_file = get_file_path('godzinowe_natezenie_ruchu.csv')
 
     try:
-        df_pop = pd.read_csv(files['pop'])
-        df_profile = pd.read_csv(files['traffic_profile'])
-        df_lines = pd.read_csv(files['metro_lines'])
-        df_roads = pd.read_csv(files['road_data'])
-        df_stations = pd.read_csv(files['stations_traffic'])
+        # Wczytanie punktów pomiarowych (do szukania najbliższego sąsiada)
+        df_traffic = pd.read_csv(traffic_file)
+
+        # Wczytanie profilu godzinowego
+        df_profile = pd.read_csv(profile_file)
+        profile_row = df_profile.iloc[0].values
+
+        # Konwersja profilu (zamiana przecinków na kropki jeśli są stringami)
+        traffic_profile = []
+        for val in profile_row:
+            if isinstance(val, str):
+                traffic_profile.append(float(val.replace(',', '.')))
+            else:
+                traffic_profile.append(float(val))
+
+        traffic_profile = np.array(traffic_profile)
+        if traffic_profile.sum() > 0:
+            traffic_profile = traffic_profile / traffic_profile.sum()  # Normalizacja
+
+        return df_traffic, traffic_profile
+
     except Exception as e:
-        print(f"Błąd krytyczny podczas wczytywania: {e}")
+        print(f"Błąd ładowania danych referencyjnych: {e}")
+        return None, None
+
+
+# Ładujemy dane raz przy starcie modułu
+REF_TRAFFIC_POINTS, TRAFFIC_PROFILE = load_reference_data()
+
+
+
+
+def haversine_distance(lat1, lon1, lat2, lon2):
+    """Zwraca odległość w kilometrach."""
+    R = 6371  # Promień Ziemi w km
+    d_lat = math.radians(lat2 - lat1)
+    d_lon = math.radians(lon2 - lon1)
+    a = (math.sin(d_lat / 2) * math.sin(d_lat / 2) +
+         math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) *
+         math.sin(d_lon / 2) * math.sin(d_lon / 2))
+    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
+    return R * c
+
+
+def find_nearest_traffic_point(lat, lng, df_points):
+    """Znajduje najbliższy punkt pomiarowy z pliku CSV."""
+    if df_points is None or df_points.empty:
         return None
 
-    # --- Stacje ---
-    col_map = {str(i): i for i in range(24)}
-    df_stations.rename(columns=col_map, inplace=True)
-    df_stations['ID'] = pd.to_numeric(df_stations['ID'], errors='coerce').fillna(0).astype(int)
-    df_stations.set_index('ID', inplace=True)
-
-    # Mapa Nazwa -> ID
-    name_to_id = df_stations.reset_index().set_index('Nazwa')['ID'].to_dict()
-
-    # --- Ludność ---
-    df_pop['ID'] = df_pop['nazwa'].map(name_to_id)
-    df_pop = df_pop.dropna(subset=['ID'])
-    df_pop['ID'] = df_pop['ID'].astype(int)
-    df_pop.set_index('ID', inplace=True)
-
-    # --- Profil Ruchu ---
-    traffic_profile = df_profile.iloc[0].values
-    if isinstance(traffic_profile[0], str):
-        traffic_profile = [float(x.replace(',', '.')) for x in traffic_profile]
-    traffic_profile = np.array(traffic_profile)
-    if traffic_profile.sum() > 0:
-        traffic_profile = traffic_profile / traffic_profile.sum()
-
-    # --- Mapa Odległości METRA ---
-    metro_dist_map = {}
-    for _, row in df_lines.iterrows():
-        n1, n2 = row['Location1'], row['Location2']
-        dist = row['Distance_km']
-        id1 = name_to_id.get(n1)
-        id2 = name_to_id.get(n2)
-        if id1 and id2:
-            metro_dist_map[(id1, id2)] = dist
-            metro_dist_map[(id2, id1)] = dist
-
-    # --- Mapa Czasu AUTA ---
-    road_time_map = {}
-    for _, row in df_roads.iterrows():
-        n1, n2 = row['Location1'], row['Location2']
-        time_str = str(row['Travel_Time_hr'])
-        try:
-            parts = time_str.split(':')
-            if len(parts) == 3:
-                h, m, s = int(parts[0]), int(parts[1]), float(parts[2])
-                total_minutes = (h * 60) + m + (s / 60)
-            else:
-                total_minutes = 5.0
-        except:
-            total_minutes = 5.0
-
-        id1 = name_to_id.get(n1)
-        id2 = name_to_id.get(n2)
-        if id1 and id2:
-            road_time_map[(id1, id2)] = total_minutes
-            road_time_map[(id2, id1)] = total_minutes
-
-    print("Dane załadowane pomyślnie.")
-    print(f"- Stacje: {len(df_stations)}")
-    print(f"- Połączenia metra: {len(metro_dist_map)}")
-    print(f"- Połączenia drogowe: {len(road_time_map)}")
-
-    return df_stations, df_pop, traffic_profile, metro_dist_map, road_time_map
-
-
-# Ładowanie danych globalnych
-DATA = load_and_prep_data()
+    # Prosta odległość euklidesowa wystarczy do znalezienia najbliższego punktu
+    # (dla małych odległości błąd względem Haversine jest pomijalny przy sortowaniu)
+    distances = ((df_points['N'] - lat) ** 2 + (df_points['E'] - lng) ** 2)
+    nearest_idx = distances.idxmin()
+    return df_points.iloc[nearest_idx]
 
 
 # ---------------------------------------------------------
-# KROK 2: FUNKCJA 1 - UŻYCIE NA PODSTAWIE LUDNOŚCI
+# 1. OBLICZENIA Z LUDNOŚCI (Area Population)
 # ---------------------------------------------------------
 
-def calculate_population_usage(station_ids, overrides=None):
+def calculate_usage_from_population(pins, profile):
     """
-    Oblicza liczbę pasażerów generowaną przez okoliczną ludność.
+    Oblicza potoki pasażerskie na podstawie ludności wokół pinezek.
     """
-    # TU BYŁ BŁĄD: Poprawione rozpakowanie 5 elementów (dodano _, _)
-    _, df_pop, traffic_profile, _, _ = DATA
+    # _, df_pop, traffic_profile, _, _ = DATA# sprawdzic
 
     results = {}
 
+    # Stałe z oryginalnego skryptu
     W_300 = 1.00
     W_500 = 0.80
     W_800 = 0.45
     MOBILITY_RATE = 1.7
     PUT_SHARE = 0.58
 
-    for sid in station_ids:
-        hourly_pax = [0] * 24
+    # Wywołujemy skrypt area_population, aby uzupełnić dane o ludności
+    # (chyba że piny już mają te dane - wtedy to tylko aktualizacja)
+    if calculate_population_for_pins:
+        pop_data = calculate_population_for_pins(pins)
+    else:
+        pop_data = {}
 
-        if sid in df_pop.index:
-            row = df_pop.loc[sid]
+    for pin in pins:
+        pin_num = pin.get('number')
 
-            # Konkurencja transportowa
-            try:
-                has_bus = int(row.get('autobus', 0))
-                has_tram = int(row.get('tramwaj', 0))
-            except:
-                has_bus = 0;
-                has_tram = 0
+        # Pobieramy dane o ludności (z wyniku area_population lub bezpośrednio z pina)
+        # Jeśli calculate_population_for_pins zadziałało, dane są w pop_data
+        p_info = pop_data.get(pin_num, {})
 
-            if has_bus == 1 and has_tram == 1:
-                metro_choice = 0.25
-            elif has_bus == 1 and has_tram == 0:
-                metro_choice = 0.35
-            elif has_bus == 0 and has_tram == 1:
-                metro_choice = 0.30
-            else:
-                metro_choice = 0.60
+        # Fallback: sprawdź czy pin już miał dane (np. przesłane z frontendu)
+        if not p_info:
+            p_info = {
+                'pop_300m': pin.get('pop_300m', 0),
+                'pop_500m': pin.get('pop_500m', 0),
+                'pop_800m': pin.get('pop_800m', 0)
+            }
 
-            if overrides and sid in overrides:
-                metro_choice = overrides[sid]
+        p300 = float(p_info.get('pop_300m', 0))
+        p500 = float(p_info.get('pop_500m', 0))
+        p800 = float(p_info.get('pop_800m', 0))
 
-            # Populacja
-            def clean_val(val):
-                if pd.isnull(val): return 0.0
-                if isinstance(val, str):
-                    return float(val.replace(' ', '').replace(',', '.'))
-                return float(val)
+        # Obliczanie pierścieni
+        ring_0_300 = p300
+        ring_300_500 = max(0, p500 - p300)
+        ring_500_800 = max(0, p800 - p500)
 
-            p300 = clean_val(row['pop_300m'])
-            p500 = clean_val(row['pop_500m'])
-            p800 = clean_val(row['pop_800m'])
+        eff_pop = (ring_0_300 * W_300) + (ring_300_500 * W_500) + (ring_500_800 * W_800)
 
-            ring_0_300 = p300
-            ring_300_500 = max(0, p500 - p300)
-            ring_500_800 = max(0, p800 - p500)
+        # Stały wybór metra (można rozbudować o logikę tramwaj/autobus jak wcześniej)
+        # Dla uproszczenia przy dynamicznych punktach przyjmujemy średnią 0.45
+        # lub staramy się zgadnąć na podstawie danych z pinu
+        # dogadać na nastepnym spodkaniu
+        # Pobierz informacje o dostępności przystanków
+        bus_tram_info = calculate_bus_tram_for_pins(pins)
+        metro_choice = bus_tram_info[pin_num]['metro_choice']
 
-            eff_pop = (ring_0_300 * W_300) + (ring_300_500 * W_500) + (ring_500_800 * W_800)
+        daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
 
-            daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
-            hourly_pax = [int(daily_demand * p) for p in traffic_profile]
+        # Rozkład godzinowy
+        if profile is not None:
+            hourly_pax = [int(daily_demand * p) for p in profile]
+        else:
+            hourly_pax = [0] * 24
 
-        results[sid] = hourly_pax
+        results[pin_num] = hourly_pax
 
     return results
 
 
 # ---------------------------------------------------------
-# KROK 3: FUNKCJA 2 - PRZESIADKA Z AUT (MODAL SPLIT)
+# 2. OBLICZENIA Z PRZESIADKI (Modal Shift)
 # ---------------------------------------------------------
 
-def calculate_modal_shift(station_ids):
-    # Poprawione rozpakowanie 5 elementów
-    df_stations, _, _, metro_dist_map, road_time_map = DATA
+def calculate_usage_from_modal_shift(pins, df_traffic_points):
+    """
+    Oblicza przesiadkę z samochodów, znajdując najbliższy punkt pomiarowy dla każdej pinezki.
+    """
     results = {}
 
+    # Stałe modelu
     OCCUPANCY = 1.3
     AUTO_SHARE_BASELINE = 0.44
     BETA_TIME = -0.04
     METRO_BONUS = 0.5
-    METRO_SPEED = 35.0
-    METRO_ACCESS = 5.0
+    METRO_SPEED = 35.0  # km/h
+    METRO_ACCESS = 5.0  # min
 
-    def get_segment_data(curr_id, idx, id_list):
-        m_dist = 2.0  # Domyślny dystans km
-        a_time = 5.0  # Domyślny czas auta min
+    # Sortujemy piny po numerze, żeby policzyć odległości między stacjami
+    sorted_pins = sorted(pins, key=lambda x: x.get('number', 0))
 
-        neighbor_id = None
-        if idx < len(id_list) - 1:
-            neighbor_id = id_list[idx + 1]
-        elif idx > 0:
-            neighbor_id = id_list[idx - 1]
-
-        if neighbor_id:
-            key = (curr_id, neighbor_id)
-            if key in metro_dist_map:
-                m_dist = metro_dist_map[key]
-            if key in road_time_map:
-                a_time = road_time_map[key]
-
-        return m_dist, a_time
-
-    for idx, sid in enumerate(station_ids):
+    for i, pin in enumerate(sorted_pins):
+        pin_num = pin.get('number')
         hourly_shift = [0] * 24
 
-        if sid in df_stations.index:
-            row = df_stations.loc[sid]
+        # 1. Znajdź najbliższy punkt z danymi o ruchu
+        traffic_data = find_nearest_traffic_point(pin['lat'], pin['lng'], df_traffic_points)
 
-            # Pobranie danych geograficznych
-            metro_km, auto_free_min = get_segment_data(sid, idx, station_ids)
-
-            # Przepustowość
+        if traffic_data is not None:
+            # Pobierz przepustowość
             try:
-                cap_val = str(row['przepustowosc']).replace(' ', '')
-                capacity = float(cap_val)
+                cap_str = str(traffic_data.get('przepustowość', 3000))
+                capacity = float(cap_str.replace(' ', ''))
             except:
                 capacity = 3000.0
 
-            # Użyteczność Metra (stała)
-            t_metro = (metro_km / METRO_SPEED) * 60 + METRO_ACCESS
+            # 2. Oblicz parametry podróży (Metro vs Auto)
+            # Szukamy odległości do następnej stacji (lub poprzedniej dla ostatniej)
+            # Żeby oszacować czas podróży "do sąsiada"
+            dist_km = 2.0  # Domyślnie
+
+            next_pin = sorted_pins[i + 1] if i < len(sorted_pins) - 1 else None
+            prev_pin = sorted_pins[i - 1] if i > 0 else None
+
+            neighbor = next_pin if next_pin else prev_pin
+
+            if neighbor:
+                dist_km = haversine_distance(pin['lat'], pin['lng'], neighbor['lat'], neighbor['lng'])
+
+            # Czas metrem
+            t_metro = (dist_km / METRO_SPEED) * 60 + METRO_ACCESS
             u_metro = (BETA_TIME * t_metro) + METRO_BONUS
 
+            # Czas autem (Free flow) - estymacja na podstawie odległości i średniej prędkości auta w mieście (np. 30km/h)
+            auto_free_min = (dist_km / 30.0) * 60
+
+            # 3. Pętla godzinowa
             for h in range(24):
+                col_name = str(h)
+                if col_name not in traffic_data:
+                    continue
+
                 try:
-                    vol_car = float(row[h])
+                    vol_car = float(traffic_data[col_name])
                 except:
                     vol_car = 0
 
                 if vol_car <= 0 or capacity <= 0:
                     continue
 
+                # Model Logitowy & BPR
                 people_in_cars_now = vol_car * OCCUPANCY
-                total_travelers_pool = people_in_cars_now / AUTO_SHARE_BASELINE
+                total_travelers = people_in_cars_now / AUTO_SHARE_BASELINE
 
-                # Czas auta w korku (BPR)
+                # Funkcja BPR (czas w korku)
                 saturation = vol_car / capacity
                 t_auto_cur = auto_free_min * (1 + 0.5 * (saturation ** 4))
 
@@ -274,97 +258,107 @@ def calculate_modal_shift(station_ids):
 
                 exp_auto = np.exp(u_auto)
                 exp_metro = np.exp(u_metro)
+
+                # Prawdopodobieństwo wyboru auta po wprowadzeniu metra
                 prob_auto_new = exp_auto / (exp_auto + exp_metro)
 
-                people_in_cars_new = total_travelers_pool * prob_auto_new
-                shift = max(0, people_in_cars_now - people_in_cars_new)
+                people_in_cars_new = total_travelers * prob_auto_new
 
+                # Różnica to pasażerowie, którzy przesiedli się do metra
+                shift = max(0, people_in_cars_now - people_in_cars_new)
                 hourly_shift[h] = int(shift)
 
-        results[sid] = hourly_shift
+        results[pin_num] = hourly_shift
 
     return results
 
 
-# ---------------------------------------------------------
-# KROK 4: GŁÓWNA FUNKCJA SUMUJĄCA i WYPISUJĄCA
-# ---------------------------------------------------------
 
-def calculate_total_metro_usage(station_ids):
-    if DATA is None:
-        return "Błąd danych - sprawdź pliki CSV"
+# GŁÓWNA FUNKCJA (API)
 
-    usage_from_pop = calculate_population_usage(station_ids)
-    usage_from_shift = calculate_modal_shift(station_ids)
 
+def calculate_total_metro_usage(pins):
+    """
+    Główna funkcja wywoływana z views.py.
+    """
+    if not pins:
+        return {}
+
+    print(f"\n--- ROZPOCZYNAM OBLICZENIA DLA {len(pins)} PUNKTÓW ---")
+
+    # 1. Obliczenia z ludności
+    usage_pop = calculate_usage_from_population(pins, TRAFFIC_PROFILE)
+
+    # 2. Obliczenia z przesiadki
+    usage_shift = calculate_usage_from_modal_shift(pins, REF_TRAFFIC_POINTS)
+
+    # 3. Sumowanie wyników
     total_usage = {}
-    for sid in station_ids:
-        p_list = usage_from_pop.get(sid, [0] * 24)
-        s_list = usage_from_shift.get(sid, [0] * 24)
-        total_list = [p + s for p, s in zip(p_list, s_list)]
-        total_usage[sid] = total_list
+
+    for pin in pins:
+        num = pin.get('number')
+
+        pop_arr = usage_pop.get(num, [0] * 24)
+        shift_arr = usage_shift.get(num, [0] * 24)
+
+        # Suma wektorów
+        total_arr = [int(p + s) for p, s in zip(pop_arr, shift_arr)]  # rzutowanie na int dla czytelności
+        total_usage[num] = total_arr
+
+
+    try:
+        print_tabular_results(total_usage, pins)
+    except Exception as e:
+        print(f"Błąd podczas wypisywania tabeli: {e}")
 
     return total_usage
 
 
-def print_tabular_results(results_dict):
-    if not isinstance(results_dict, dict):
-        print(f"Wynik nie jest słownikiem: {results_dict}")
+def print_tabular_results(results_dict, pins):
+    """
+    Wypisuje ładną tabelę wyników do konsoli serwera.
+    Mapuje numer pinu na jego nazwę.
+    """
+    if not results_dict:
+        print("Brak wyników do wyświetlenia.")
         return
 
+    # Tworzymy DataFrame z wyników
     df_results = pd.DataFrame.from_dict(results_dict, orient='index')
+
+    # Nazywamy kolumny godzinami
     df_results.columns = [f"{h}:00" for h in range(24)]
 
-    try:
-        df_stations_info = DATA[0]
-        id_to_name = df_stations_info['Nazwa'].to_dict()
-        df_results.index = df_results.index.map(lambda x: f"{x}: {id_to_name.get(x, 'Stacja ' + str(x))}")
-    except:
-        pass
+    # Tworzymy mapę: Numer Pinu -> Nazwa Pinu (z danych wejściowych)
+    pin_names = {p.get('number'): p.get('name', f"Pin {p.get('number')}") for p in pins}
 
-    print("\n" + "=" * 80)
-    print("TABELA WYNIKOWA: Pasażerowie na godzinę")
-    print("=" * 80)
+    # Zmieniamy indeks tabeli na czytelny
+    df_results.index = df_results.index.map(lambda x: f"{x}: {pin_names.get(x, 'Unknown')}")
+
+    # Sortujemy po numerze (indeksie)
+    df_results.sort_index(inplace=True)
+
+    # Wypisujemy
+    print("\n" + "=" * 100)
+    print(f"TABELA WYNIKOWA: Pasażerowie na godzinę ({len(results_dict)} stacji)")
+    print("=" * 100)
+
+    # Ustawiamy opcje pandas, żeby nie ucinało kolumn w konsoli
     with pd.option_context('display.max_rows', None, 'display.max_columns', None, 'display.width', 1000):
         print(df_results)
-    print("=" * 80 + "\n")
 
-
+    print("=" * 100 + "\n")
+# Test lokalny
 if __name__ == "__main__":
-    # Test
-    test_ids = [1, 3, 4, 5, 8, 11, 15, 17, 18, 26]
-    print(f"Obliczam dla ID: {test_ids}...")
+    # Symulacja danych wejściowych
+    test_pins = [
+        {'number': 1, 'lat': 50.0647, 'lng': 19.9450, 'name': 'Centrum'},  # Okolice Rynku
+        {'number': 2, 'lat': 50.0810, 'lng': 19.8960, 'name': 'Bronowice'}  # Bronowice
+    ]
 
-    wyniki = calculate_total_metro_usage(test_ids)
+    print("Testowanie kalkulatora...")
+    wyniki = calculate_total_metro_usage(test_pins)
 
-    if isinstance(wyniki, str):
-        print(f"BŁĄD: {wyniki}")
-    else:
-        print_tabular_results(wyniki)
-if __name__ == "__main__":
-    # 1. Lista ID do sprawdzenia
-    test_ids = [1, 3, 4, 5, 8, 11, 15, 17, 18, 26]
-
-    print(f"Obliczam dla ID: {test_ids}...")
-
-    # 2. Obliczenia
-    wyniki = calculate_total_metro_usage(test_ids)
-
-    # ZABEZPIECZENIE: Sprawdź, czy wyniki to słownik, czy komunikat błędu
-    if isinstance(wyniki, str):
-        print(f"BŁĄD KRYTYCZNY: {wyniki}")
-    else:
-        # 3. WYPISANIE TABELI 2D
-        print_tabular_results(wyniki)
-
-    print(f"Obliczam dla ID: {test_ids}...")
-
-    # 2. Obliczenia
-    wyniki = calculate_total_metro_usage(test_ids)
-
-    # 3. WYPISANIE TABELI 2D
-    print_tabular_results(wyniki)
-
-    # 4. (Opcjonalnie) Jeśli potrzebujesz tej tabeli jako "surowej" listy list w Pythonie:
-    raw_2d_list = [dane_stacji for dane_stacji in wyniki.values()]
-    # print("Surowa lista list:", raw_2d_list)
+    for k, v in wyniki.items():
+        print(f"Stacja {k}: Suma dobowa = {sum(v)}")
+        print(f"   Godziny szczytu (7-9): {v[7:10]}")
