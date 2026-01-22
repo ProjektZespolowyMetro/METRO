@@ -47,7 +47,13 @@ export default function MetroFinanceTable({
         return { daily, monthly: daily * 30, yearly: daily * 365 };
     }, [totalDailyRides, ticketPriceUsd]);
 
-    if (!maintenanceCosts) return null;
+    if (!maintenanceCosts) {
+        return (
+            <div style={{ marginTop: 12, fontSize: 12, color: '#6b7280' }}>
+                Kliknij „Send pins”, żeby zobaczyć koszty i przychody.
+            </div>
+        );
+    }
 
     const profit = revenue
         ? {
@@ -57,13 +63,24 @@ export default function MetroFinanceTable({
         }
         : null;
 
-    const row: React.CSSProperties = {
+    // Panel jest wąski (340px), więc defaultowo robimy układ "narrow".
+    // Jeśli kiedyś użyjesz tego komponentu poza panelem, możesz dodać props `variant`.
+    const isNarrow = true;
+
+    const headerRow: React.CSSProperties = {
         display: 'grid',
-        gridTemplateColumns: '1.2fr 1fr 1fr 1fr',
+        gridTemplateColumns: '1fr 1fr 1fr',
         gap: 10,
-        padding: '8px 0',
-        borderBottom: '1px solid #e5e7eb',
-        fontSize: 12,
+        fontSize: 11,
+        color: '#6b7280',
+        marginTop: 8,
+    };
+
+    const cardRow: React.CSSProperties = {
+        border: '1px solid #e5e7eb',
+        borderRadius: 12,
+        padding: 10,
+        background: 'rgba(255,255,255,0.85)',
     };
 
     return (
@@ -75,71 +92,91 @@ export default function MetroFinanceTable({
                 border: '1px solid #e5e7eb',
                 background: 'rgba(255,255,255,0.9)',
                 boxShadow: '0 10px 24px rgba(0,0,0,0.08)',
-                maxWidth: 760,
-                width: 'min(760px, 92vw)',
+                width: '100%',
+                maxWidth: '100%',
+                boxSizing: 'border-box',
+                overflow: 'hidden',
             }}
         >
             <div style={{ fontWeight: 800, marginBottom: 6 }}>
                 Koszty i przychody metra
             </div>
-            <div style={{ fontSize: 12, color: '#6b7280', marginBottom: 10 }}>
+
+            <div style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.3 }}>
                 Częstotliwość: <strong>{maintenanceCosts.frequency_label}</strong>
                 {' • '}
                 Cena biletu: <strong>{formatUsd(ticketPriceUsd)}</strong>
             </div>
 
-            <div style={{ ...row, fontWeight: 800 }}>
-                <div>Pozycja</div>
-                <div style={{ textAlign: 'right' }}>Dzień</div>
-                <div style={{ textAlign: 'right' }}>Miesiąc</div>
-                <div style={{ textAlign: 'right' }}>Rok</div>
-            </div>
+            {isNarrow ? (
+                <>
+                    <div style={headerRow}>
+                        <div style={{ textAlign: 'right', fontWeight: 700 }}>Dzień</div>
+                        <div style={{ textAlign: 'right', fontWeight: 700 }}>Miesiąc</div>
+                        <div style={{ textAlign: 'right', fontWeight: 700 }}>Rok</div>
+                    </div>
 
-            <div style={row}>
-                <div style={{ color: '#6b7280' }}>Koszt utrzymania</div>
-                <div style={{ textAlign: 'right' }}>
-                    {formatUsd(maintenanceCosts.daily_cost_usd)}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    {formatUsd(maintenanceCosts.monthly_cost_usd)}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    {formatUsd(maintenanceCosts.yearly_cost_usd)}
-                </div>
-            </div>
+                    <div style={{ display: 'grid', gap: 10, marginTop: 10 }}>
+                        <div style={cardRow}>
+                            <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+                                Koszt utrzymania
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                    {formatUsd(maintenanceCosts.daily_cost_usd)}
+                                </div>
+                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                    {formatUsd(maintenanceCosts.monthly_cost_usd)}
+                                </div>
+                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                    {formatUsd(maintenanceCosts.yearly_cost_usd)}
+                                </div>
+                            </div>
+                        </div>
 
-            <div style={row}>
-                <div style={{ color: '#6b7280' }}>Przychód z biletów</div>
-                <div style={{ textAlign: 'right' }}>
-                    {revenue ? formatUsd(revenue.daily) : '—'}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    {revenue ? formatUsd(revenue.monthly) : '—'}
-                </div>
-                <div style={{ textAlign: 'right' }}>
-                    {revenue ? formatUsd(revenue.yearly) : '—'}
-                </div>
-            </div>
+                        <div style={cardRow}>
+                            <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+                                Przychód z biletów
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                    {revenue ? formatUsd(revenue.daily) : '—'}
+                                </div>
+                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                    {revenue ? formatUsd(revenue.monthly) : '—'}
+                                </div>
+                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                    {revenue ? formatUsd(revenue.yearly) : '—'}
+                                </div>
+                            </div>
+                        </div>
 
-            <div style={{ ...row, borderBottom: 'none' }}>
-                <div style={{ fontWeight: 800 }}>Zysk/Strata</div>
-                <div style={{ textAlign: 'right', fontWeight: 800 }}>
-                    {profit ? formatUsd(profit.daily) : '—'}
-                </div>
-                <div style={{ textAlign: 'right', fontWeight: 800 }}>
-                    {profit ? formatUsd(profit.monthly) : '—'}
-                </div>
-                <div style={{ textAlign: 'right', fontWeight: 800 }}>
-                    {profit ? formatUsd(profit.yearly) : '—'}
-                </div>
-            </div>
+                        <div style={cardRow}>
+                            <div style={{ fontSize: 12, fontWeight: 900, marginBottom: 6 }}>
+                                Zysk/Strata
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+                                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 900 }}>
+                                    {profit ? formatUsd(profit.daily) : '—'}
+                                </div>
+                                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 900 }}>
+                                    {profit ? formatUsd(profit.monthly) : '—'}
+                                </div>
+                                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 900 }}>
+                                    {profit ? formatUsd(profit.yearly) : '—'}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-            {totalDailyRides !== null && (
-                <div style={{ marginTop: 8, fontSize: 11, color: '#6b7280' }}>
-                    Szacowana liczba przejazdów/dzień:{' '}
-                    <strong>{totalDailyRides.toLocaleString('pl-PL')}</strong>
-                </div>
-            )}
+                    {totalDailyRides !== null && (
+                        <div style={{ marginTop: 10, fontSize: 11, color: '#6b7280' }}>
+                            Szacowana liczba przejazdów/dzień:{' '}
+                            <strong>{totalDailyRides.toLocaleString('pl-PL')}</strong>
+                        </div>
+                    )}
+                </>
+            ) : null}
         </div>
     );
 }

@@ -81,9 +81,9 @@ export default function MainMap() {
             setSendError(null);
 
             const data = await sendPinsToBackend(pins);
-            setMetroUsage((data as any).metro_usage ?? null);
             setMaintenanceCosts(data.maintenance_costs ?? null);
             setMetroUsage(data.metro_usage ?? null);
+            setConstructionCosts(data.construction_costs ?? null);
         } catch (e) {
             setSendError(
                 e instanceof Error ? e.message : 'Nie udało się wysłać pinów.'
@@ -237,6 +237,13 @@ export default function MainMap() {
                                 </div>
                             )}
                         </div>
+                        <div style={{ marginTop: 12 }}>
+                            <MetroFinanceTable
+                                maintenanceCosts={maintenanceCosts}
+                                metroUsage={metroUsage}
+                                ticketPriceUsd={1.5}
+                            />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -261,11 +268,6 @@ export default function MainMap() {
                     }}
                 />
             )}
-            <MetroFinanceTable
-                maintenanceCosts={maintenanceCosts}
-                metroUsage={metroUsage}
-                ticketPriceUsd={2.5}
-            />
         </div>
     );
 }
