@@ -7,11 +7,18 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
     useEffect(() => {
         if (!containerRef.current || map) return;
 
-        // init and center on cracow
-        const mapInstance = L.map(containerRef.current).setView(
-            [50.0647, 19.945],
-            20
+        const cracowBounds = L.latLngBounds(
+            [50.0000, 19.8000], // southWest
+            [50.1200, 20.1000]  // northEast
         );
+
+        // init and center on cracow
+        const mapInstance = L.map(containerRef.current, {
+            minZoom: 12,
+            maxZoom: 20,
+            maxBounds: cracowBounds,
+            maxBoundsViscosity: 1.0
+        }).setView([50.0647, 19.945], 15);
 
         // OpenStreetMap tiles, generates background
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
