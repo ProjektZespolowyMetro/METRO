@@ -16,12 +16,12 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         ); //values taken from hg.gpkg metadata, should not be altered unless tiles are altered as well
 
         const mapInstance = L.map(containerRef.current, {
-            minZoom: 10,
+            minZoom: 12,
             maxZoom: 16,
             maxBounds: cracowBounds,
             maxBoundsViscosity: 1.0,
             preferCanvas: true, // Optimization: Renders GeoJSONs on Canvas instead of SVG
-        }).setView([50.0487253, 20.0033734], 10);
+        }).setView([50.0487253, 20.0033734], 13);
 
         // MBTiles pane
         mapInstance.createPane('mbtilesPane');
@@ -38,7 +38,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
                             'trunk',
                             'primary',
                         ].includes(properties.highway);
-                        if (zoom < 16 && !isMain) return { stroke: false };
+                        if (zoom < 14 && !isMain) return { stroke: false };
                         return {
                             weight: isMain ? 2 : 1,
                             color: isMain ? '#e67e22' : '#7f8c8d',
@@ -46,8 +46,8 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
                         };
                     },
                 },
-                maxZoom: 18,
-                minZoom: 10,
+                maxZoom: 16,
+                minZoom: 12,
                 tms: true,
                 pane: 'mbtilesPane',
             })
