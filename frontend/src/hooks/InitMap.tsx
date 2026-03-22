@@ -1,5 +1,6 @@
 import { useEffect, useState, RefObject } from 'react';
 import L from 'leaflet';
+import 'leaflet.vectorgrid';
 
 export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
     const [map, setMap] = useState<L.Map | null>(null);
@@ -8,34 +9,53 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         if (!containerRef.current || map) return;
 
         const cracowBounds = L.latLngBounds(
-            [50.0000, 19.8000], // southWest
-            [50.1200, 20.1000]  // northEast
-        );
+            [49.9676104, 19.7899577], // southWest
+            [50.1298402, 20.2167892] // northEast
+        ); //values taken from hg.gpkg metadata, should not be altered unless tiles are altered as well
 
-        // init and center on cracow
         const mapInstance = L.map(containerRef.current, {
-            minZoom: 12,
-            maxZoom: 20,
+            minZoom: 10,
+            maxZoom: 16,
             maxBounds: cracowBounds,
-            maxBoundsViscosity: 1.0
-        }).setView([50.0647, 19.945], 15);
+            maxBoundsViscosity: 1.0,
+        }).setView([50.0487253, 20.0033734], 10);
 
-        // OpenStreetMap tiles, generates background
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors',
-        }).addTo(mapInstance);
+        // MBTiles pane
+        mapInstance.createPane('mbtilesPane');
+        mapInstance.getPane('mbtilesPane')!.style.zIndex = '450';
 
-        // Create a custom pane for streets to ensure they stay BELOW user drawings
-        // The standard overlayPane (where polylines go) has z-index 400.
-        // We set this to 399 so it is always visually behind.
+        L.vectorGrid
+            .protobuf('http://127.0.0.1:8000/tiles/{z}/{x}/{y}.pbf', {
+                vectorTileLayerStyles: {
+                    highway_krakow: (properties: any) => {
+                        const isMain = [
+                            'motorway',
+                            'trunk',
+                            'primary',
+                        ].includes(properties.highway);
+                        return {
+                            weight: isMain ? 3 : 1,
+                            color: isMain ? '#e67e22' : '#7f8c8d',
+                            opacity: 1,
+                            fill: true,
+                        };
+                    },
+                },
+                maxZoom: 16,
+                minZoom: 10,
+                tms: true,
+                pane: 'mbtilesPane',
+            })
+            .addTo(mapInstance);
+
+        // Streets pane below MBTiles
         mapInstance.createPane('streetsPane');
-        mapInstance.getPane('streetsPane')!.style.zIndex = '399';
+        mapInstance.getPane('streetsPane')!.style.zIndex = '400';
 
         const geojsonFiles = [
-            'cracow-streets1.geojson',
-            'cracow-streets2.geojson',
-            'cracow-streets3.geojson',
-            'cracow-streets4.geojson',
+            'road.geojson',
+            'river.geojson',
+            'boundary.geojson',
         ];
 
         // street geojsons
@@ -44,8 +64,30 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
                 .then((res) => res.json())
                 .then((geojson) => {
                     if (!mapInstance) return;
+                    if (
+                        !geojson ||
+                        !geojson.features ||
+                        geojson.features.length === 0
+                    ) {
+                        console.warn(`GeoJSON ${file} has no features`);
+                        return;
+                    }
+
+                    let style: L.PathOptions = {
+                        color: '#34495e',
+                        weight: 1.5,
+                    };
+                    if (file.includes('river'))
+                        style = { color: '#3498db', weight: 3 };
+                    if (file.includes('boundary'))
+                        style = {
+                            color: '#95a5a6',
+                            weight: 1,
+                            dashArray: '5, 5',
+                        };
+
                     L.geoJSON(geojson, {
-                        style: { color: 'blue', weight: 1.5 },
+                        style: style,
                         pane: 'streetsPane', // Force into the background pane
                     }).addTo(mapInstance);
                 })
