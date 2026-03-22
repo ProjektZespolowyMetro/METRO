@@ -1,12 +1,14 @@
-import { useEffect, useState, RefObject } from 'react';
+import { useEffect, useState, RefObject, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
 
 export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
     const [map, setMap] = useState<L.Map | null>(null);
+    const hasInitRef = useRef(false); // Prevents double-init in Strict Mode
 
     useEffect(() => {
-        if (!containerRef.current || map) return;
+        if (!containerRef.current || hasInitRef.current) return;
+        hasInitRef.current = true;
 
         const cracowBounds = L.latLngBounds(
             [49.9676104, 19.7899577], // southWest
@@ -18,6 +20,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
             maxZoom: 16,
             maxBounds: cracowBounds,
             maxBoundsViscosity: 1.0,
+            preferCanvas: true, // Optimization: Renders GeoJSONs on Canvas instead of SVG
         }).setView([50.0487253, 20.0033734], 10);
 
         // MBTiles pane
@@ -26,22 +29,24 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
 
         L.vectorGrid
             .protobuf('http://127.0.0.1:8000/tiles/{z}/{x}/{y}.pbf', {
+                // @ts-ignore: VectorGrid adds .tile to L.Canvas
+                rendererFactory: L.Canvas.tile || (L.canvas as any).tile,
                 vectorTileLayerStyles: {
-                    highway_krakow: (properties: any) => {
+                    highway_krakow: (properties: any, zoom: number) => {
                         const isMain = [
                             'motorway',
                             'trunk',
                             'primary',
                         ].includes(properties.highway);
+                        if (zoom < 16 && !isMain) return { stroke: false };
                         return {
-                            weight: isMain ? 3 : 1,
+                            weight: isMain ? 2 : 1,
                             color: isMain ? '#e67e22' : '#7f8c8d',
                             opacity: 1,
-                            fill: true,
                         };
                     },
                 },
-                maxZoom: 16,
+                maxZoom: 18,
                 minZoom: 10,
                 tms: true,
                 pane: 'mbtilesPane',
@@ -53,45 +58,28 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         mapInstance.getPane('streetsPane')!.style.zIndex = '400';
 
         const geojsonFiles = [
-            'road.geojson',
-            'river.geojson',
-            'boundary.geojson',
+            { name: 'road.geojson', style: { color: '#34495e', weight: 1.5 } },
+            { name: 'river.geojson', style: { color: '#3498db', weight: 3 } },
+            {
+                name: 'boundary.geojson',
+                style: { color: '#95a5a6', weight: 1, dashArray: '5, 5' },
+            },
         ];
 
-        // street geojsons
+        // street geojsons - Fetched only once
         geojsonFiles.forEach((file) => {
-            fetch(file)
+            fetch(file.name, { cache: 'force-cache' }) // Explicitly tell browser to use cache
                 .then((res) => res.json())
                 .then((geojson) => {
                     if (!mapInstance) return;
-                    if (
-                        !geojson ||
-                        !geojson.features ||
-                        geojson.features.length === 0
-                    ) {
-                        console.warn(`GeoJSON ${file} has no features`);
-                        return;
-                    }
-
-                    let style: L.PathOptions = {
-                        color: '#34495e',
-                        weight: 1.5,
-                    };
-                    if (file.includes('river'))
-                        style = { color: '#3498db', weight: 3 };
-                    if (file.includes('boundary'))
-                        style = {
-                            color: '#95a5a6',
-                            weight: 1,
-                            dashArray: '5, 5',
-                        };
-
                     L.geoJSON(geojson, {
-                        style: style,
+                        style: file.style,
                         pane: 'streetsPane', // Force into the background pane
                     }).addTo(mapInstance);
                 })
-                .catch((err) => console.error(`Failed to load ${file}:`, err));
+                .catch((err) =>
+                    console.error(`Failed to load ${file.name}:`, err)
+                );
         });
 
         setMap(mapInstance);
@@ -99,6 +87,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         // Cleanup on unmount
         return () => {
             mapInstance.remove();
+            hasInitRef.current = false;
         };
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Run once on mount

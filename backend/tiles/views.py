@@ -3,10 +3,12 @@ import sqlite3
 
 from django.conf import settings
 from django.http import Http404, HttpResponse
+from django.views.decorators.cache import cache_control
 
 MBTILES_PATH = os.path.join(settings.BASE_DIR, "data", "hg.mbtiles")
 
 
+@cache_control(public=True, max_age=3600)  # Cache tiles for 1 hour
 def get_tile(request, z, x, y):
     z = int(z)
     x = int(x)
