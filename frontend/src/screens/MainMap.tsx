@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
@@ -17,9 +17,9 @@ import {
 export default function MainMap() {
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const [isAddMode, setIsAddMode] = useState(true);
-
-    const [constructionCosts, setConstructionCosts] = useState<any | null>(null);
+    const [constructionCosts, setConstructionCosts] = useState<any | null>(
+        null
+    );
     const [maintenanceCosts, setMaintenanceCosts] = useState<any>(null);
     const [metroUsage, setMetroUsage] = useState<any>(null);
 
@@ -29,7 +29,8 @@ export default function MainMap() {
     const [sendError, setSendError] = useState<string | null>(null);
     const [isSending, setIsSending] = useState(false);
 
-    const { pins, addPin, updatePin, removePin, clearPins } = usePins();
+    const { pins, addPin, updatePin, removePin, clearPins, activeTool } =
+        usePins();
 
     const map = useMapInit(mapContainerRef);
 
@@ -40,7 +41,7 @@ export default function MainMap() {
         updatePin,
         removePin,
         selectedPinId,
-        isAddMode,
+        activeTool,
         onSelectPinId: (id) => {
             setSelectedPinId(id);
             setForceEditSelectedPin(false);
@@ -52,6 +53,67 @@ export default function MainMap() {
             setSendError(null);
         },
     });
+
+    useEffect(() => {
+        if (!map) return;
+
+        const container = map.getContainer();
+
+        let isRightDragging = false;
+        let last = { x: 0, y: 0 };
+
+        const setCursor = (type: 'grab' | 'grabbing' | '') => {
+            container.style.cursor = type;
+        };
+
+        const onMouseDown = (e: MouseEvent) => {
+            if (e.button !== 2) return;
+
+            e.preventDefault();
+            isRightDragging = true;
+
+            setCursor('grabbing');
+
+            last = { x: e.clientX, y: e.clientY };
+        };
+
+        const onMouseMove = (e: MouseEvent) => {
+            if (!isRightDragging) return;
+
+            const dx = e.clientX - last.x;
+            const dy = e.clientY - last.y;
+
+            map.panBy([-dx, -dy], { animate: false });
+
+            last = { x: e.clientX, y: e.clientY };
+        };
+
+        const onMouseUp = (e: MouseEvent) => {
+            if (e.button === 2) {
+                isRightDragging = false;
+                setCursor('grab');
+            }
+        };
+
+        const onContextMenu = (e: MouseEvent) => {
+            e.preventDefault();
+        };
+
+        // default idle state
+        setCursor('grab');
+
+        container.addEventListener('mousedown', onMouseDown);
+        container.addEventListener('mousemove', onMouseMove);
+        window.addEventListener('mouseup', onMouseUp);
+        container.addEventListener('contextmenu', onContextMenu);
+
+        return () => {
+            container.removeEventListener('mousedown', onMouseDown);
+            container.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+            container.removeEventListener('contextmenu', onContextMenu);
+        };
+    }, [map]);
 
     const selectedPin = pins.find((p) => p.id === selectedPinId) ?? null;
 
@@ -107,24 +169,6 @@ export default function MainMap() {
                 height: '100vh',
             }}
         >
-            {/* MENU PANEL */}
-            <PinMenu
-                isAddMode={isAddMode}
-                setIsAddMode={setIsAddMode}
-                sendError={sendError}
-                isSending={isSending}
-                maintenanceCosts={maintenanceCosts}
-                metroUsage={metroUsage}
-                onDeletePins={() => {
-                    clearPins();
-                    setSelectedPinId(null);
-                    setForceEditSelectedPin(false);
-                    setMetroUsage(null);
-                    setSendError(null);
-                }}
-                onSendPins={handleSendPins}
-            />
-
             {/* MAP CONTAINER */}
             <div
                 ref={mapContainerRef}
@@ -144,9 +188,7 @@ export default function MainMap() {
                     removePin={removePin}
                     metroUsage={metroUsage}
                     forceEdit={forceEditSelectedPin}
-                    onForceEditConsumed={() =>
-                        setForceEditSelectedPin(false)
-                    }
+                    onForceEditConsumed={() => setForceEditSelectedPin(false)}
                     onClose={() => {
                         setSelectedPinId(null);
                         setForceEditSelectedPin(false);

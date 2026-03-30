@@ -1,9 +1,12 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
+// New type for the interactive tool menu
+export type ToolMode = 'normal' | 'place' | 'drag';
+
 export type Pin = {
     id: string; //used to identify unset pins
-    lat: number; //latitude 
-    lng: number; //longitude 
+    lat: number; //latitude
+    lng: number; //longitude
     number?: number; // order of stations
     name?: string; // both are null when adding empty pins,
     // name is unused for now
@@ -16,6 +19,15 @@ type PinsContextType = {
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
     clearPins: () => void;
+
+    // UI & Tool States for the Menu
+    activeTool: ToolMode;
+    setActiveTool: (tool: ToolMode) => void;
+    sendError: string | null;
+    isSending: boolean;
+    maintenanceCosts: any;
+    metroUsage: any;
+    onSendPins: () => void;
 };
 
 export const usePins = () => {
@@ -45,6 +57,15 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     });
 
+    // New Menu-related State
+    const [activeTool, setActiveTool] = useState<ToolMode>('normal');
+    const [sendError, setSendError] = useState<string | null>(null);
+    const [isSending, setIsSending] = useState(false);
+
+    // These should be updated by calculation logic elsewhere
+    const [maintenanceCosts] = useState({ total: 0 });
+    const [metroUsage] = useState({ daily: 0 });
+
     // save on first render and whenever array of pins is altered
     useEffect(() => {
         localStorage.setItem('pins', JSON.stringify(pins));
@@ -69,10 +90,39 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
+    // Handler for the Send button in the PinMenu
+    const onSendPins = async () => {
+        setIsSending(true);
+        setSendError(null);
+        try {
+            // Your API logic here
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            console.log('Pins synced successfully');
+        } catch (err) {
+            setSendError('Connection error: Could not sync pins.');
+        } finally {
+            setIsSending(false);
+        }
+    };
+
     // Every nested component in App.tsx has access to pin logic
     return (
         <PinsContext.Provider
-            value={{ pins, setPins, addPin, updatePin, removePin, clearPins }}
+            value={{
+                pins,
+                setPins,
+                addPin,
+                updatePin,
+                removePin,
+                clearPins,
+                activeTool,
+                setActiveTool,
+                sendError,
+                isSending,
+                maintenanceCosts,
+                metroUsage,
+                onSendPins,
+            }}
         >
             {children}
         </PinsContext.Provider>

@@ -11,12 +11,12 @@ type MaintenanceCosts = {
 type MetroUsageByPinNumber = Record<number, number[]>;
 
 type Props = {
-    maintenanceCosts: MaintenanceCosts | null;
-    metroUsage: MetroUsageByPinNumber | null;
+    maintenanceCosts: MaintenanceCosts | null | undefined;
+    metroUsage: MetroUsageByPinNumber | null | undefined;
     ticketPriceUsd?: number;
 };
 
-function formatUsd(n: number) {
+function formatUsd(n: number = 0) {
     return n.toLocaleString('en-US', {
         style: 'currency',
         currency: 'USD',
@@ -25,10 +25,10 @@ function formatUsd(n: number) {
 }
 
 export default function MetroFinanceTable({
-                                              maintenanceCosts,
-                                              metroUsage,
-                                              ticketPriceUsd = 2.5,
-                                          }: Props) {
+    maintenanceCosts,
+    metroUsage,
+    ticketPriceUsd = 2.5,
+}: Props) {
     const totalDailyRides = useMemo(() => {
         if (!metroUsage) return null;
 
@@ -57,10 +57,10 @@ export default function MetroFinanceTable({
 
     const profit = revenue
         ? {
-            daily: revenue.daily - maintenanceCosts.daily_cost_usd,
-            monthly: revenue.monthly - maintenanceCosts.monthly_cost_usd,
-            yearly: revenue.yearly - maintenanceCosts.yearly_cost_usd,
-        }
+              daily: revenue.daily - maintenanceCosts.daily_cost_usd,
+              monthly: revenue.monthly - maintenanceCosts.monthly_cost_usd,
+              yearly: revenue.yearly - maintenanceCosts.yearly_cost_usd,
+          }
         : null;
 
     // Panel jest wąski (340px), więc defaultowo robimy układ "narrow".
@@ -103,7 +103,8 @@ export default function MetroFinanceTable({
             </div>
 
             <div style={{ fontSize: 12, color: '#6b7280', lineHeight: 1.3 }}>
-                Częstotliwość: <strong>{maintenanceCosts.frequency_label}</strong>
+                Częstotliwość:{' '}
+                <strong>{maintenanceCosts.frequency_label}</strong>
                 {' • '}
                 Cena biletu: <strong>{formatUsd(ticketPriceUsd)}</strong>
             </div>
@@ -111,58 +112,134 @@ export default function MetroFinanceTable({
             {isNarrow ? (
                 <>
                     <div style={headerRow}>
-                        <div style={{ textAlign: 'right', fontWeight: 700 }}>Dzień</div>
-                        <div style={{ textAlign: 'right', fontWeight: 700 }}>Miesiąc</div>
-                        <div style={{ textAlign: 'right', fontWeight: 700 }}>Rok</div>
+                        <div style={{ textAlign: 'right', fontWeight: 700 }}>
+                            Dzień
+                        </div>
+                        <div style={{ textAlign: 'right', fontWeight: 700 }}>
+                            Miesiąc
+                        </div>
+                        <div style={{ textAlign: 'right', fontWeight: 700 }}>
+                            Rok
+                        </div>
                     </div>
 
                     <div style={{ display: 'grid', gap: 10, marginTop: 10 }}>
                         <div style={cardRow}>
-                            <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+                            <div
+                                style={{
+                                    fontSize: 12,
+                                    fontWeight: 800,
+                                    marginBottom: 6,
+                                }}
+                            >
                                 Koszt utrzymania
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr 1fr',
+                                    gap: 10,
+                                }}
+                            >
+                                <div
+                                    style={{ textAlign: 'right', fontSize: 12 }}
+                                >
                                     {formatUsd(maintenanceCosts.daily_cost_usd)}
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: 12 }}>
-                                    {formatUsd(maintenanceCosts.monthly_cost_usd)}
+                                <div
+                                    style={{ textAlign: 'right', fontSize: 12 }}
+                                >
+                                    {formatUsd(
+                                        maintenanceCosts.monthly_cost_usd
+                                    )}
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: 12 }}>
-                                    {formatUsd(maintenanceCosts.yearly_cost_usd)}
+                                <div
+                                    style={{ textAlign: 'right', fontSize: 12 }}
+                                >
+                                    {formatUsd(
+                                        maintenanceCosts.yearly_cost_usd
+                                    )}
                                 </div>
                             </div>
                         </div>
 
                         <div style={cardRow}>
-                            <div style={{ fontSize: 12, fontWeight: 800, marginBottom: 6 }}>
+                            <div
+                                style={{
+                                    fontSize: 12,
+                                    fontWeight: 800,
+                                    marginBottom: 6,
+                                }}
+                            >
                                 Przychód z biletów
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr 1fr',
+                                    gap: 10,
+                                }}
+                            >
+                                <div
+                                    style={{ textAlign: 'right', fontSize: 12 }}
+                                >
                                     {revenue ? formatUsd(revenue.daily) : '—'}
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                <div
+                                    style={{ textAlign: 'right', fontSize: 12 }}
+                                >
                                     {revenue ? formatUsd(revenue.monthly) : '—'}
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: 12 }}>
+                                <div
+                                    style={{ textAlign: 'right', fontSize: 12 }}
+                                >
                                     {revenue ? formatUsd(revenue.yearly) : '—'}
                                 </div>
                             </div>
                         </div>
 
                         <div style={cardRow}>
-                            <div style={{ fontSize: 12, fontWeight: 900, marginBottom: 6 }}>
+                            <div
+                                style={{
+                                    fontSize: 12,
+                                    fontWeight: 900,
+                                    marginBottom: 6,
+                                }}
+                            >
                                 Zysk/Strata
                             </div>
-                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
-                                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 900 }}>
+                            <div
+                                style={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '1fr 1fr 1fr',
+                                    gap: 10,
+                                }}
+                            >
+                                <div
+                                    style={{
+                                        textAlign: 'right',
+                                        fontSize: 12,
+                                        fontWeight: 900,
+                                    }}
+                                >
                                     {profit ? formatUsd(profit.daily) : '—'}
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 900 }}>
+                                <div
+                                    style={{
+                                        textAlign: 'right',
+                                        fontSize: 12,
+                                        fontWeight: 900,
+                                    }}
+                                >
                                     {profit ? formatUsd(profit.monthly) : '—'}
                                 </div>
-                                <div style={{ textAlign: 'right', fontSize: 12, fontWeight: 900 }}>
+                                <div
+                                    style={{
+                                        textAlign: 'right',
+                                        fontSize: 12,
+                                        fontWeight: 900,
+                                    }}
+                                >
                                     {profit ? formatUsd(profit.yearly) : '—'}
                                 </div>
                             </div>
@@ -170,9 +247,17 @@ export default function MetroFinanceTable({
                     </div>
 
                     {totalDailyRides !== null && (
-                        <div style={{ marginTop: 10, fontSize: 11, color: '#6b7280' }}>
+                        <div
+                            style={{
+                                marginTop: 10,
+                                fontSize: 11,
+                                color: '#6b7280',
+                            }}
+                        >
                             Szacowana liczba przejazdów/dzień:{' '}
-                            <strong>{totalDailyRides.toLocaleString('pl-PL')}</strong>
+                            <strong>
+                                {totalDailyRides.toLocaleString('pl-PL')}
+                            </strong>
                         </div>
                     )}
                 </>

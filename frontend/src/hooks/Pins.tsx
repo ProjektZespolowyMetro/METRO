@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import L from 'leaflet';
-import { Pin } from '../contexts/PinsContext';
+import { Pin, ToolMode } from '../contexts/PinsContext'; // Added ToolMode
 import { createPinIcon } from '../utils/MapUtils';
 
 type UsePinSyncProps = {
@@ -9,26 +9,27 @@ type UsePinSyncProps = {
     addPin: (pin: Pin) => void;
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
-    isAddMode: boolean;
+    activeTool: ToolMode; // Replaced isAddMode with activeTool
     selectedPinId: string | null;
     onSelectPinId: (id: string) => void;
     onRequestEditPinId: (id: string) => void;
 };
 
 export function usePinSync({
-                               map,
-                               pins,
-                               addPin,
-                               updatePin,
-                               removePin,
-                               isAddMode,
-                               selectedPinId,
-                               onSelectPinId,
-                               onRequestEditPinId,
-                           }: UsePinSyncProps) {
+    map,
+    pins,
+    addPin,
+    updatePin,
+    removePin,
+    activeTool,
+    selectedPinId,
+    onSelectPinId,
+    onRequestEditPinId,
+}: UsePinSyncProps) {
     const markersLayerRef = useRef<L.LayerGroup | null>(null);
     const drawnRoadLayerRef = useRef<L.Polyline | null>(null);
 
+    // 1. Handle Map Clicks & Place Mode
     useEffect(() => {
         if (!map) return;
 
@@ -37,7 +38,9 @@ export function usePinSync({
         }
 
         const handleMapClick = (e: L.LeafletMouseEvent) => {
-            if (!isAddMode) return;
+            // STRICT CHECK: Only add pins if in 'place' mode
+            if (activeTool !== 'place') return;
+
             const newPin: Pin = {
                 id: crypto.randomUUID(),
                 lat: e.latlng.lat,
@@ -51,19 +54,34 @@ export function usePinSync({
         return () => {
             map.off('click', handleMapClick);
         };
-    }, [map, addPin, isAddMode]);
+    }, [map, addPin, activeTool]);
+
+    // 2. Handle Cursor and Map Interactions
     useEffect(() => {
         if (!map) return;
 
         const el = map.getContainer();
-        const prev = el.style.cursor;
+        const prevCursor = el.style.cursor;
 
-        el.style.cursor = isAddMode ? 'crosshair' : '';
+        // Visual feedback for tools
+        if (activeTool === 'place') {
+            el.style.cursor = 'crosshair';
+            map.dragging.enable();
+        } else if (activeTool === 'drag') {
+            el.style.cursor = 'grab';
+            map.dragging.disable(); // Optional: disable map pan to make pin dragging easier
+        } else {
+            el.style.cursor = '';
+            map.dragging.enable();
+        }
 
         return () => {
-            el.style.cursor = prev;
+            el.style.cursor = prevCursor;
+            map.dragging.enable();
         };
-    }, [map, isAddMode]);
+    }, [map, activeTool]);
+
+    // 3. Render Markers and Sync State
     useEffect(() => {
         if (!map || !markersLayerRef.current) return;
 
@@ -74,11 +92,13 @@ export function usePinSync({
 
             const marker = L.marker([pin.lat, pin.lng], {
                 icon: createPinIcon(pin.number, isSelected),
-                draggable: true,
+                // Only draggable if the 'drag' tool is active
+                draggable: activeTool === 'drag',
                 zIndexOffset: isSelected ? 1000 : 0,
             }).addTo(markersLayerRef.current!);
 
             marker.on('click', (e) => {
+                // Prevent the map from receiving the click (which might trigger 'place' mode)
                 L.DomEvent.stopPropagation(e);
                 onSelectPinId(pin.id);
             });
@@ -94,6 +114,7 @@ export function usePinSync({
             });
         });
 
+        // 4. Draw Polyline
         if (drawnRoadLayerRef.current) {
             drawnRoadLayerRef.current.remove();
         }
@@ -119,5 +140,6 @@ export function usePinSync({
         selectedPinId,
         onSelectPinId,
         onRequestEditPinId,
+        activeTool, // Added dependency
     ]);
 }
