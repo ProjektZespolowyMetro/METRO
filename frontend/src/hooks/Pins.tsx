@@ -81,7 +81,7 @@ export function usePinSync({
         let deleteRect: L.Rectangle | null = null;
 
         const onMouseDown = (e: L.LeafletMouseEvent) => {
-            if (e.originalEvent.button === 2 || activeTool === 'normal') {
+            if (e.originalEvent.button === 2 || activeTool === 'select') {
                 map.dragging.enable();
                 lastPos = map.mouseEventToContainerPoint(e.originalEvent);
                 el.style.cursor = 'grabbing';
@@ -123,7 +123,7 @@ export function usePinSync({
         const onMouseUp = (e: L.LeafletMouseEvent) => {
             map.dragging.disable();
 
-            if (e.originalEvent.button === 2 || activeTool === 'normal') {
+            if (e.originalEvent.button === 2 || activeTool === 'select') {
                 lastPos = null;
                 if (activeTool === 'place') el.style.cursor = 'crosshair';
                 else if (activeTool === 'drag') el.style.cursor = 'grab';

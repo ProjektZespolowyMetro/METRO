@@ -55,10 +55,10 @@ export default function Pins() {
             {/* GROUP 1: TOOLS */}
             <div style={{ display: 'flex', gap: '4px', alignItems: 'center' }}>
                 <ToolbarBtn
-                    active={activeTool === 'normal'}
+                    active={activeTool === 'select'}
                     icon='🖱️'
-                    label='Normal'
-                    onClick={() => setActiveTool('normal')}
+                    label='Select'
+                    onClick={() => setActiveTool('select')}
                 />
                 <ToolbarBtn
                     active={activeTool === 'place'}
