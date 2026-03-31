@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react';
 import { usePins } from '../contexts/PinsContext';
-import SendPinsButton from '../components/SendPinsButton';
 import DeletePinsButton from '../components/DeletePinsButton';
 
 export default function Pins() {
@@ -8,13 +7,12 @@ export default function Pins() {
         activeTool,
         setActiveTool,
         clearPins,
-        onSendPins,
-        isSending,
         maintenanceCosts,
         metroUsage,
     } = usePins();
 
     // Calculate revenue locally since we aren't using the Table component anymore
+    // temporary btw
     const ticketPriceUsd = 2.5;
     const totalDailyRides = useMemo(() => {
         if (!metroUsage) return 0;
@@ -103,9 +101,6 @@ export default function Pins() {
             {/* GROUP 3: ACTIONS */}
             <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
                 <DeletePinsButton onClick={clearPins} />
-                <div style={{ opacity: isSending ? 0.5 : 1 }}>
-                    <SendPinsButton onClick={onSendPins} />
-                </div>
             </div>
         </div>
     );

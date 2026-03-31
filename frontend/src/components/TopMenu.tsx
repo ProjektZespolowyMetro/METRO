@@ -4,14 +4,12 @@ import { usePins } from '../contexts/PinsContext';
 import Pins from '../screens/Pins';
 import Routes from '../screens/Routes';
 import View from '../screens/View';
-import SendPinsButton from './SendPinsButton';
 import DeletePinsButton from './DeletePinsButton';
 import '../css/TopMenu.css';
 
 const TopMenu: React.FC = () => {
     const menuCtx = useContext(MenuContext);
-    const { activeTool, setActiveTool, clearPins, onSendPins, isSending } =
-        usePins();
+    const { activeTool, setActiveTool, clearPins } = usePins();
 
     if (!menuCtx)
         throw new Error('MenuContext must be used within a MenuProvider');
@@ -118,9 +116,6 @@ const TopMenu: React.FC = () => {
                             }}
                         >
                             <DeletePinsButton onClick={clearPins} />
-                            <div style={{ opacity: isSending ? 0.5 : 1 }}>
-                                <SendPinsButton onClick={onSendPins} />
-                            </div>
                         </div>
                     </>
                 )}

@@ -88,7 +88,7 @@ export function usePinSync({
         const onMouseUp = (e: L.LeafletMouseEvent) => {
             map.dragging.disable();
 
-            if (e.originalEvent.button === 2) {
+            if (e.originalEvent.button === 2 || activeTool === 'normal') {
                 lastPos = null;
 
                 if (activeTool === 'place') {

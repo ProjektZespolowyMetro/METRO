@@ -1,7 +1,7 @@
 import MetroFinanceTable from './MetroFinanceTable';
 import SendPinsButton from './SendPinsButton';
 import DeletePinsButton from './DeletePinsButton';
-import React from "react";
+import React from 'react';
 
 type Props = {
     isAddMode: boolean;
@@ -17,6 +17,7 @@ type Props = {
     onSendPins: () => void;
 };
 
+//deprecated
 export default function PinMenu({
     isAddMode,
     setIsAddMode,
@@ -57,7 +58,13 @@ export default function PinMenu({
                         marginBottom: 8,
                     }}
                 >
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>
+                    <div
+                        style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: '#111827',
+                        }}
+                    >
                         METRO
                     </div>
                     <div style={{ fontSize: 11, color: '#6b7280' }}>
@@ -73,9 +80,15 @@ export default function PinMenu({
                         marginBottom: 10,
                     }}
                 >
-                    <div><strong>LPM</strong>: wybierz pinezkę</div>
-                    <div><strong>PPM</strong>: edytuj numer/nazwę</div>
-                    <div><strong>Drag</strong>: przesuń pinezkę</div>
+                    <div>
+                        <strong>LPM</strong>: wybierz pinezkę
+                    </div>
+                    <div>
+                        <strong>PPM</strong>: edytuj numer/nazwę
+                    </div>
+                    <div>
+                        <strong>Drag</strong>: przesuń pinezkę
+                    </div>
                 </div>
 
                 <div
@@ -91,7 +104,13 @@ export default function PinMenu({
                         marginBottom: 10,
                     }}
                 >
-                    <div style={{ fontSize: 12, color: '#111827', fontWeight: 600 }}>
+                    <div
+                        style={{
+                            fontSize: 12,
+                            color: '#111827',
+                            fontWeight: 600,
+                        }}
+                    >
                         Tryb dodawania pinów
                     </div>
 
@@ -136,7 +155,13 @@ export default function PinMenu({
                         </div>
                     )}
 
-                    <div style={{ display: 'grid', gap: 10, justifyItems: 'center' }}>
+                    <div
+                        style={{
+                            display: 'grid',
+                            gap: 10,
+                            justifyItems: 'center',
+                        }}
+                    >
                         <DeletePinsButton onClick={onDeletePins} />
 
                         <div
