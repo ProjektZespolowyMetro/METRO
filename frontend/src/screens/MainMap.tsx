@@ -59,58 +59,32 @@ export default function MainMap() {
 
         const container = map.getContainer();
 
-        let isRightDragging = false;
-        let last = { x: 0, y: 0 };
-
-        const setCursor = (type: 'grab' | 'grabbing' | '') => {
-            container.style.cursor = type;
-        };
-
         const onMouseDown = (e: MouseEvent) => {
             if (e.button !== 2) return;
 
             e.preventDefault();
-            isRightDragging = true;
 
-            setCursor('grabbing');
+            // Clone event with left-button semantics
+            const simulated = new MouseEvent('mousedown', {
+                bubbles: true,
+                cancelable: true,
+                clientX: e.clientX,
+                clientY: e.clientY,
+                button: 0,
+            });
 
-            last = { x: e.clientX, y: e.clientY };
-        };
-
-        const onMouseMove = (e: MouseEvent) => {
-            if (!isRightDragging) return;
-
-            const dx = e.clientX - last.x;
-            const dy = e.clientY - last.y;
-
-            map.panBy([-dx, -dy], { animate: false });
-
-            last = { x: e.clientX, y: e.clientY };
-        };
-
-        const onMouseUp = (e: MouseEvent) => {
-            if (e.button === 2) {
-                isRightDragging = false;
-                setCursor('grab');
-            }
+            container.dispatchEvent(simulated);
         };
 
         const onContextMenu = (e: MouseEvent) => {
-            e.preventDefault();
+            e.preventDefault(); // disable browser menu
         };
 
-        // default idle state
-        setCursor('grab');
-
         container.addEventListener('mousedown', onMouseDown);
-        container.addEventListener('mousemove', onMouseMove);
-        window.addEventListener('mouseup', onMouseUp);
         container.addEventListener('contextmenu', onContextMenu);
 
         return () => {
             container.removeEventListener('mousedown', onMouseDown);
-            container.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('mouseup', onMouseUp);
             container.removeEventListener('contextmenu', onContextMenu);
         };
     }, [map]);
