@@ -1,7 +1,7 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
 // New type for the interactive tool menu
-export type ToolMode = 'normal' | 'place' | 'drag';
+export type ToolMode = 'normal' | 'place' | 'drag' | 'delete';
 
 export type Pin = {
     id: string; //used to identify unset pins
@@ -57,7 +57,6 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     });
 
-    // New Menu-related State
     const [activeTool, setActiveTool] = useState<ToolMode>('normal');
     const [sendError, setSendError] = useState<string | null>(null);
     const [isSending, setIsSending] = useState(false);

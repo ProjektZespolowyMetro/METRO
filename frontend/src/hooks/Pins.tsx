@@ -29,7 +29,13 @@ export function usePinSync({
     const markersLayerRef = useRef<L.LayerGroup | null>(null);
     const drawnRoadLayerRef = useRef<L.Polyline | null>(null);
 
-    // 1. Map Click - Place Pins (Left Click Only)
+    // Create a ref to always have access to the latest pins in our map event listeners
+    // without needing to put `pins` in the dependency array (which would cause constant rebinding).
+    const pinsRef = useRef(pins);
+    useEffect(() => {
+        pinsRef.current = pins;
+    }, [pins]);
+
     useEffect(() => {
         if (!map) return;
         if (!markersLayerRef.current)
@@ -59,19 +65,39 @@ export function usePinSync({
             el.style.cursor = 'crosshair';
         } else if (activeTool === 'drag') {
             el.style.cursor = 'grab';
+        } else if (activeTool === 'delete') {
+            el.style.cursor = 'crosshair';
         } else {
             el.style.cursor = '';
         }
 
         map.dragging.disable();
 
+        // Variables for Map Panning
         let lastPos: L.Point | null = null;
+
+        // Variables for Delete Selection Box
+        let deleteStartLatLng: L.LatLng | null = null;
+        let deleteRect: L.Rectangle | null = null;
+
         const onMouseDown = (e: L.LeafletMouseEvent) => {
             if (e.originalEvent.button === 2 || activeTool === 'normal') {
-                //map dragging HAS TO BE ENABLED HERE. If you enable it before right click it will fucking lag on tools other than normal one.
                 map.dragging.enable();
                 lastPos = map.mouseEventToContainerPoint(e.originalEvent);
                 el.style.cursor = 'grabbing';
+            } else if (
+                activeTool === 'delete' &&
+                e.originalEvent.button === 0
+            ) {
+                // Initialize the delete selection box
+                deleteStartLatLng = e.latlng;
+                deleteRect = L.rectangle(L.latLngBounds(e.latlng, e.latlng), {
+                    color: '#ff0000', // Red border
+                    weight: 2,
+                    fillColor: '#ff0000', // Red fill
+                    fillOpacity: 0.2,
+                    dashArray: '5, 5', // Dashed line
+                }).addTo(map);
             }
         };
 
@@ -82,6 +108,15 @@ export function usePinSync({
                 );
                 map.panBy(lastPos.subtract(currentPos), { animate: false });
                 lastPos = currentPos;
+            } else if (
+                deleteStartLatLng &&
+                deleteRect &&
+                activeTool === 'delete'
+            ) {
+                // Update the bounds of the rectangle as the user drags
+                deleteRect.setBounds(
+                    L.latLngBounds(deleteStartLatLng, e.latlng)
+                );
             }
         };
 
@@ -90,14 +125,32 @@ export function usePinSync({
 
             if (e.originalEvent.button === 2 || activeTool === 'normal') {
                 lastPos = null;
+                if (activeTool === 'place') el.style.cursor = 'crosshair';
+                else if (activeTool === 'drag') el.style.cursor = 'grab';
+                else el.style.cursor = '';
+            }
 
-                if (activeTool === 'place') {
-                    el.style.cursor = 'crosshair';
-                } else if (activeTool === 'drag') {
-                    el.style.cursor = 'grab';
-                } else {
-                    el.style.cursor = '';
+            // Handle the completion of the delete selection box
+            if (deleteStartLatLng && deleteRect) {
+                const bounds = deleteRect.getBounds();
+
+                // Ensure it was an actual drag and not just a single click
+                // (Single clicks are handled by the marker's own click event)
+                const isClick = deleteStartLatLng.equals(e.latlng, 0.0001);
+
+                if (!isClick) {
+                    // Loop through the LATEST pins and delete those inside the box
+                    pinsRef.current.forEach((pin) => {
+                        if (bounds.contains([pin.lat, pin.lng])) {
+                            removePin(pin.id);
+                        }
+                    });
                 }
+
+                // Cleanup visual layer and state
+                deleteRect.remove();
+                deleteRect = null;
+                deleteStartLatLng = null;
             }
         };
 
@@ -116,7 +169,7 @@ export function usePinSync({
             map.off('mouseup', onMouseUp);
             el.removeEventListener('contextmenu', preventMenu);
         };
-    }, [map, activeTool]);
+    }, [map, activeTool, removePin]);
 
     useEffect(() => {
         if (!map || !markersLayerRef.current) return;
@@ -131,9 +184,14 @@ export function usePinSync({
                 zIndexOffset: isSelected ? 1000 : 0,
             }).addTo(markersLayer);
 
-            marker.on('click', (e) => {
+            marker.on('click', (e: L.LeafletMouseEvent) => {
                 L.DomEvent.stopPropagation(e);
-                onSelectPinId(pin.id);
+
+                if (activeTool === 'delete' && e.originalEvent.button === 0) {
+                    removePin(pin.id);
+                } else {
+                    onSelectPinId(pin.id);
+                }
             });
 
             marker.on('contextmenu', (e) => {
@@ -163,6 +221,7 @@ export function usePinSync({
         map,
         pins,
         updatePin,
+        removePin,
         selectedPinId,
         onSelectPinId,
         onRequestEditPinId,

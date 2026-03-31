@@ -72,6 +72,12 @@ export default function Pins() {
                     label='Drag'
                     onClick={() => setActiveTool('drag')}
                 />
+                <ToolbarBtn
+                    active={activeTool === 'delete'}
+                    icon='🗑️'
+                    label='Delete'
+                    onClick={() => setActiveTool('delete')}
+                />
             </div>
 
             <div style={{ width: '1px', height: '24px', background: '#ddd' }} />
