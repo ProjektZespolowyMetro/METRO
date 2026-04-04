@@ -7,4 +7,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("hello-world/", views.HelloWorldView.as_view()),
     path("pins/", views.ReceivePinsView.as_view()),
+    path("calculate-new-stations/", views.CalculateNewStationsUsageView.as_view()),
 ]
