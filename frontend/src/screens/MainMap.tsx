@@ -4,8 +4,10 @@ import L from 'leaflet';
 
 import PinMenu from '../components/PinMenu';
 import PinOverlay from '../components/PinOverlay';
+import RoutesLayer from '../hooks/RoutesLayer';
 
 import { usePins } from '../contexts/PinsContext';
+import { RoutesProvider } from '../contexts/RoutesContext';
 import { useMapInit } from '../hooks/InitMap';
 import { usePinSync } from '../hooks/Pins';
 
@@ -61,10 +63,7 @@ export default function MainMap() {
 
         const onMouseDown = (e: MouseEvent) => {
             if (e.button !== 2) return;
-
             e.preventDefault();
-
-            // Clone event with left-button semantics
             const simulated = new MouseEvent('mousedown', {
                 bubbles: true,
                 cancelable: true,
@@ -72,13 +71,10 @@ export default function MainMap() {
                 clientY: e.clientY,
                 button: 0,
             });
-
             container.dispatchEvent(simulated);
         };
 
-        const onContextMenu = (e: MouseEvent) => {
-            e.preventDefault(); // disable browser menu
-        };
+        const onContextMenu = (e: MouseEvent) => e.preventDefault();
 
         container.addEventListener('mousedown', onMouseDown);
         container.addEventListener('contextmenu', onContextMenu);
@@ -100,29 +96,20 @@ export default function MainMap() {
             if (map) {
                 const target = L.latLng(firstMissing.lat, firstMissing.lng);
                 const nextZoom = Math.max(map.getZoom(), 16);
-
-                map.flyTo(target, nextZoom, {
-                    animate: true,
-                    duration: 0.6,
-                });
+                map.flyTo(target, nextZoom, { animate: true, duration: 0.6 });
             }
-
             setSelectedPinId(firstMissing.id);
             setForceEditSelectedPin(true);
-
             setSendError(
                 'Nadaj numer każdej pinezce przed wysłaniem (PPM lub „Edytuj” w dymku).'
             );
-
             return;
         }
 
         try {
             setIsSending(true);
             setSendError(null);
-
             const data = await sendPinsToBackend(pins);
-
             setMaintenanceCosts(data.maintenance_costs ?? null);
             setMetroUsage(data.metro_usage ?? null);
             setConstructionCosts(data.construction_costs ?? null);
@@ -136,39 +123,39 @@ export default function MainMap() {
     };
 
     return (
-        <div
-            style={{
-                position: 'relative',
-                width: '100%',
-                height: '100vh',
-            }}
-        >
-            {/* MAP CONTAINER */}
+        <RoutesProvider>
             <div
-                ref={mapContainerRef}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                }}
-            />
-
-            {/* SELECTED PIN OVERLAY */}
-            {map && selectedPin && (
-                <PinOverlay
-                    map={map}
-                    pin={selectedPin}
-                    pins={pins}
-                    updatePin={updatePin}
-                    removePin={removePin}
-                    metroUsage={metroUsage}
-                    forceEdit={forceEditSelectedPin}
-                    onForceEditConsumed={() => setForceEditSelectedPin(false)}
-                    onClose={() => {
-                        setSelectedPinId(null);
-                        setForceEditSelectedPin(false);
-                    }}
+                style={{ position: 'relative', width: '100%', height: '100vh' }}
+            >
+                {/* MAP CONTAINER */}
+                <div
+                    ref={mapContainerRef}
+                    style={{ width: '100%', height: '100%' }}
                 />
-            )}
-        </div>
+
+                {/* ROADS — rendered as native Leaflet GeoJSON polylines */}
+                <RoutesLayer map={map} />
+
+                {/* SELECTED PIN OVERLAY */}
+                {map && selectedPin && (
+                    <PinOverlay
+                        map={map}
+                        pin={selectedPin}
+                        pins={pins}
+                        updatePin={updatePin}
+                        removePin={removePin}
+                        metroUsage={metroUsage}
+                        forceEdit={forceEditSelectedPin}
+                        onForceEditConsumed={() =>
+                            setForceEditSelectedPin(false)
+                        }
+                        onClose={() => {
+                            setSelectedPinId(null);
+                            setForceEditSelectedPin(false);
+                        }}
+                    />
+                )}
+            </div>
+        </RoutesProvider>
     );
 }
