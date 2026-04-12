@@ -1,6 +1,6 @@
 import MetroFinanceTable from './MetroFinanceTable';
-import SendPinsButton from './SendPinsButton';
-import DeletePinsButton from './DeletePinsButton';
+import SendPinsButton from '../SendPinsButton';
+import DeletePinsButton from '../DeletePinsButton';
 import React from 'react';
 
 type Props = {
@@ -17,7 +17,6 @@ type Props = {
     onSendPins: () => void;
 };
 
-//deprecated
 export default function PinMenu({
     isAddMode,
     setIsAddMode,

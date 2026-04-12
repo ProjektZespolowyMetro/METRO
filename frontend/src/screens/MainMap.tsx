@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-import PinMenu from '../components/PinMenu';
 import PinOverlay from '../components/PinOverlay';
 import RoutesLayer from '../hooks/RoutesLayer';
 
