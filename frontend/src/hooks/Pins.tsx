@@ -206,17 +206,6 @@ export function usePinSync({
                 });
             }
         });
-
-        if (drawnRoadLayerRef.current) drawnRoadLayerRef.current.remove();
-        const numberedPins = pins
-            .filter((p) => p.number !== undefined)
-            .sort((a, b) => a.number! - b.number!);
-        if (numberedPins.length >= 2) {
-            drawnRoadLayerRef.current = L.polyline(
-                numberedPins.map((p) => [p.lat, p.lng] as [number, number]),
-                { color: 'blue', weight: 5 }
-            ).addTo(map);
-        }
     }, [
         map,
         pins,

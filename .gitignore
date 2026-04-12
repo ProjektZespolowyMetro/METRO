@@ -6,3 +6,4 @@ backend/db.sqlite3
 **/__pycache__/
 .venv/
 node_modules/
+metro

@@ -1,23 +1,20 @@
+import math
+
+from core.calculator import calculate_total_metro_usage
 from django.http import HttpResponse
 from django.views import View
-import math
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from rest_framework import status
-from core.calculator import calculate_total_metro_usage
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
-class HelloWorldView(View):
-    def get(self, request):
-        return HttpResponse("Hello world!")
-
-
-#STAŁE BUDOWY METRA
+# STAŁE BUDOWY METRA
 METRO_TUNNEL_COST_PER_KM = 238.21  # mln USD za km tunelu
-METRO_STATION_COST = 80             # mln USD za stację
+METRO_STATION_COST = 80  # mln USD za stację
 
-#STAŁE UTRZYMANIA METRA DZIENNIE
-METRO_DAILY_MAINTENANCE_5MIN = 10000    # USD za dzień (kursy co 5 minut)
-METRO_DAILY_MAINTENANCE_10MIN = 20000   # USD za dzień (kursy co 10 minut)
+# STAŁE UTRZYMANIA METRA DZIENNIE
+METRO_DAILY_MAINTENANCE_5MIN = 10000  # USD za dzień (kursy co 5 minut)
+METRO_DAILY_MAINTENANCE_10MIN = 20000  # USD za dzień (kursy co 10 minut)
+
 
 class ReceivePinsView(APIView):
     """
@@ -40,9 +37,7 @@ class ReceivePinsView(APIView):
 
         a = (
             math.sin(dphi / 2) ** 2
-            + math.cos(phi1)
-            * math.cos(phi2)
-            * math.sin(dlambda / 2) ** 2
+            + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2) ** 2
         )
 
         return 2 * R * math.atan2(math.sqrt(a), math.sqrt(1 - a))
@@ -76,7 +71,7 @@ class ReceivePinsView(APIView):
             "num_stations": num_stations,
             "stations_cost_millions_usd": round(stations_cost, 2),
             "total_construction_cost_millions_usd": round(total_cost, 2),
-            "total_construction_cost_billion_usd": round(total_cost / 1000, 3)
+            "total_construction_cost_billion_usd": round(total_cost / 1000, 3),
         }
 
     def calculate_metro_maintenance_costs(self, frequency_minutes=5):
@@ -109,13 +104,15 @@ class ReceivePinsView(APIView):
             "frequency_label": frequency_label,
             "daily_cost_usd": daily_cost,
             "monthly_cost_usd": round(monthly_cost, 2),
-            "yearly_cost_usd": round(yearly_cost, 2)
+            "yearly_cost_usd": round(yearly_cost, 2),
         }
 
     def post(self, request):
         pins = request.data.get("pins", [])
         train_frequency = request.data.get("train_frequency", 5)  # Pobiera z frontend
-        maintenance_costs = self.calculate_metro_maintenance_costs(frequency_minutes=train_frequency)
+        maintenance_costs = self.calculate_metro_maintenance_costs(
+            frequency_minutes=train_frequency
+        )
 
         if not isinstance(pins, list):
             return Response(
@@ -140,36 +137,38 @@ class ReceivePinsView(APIView):
             p2 = pins[i + 1]
 
             length = self.haversine(
-                p1["lat"], p1["lng"],
-                p2["lat"], p2["lng"],
+                p1["lat"],
+                p1["lng"],
+                p2["lat"],
+                p2["lng"],
             )
 
-            segments.append({
-                "from": p1["number"],
-                "to": p2["number"],
-                "length_meters": round(length, 2),
-            })
+            segments.append(
+                {
+                    "from": p1["number"],
+                    "to": p2["number"],
+                    "length_meters": round(length, 2),
+                }
+            )
 
             total_length += length
 
         print(segments)
         print("Total length:", total_length)
 
-        #Mateusz, do sth about it
+        # Mateusz, do sth about it
         metro_usage_results = {}
 
         try:
             print(" call calc total_metro_usage ")
-            #metro_usage_results = calculate_total_metro_usage(pins)
+            # metro_usage_results = calculate_total_metro_usage(pins)
         except Exception as e:
             print(f"calculator error {e}")
             metro_usage_results = {"error": str(e)}
         construction_costs = self.calculate_metro_construction_costs(
-            total_length_meters=total_length,
-            num_stations=len(pins)
+            total_length_meters=total_length, num_stations=len(pins)
         )
         print(f"Construction costs: {construction_costs}")
-
 
         maintenance_costs = self.calculate_metro_maintenance_costs(
             frequency_minutes=train_frequency
@@ -181,9 +180,9 @@ class ReceivePinsView(APIView):
                 "pins": pins,
                 "segments": segments,
                 "total_length_meters": round(total_length, 2),
-                #"metro_usage": metro_usage_results, # to leci do przerobienia jako osobna funkcja
-                "construction_costs": construction_costs, # to jest szybkie, ale jak sądzisz że lepiej to przeniesc do fronta to smialo
-                "maintenance_costs": maintenance_costs, # tak jak powyżej
+                # "metro_usage": metro_usage_results, # to leci do przerobienia jako osobna funkcja
+                "construction_costs": construction_costs,  # to jest szybkie, ale jak sądzisz że lepiej to przeniesc do fronta to smialo
+                "maintenance_costs": maintenance_costs,  # tak jak powyżej
             },
             status=status.HTTP_200_OK,
         )
@@ -324,17 +323,16 @@ class CalculateNewStationsUsageView(APIView):
             # zamiast mock'ów - np. calculate_total_metro_usage()
             station_usage = {
                 "pin_number": new_station.get("number"),
-                "station_name": new_station.get("name", f"Station {new_station.get('number')}"),
+                "station_name": new_station.get(
+                    "name", f"Station {new_station.get('number')}"
+                ),
                 "hourly_usage": self.generate_hourly_usage_for_station(
-                    new_station,
-                    existing_stations
-                )
+                    new_station, existing_stations
+                ),
             }
             new_stations_usage.append(station_usage)
 
         return Response(
-            {
-                "new_stations_usage": new_stations_usage
-            },
+            {"new_stations_usage": new_stations_usage},
             status=status.HTTP_200_OK,
         )
