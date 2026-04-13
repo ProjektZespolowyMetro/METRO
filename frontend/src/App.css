@@ -36,3 +36,25 @@
         transform: rotate(360deg);
     }
 }
+
+/* Make the zoom control horizontal */
+.leaflet-control-zoom {
+    display: flex !important;
+    flex-direction: row !important;
+    border: 2px solid rgba(0, 0, 0, 0.2) !important;
+    background-clip: padding-box;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+/* Remove the bottom border from the '+' button and add a right border instead */
+.leaflet-control-zoom-in {
+    border-bottom: none !important;
+    border-right: 1px solid #ccc !important;
+}
+
+/* Optional: Adjust the positioning to give it some padding from the corner */
+.leaflet-bottom.leaflet-right {
+    bottom: 20px !important;
+    right: 20px !important;
+}
