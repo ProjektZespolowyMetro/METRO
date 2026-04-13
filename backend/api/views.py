@@ -189,69 +189,14 @@ class ReceivePinsView(APIView):
         )
 
 
+from core.calculator import calculate_metro_usage_for_single_station
+
+
 class CalculateNewStationsUsageView(APIView):
     """
-    Bierze listę istniejących przystanków oraz 3 nowe przystanki,
-    wykonuje obliczenia dla nowych przystanków i zwraca ich użycie metra.
+    Bierze nowy przystanek oraz listę istniejących przystanków,
+    oblicza użycie dla nowego przystanku i jego sąsiadów.
     """
-
-    def generate_hourly_usage_for_station(self, new_station, existing_stations):
-        """
-        Mock: Oblicza użycie metra dla nowego przystanku na podstawie
-        istniejących przystanków i położenia nowego przystanku.
-
-        Args:
-            new_station: Nowy przystanek (dict z number, name, lat, lng)
-            existing_stations: Lista istniejących przystanków
-
-        Returns:
-            Lista z 24 elementami (liczba pasażerów dla każdej godziny)
-        """
-        import random
-
-        # Mock obliczenia - można tu wstawić rzeczywiste logiki
-        # Na podstawie odległości od istniejących przystanków, gęstości zabudowy itp.
-
-        # Bazowe użycie (będzie się różnić w zależności od pozycji przystanku)
-        base_usage = [
-            100,  # 0:00
-            50,  # 1:00
-            40,  # 2:00
-            80,  # 3:00
-            200,  # 4:00
-            800,  # 5:00
-            1500,  # 6:00
-            2000,  # 7:00
-            1800,  # 8:00
-            1200,  # 9:00
-            1100,  # 10:00
-            1300,  # 11:00
-            1400,  # 12:00
-            1350,  # 13:00
-            1200,  # 14:00
-            1100,  # 15:00
-            1300,  # 16:00
-            1800,  # 17:00
-            1900,  # 18:00
-            1400,  # 19:00
-            900,  # 20:00
-            500,  # 21:00
-            250,  # 22:00
-            150,  # 23:00
-        ]
-
-        # Mnożnik na podstawie liczby istniejących przystanków
-        # (więcej przystanków = nowy przystanek będzie mniej obciążony)
-        proximity_multiplier = 1.0 - (len(existing_stations) * 0.05)
-        proximity_multiplier = max(0.5, proximity_multiplier)  # min 50%
-
-        # Losowa zmienność ±20%
-        hourly_usage = [
-            int(usage * proximity_multiplier * (0.8 + random.random() * 0.4))
-            for usage in base_usage
-        ]
-
-        return hourly_usage
 
     def post(self, request):
         """
@@ -259,82 +204,85 @@ class CalculateNewStationsUsageView(APIView):
 
         Request body:
         {
+            "new_station": {"number": 3, "name": "East Station", "lat": 52.15, "lng": 21.15},
             "existing_stations": [
                 {"number": 1, "name": "Central Station", "lat": 52.1, "lng": 21.0},
                 {"number": 2, "name": "North Station", "lat": 52.2, "lng": 21.1}
-            ],
-            "new_stations": [
-                {"number": 3, "name": "East Station", "lat": 52.15, "lng": 21.15},
-                {"number": 4, "name": "West Station", "lat": 52.05, "lng": 20.95},
-                {"number": 5, "name": "South Station", "lat": 52.0, "lng": 21.05}
             ]
         }
 
         Response:
         {
-            "new_stations_usage": [
+            "stations_usage": [
+                {
+                    "pin_number": 2,
+                    "station_name": "North Station",
+                    "hourly_usage": [95, 48, 38, ...]
+                },
                 {
                     "pin_number": 3,
                     "station_name": "East Station",
-                    "hourly_usage": [100, 50, 40, ...] (24 elementy)
+                    "hourly_usage": [100, 50, 40, ...]
                 },
                 {
                     "pin_number": 4,
-                    "station_name": "West Station",
-                    "hourly_usage": [95, 48, 38, ...] (24 elementy)
-                },
-                {
-                    "pin_number": 5,
-                    "station_name": "South Station",
-                    "hourly_usage": [102, 52, 41, ...] (24 elementy)
+                    "station_name": "west Station",
+                    "hourly_usage": [100, 50, 40, ...]
                 }
             ]
         }
         """
+        new_station = request.data.get("new_station")
         existing_stations = request.data.get("existing_stations", [])
-        new_stations = request.data.get("new_stations", [])
 
         # Validacja
+        if not new_station:
+            return Response(
+                {"error": "new_station is required"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if not isinstance(new_station, dict):
+            return Response(
+                {"error": "new_station must be a dict"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
         if not isinstance(existing_stations, list):
             return Response(
                 {"error": "existing_stations must be a list"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if not isinstance(new_stations, list):
-            return Response(
-                {"error": "new_stations must be a list"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        new_num = new_station.get("number")
+        new_name = new_station.get("name", f"Station {new_num}")
 
-        if len(new_stations) != 3:
-            return Response(
-                {"error": "new_stations must contain exactly 3 stations"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        print(f"Obliczanie użycia dla 3 nowych przystanków...")
+        print(f"Obliczanie użycia dla nowego przystanku: {new_name} (#{new_num})")
         print(f"Istniejące przystanki: {len(existing_stations)}")
-        print(f"Nowe przystanki: {len(new_stations)}")
 
-        new_stations_usage = []
+        try:
+            # Oblicz użycie dla nowego przystanku i jego sąsiadów
+            stations_usage = calculate_metro_usage_for_single_station(
+                new_station,
+                existing_stations
+            )
 
-        for new_station in new_stations:
-            # Tutaj można wstawić rzeczywiste obliczenia
-            # zamiast mock'ów - np. calculate_total_metro_usage()
-            station_usage = {
-                "pin_number": new_station.get("number"),
-                "station_name": new_station.get("name", f"Station {new_station.get('number')}"),
-                "hourly_usage": self.generate_hourly_usage_for_station(
-                    new_station,
-                    existing_stations
-                )
-            }
-            new_stations_usage.append(station_usage)
+        except Exception as e:
+            print(f"Błąd obliczania użycia: {e}")
+            import traceback
+            traceback.print_exc()
+            return Response(
+                {"error": f"Calculation error: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        print(f"  Obliczenia zakończone dla {len(stations_usage)} przystanków")
+        for station in stations_usage:
+            print(f"    - {station['station_name']}: suma dobowa = {sum(station['hourly_usage'])}")
 
         return Response(
             {
-                "new_stations_usage": new_stations_usage
+                "stations_usage": stations_usage
             },
             status=status.HTTP_200_OK,
         )

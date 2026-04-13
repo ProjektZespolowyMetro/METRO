@@ -103,15 +103,17 @@ def find_nearest_traffic_point(lat, lng, df_points):
     return df_points.iloc[nearest_idx]
 
 
-# ---------------------------------------------------------
-# 1. OBLICZENIA Z LUDNOŚCI (Area Population)
-# ---------------------------------------------------------
-
-def calculate_usage_from_population(pins, profile):
+def calculate_usage_from_population(stations_to_calculate, profile, all_stations=None):
     """
     Oblicza potoki pasażerskie na podstawie ludności wokół pinezek.
+
+    Args:
+        stations_to_calculate: Lista przystanków do obliczenia
+        profile: Profil godzinowy
+        all_stations: (opcjonalnie) Pełna lista przystanków linii (dla kontekstu)
     """
-    # _, df_pop, traffic_profile, _, _ = DATA# sprawdzic
+    if all_stations is None:
+        all_stations = stations_to_calculate
 
     results = {}
 
@@ -122,21 +124,21 @@ def calculate_usage_from_population(pins, profile):
     MOBILITY_RATE = 1.7
     PUT_SHARE = 0.58
 
-    # Wywołujemy skrypt area_population, aby uzupełnić dane o ludności
-    # (chyba że piny już mają te dane - wtedy to tylko aktualizacja)
+    # Wywołujemy skrypt area_population
     if calculate_population_for_pins:
-        pop_data = calculate_population_for_pins(pins)
+        pop_data = calculate_population_for_pins(stations_to_calculate)
     else:
         pop_data = {}
 
-    for pin in pins:
+    # Obliczenia dla bus_tram (tylko dla przystanków do obliczenia)
+    bus_tram_info = calculate_bus_tram_for_pins(stations_to_calculate)
+
+    for pin in stations_to_calculate:
         pin_num = pin.get('number')
 
-        # Pobieramy dane o ludności (z wyniku area_population lub bezpośrednio z pina)
-        # Jeśli calculate_population_for_pins zadziałało, dane są w pop_data
+        # Pobieramy dane o ludności
         p_info = pop_data.get(pin_num, {})
 
-        # Fallback: sprawdź czy pin już miał dane (np. przesłane z frontendu)
         if not p_info:
             p_info = {
                 'pop_300m': pin.get('pop_300m', 0),
@@ -155,13 +157,8 @@ def calculate_usage_from_population(pins, profile):
 
         eff_pop = (ring_0_300 * W_300) + (ring_300_500 * W_500) + (ring_500_800 * W_800)
 
-        # Stały wybór metra (można rozbudować o logikę tramwaj/autobus jak wcześniej)
-        # Dla uproszczenia przy dynamicznych punktach przyjmujemy średnią 0.45
-        # lub staramy się zgadnąć na podstawie danych z pinu
-        # dogadać na nastepnym spodkaniu
-        # Pobierz informacje o dostępności przystanków
-        bus_tram_info = calculate_bus_tram_for_pins(pins)
-        metro_choice = bus_tram_info[pin_num]['metro_choice']
+        # Wybór metra z informacji o dostępności
+        metro_choice = bus_tram_info.get(pin_num, {}).get('metro_choice', 0.45)
 
         daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
 
@@ -176,14 +173,18 @@ def calculate_usage_from_population(pins, profile):
     return results
 
 
-# ---------------------------------------------------------
-# 2. OBLICZENIA Z PRZESIADKI (Modal Shift)
-# ---------------------------------------------------------
+def calculate_usage_from_modal_shift(stations_to_calculate, df_traffic_points, all_stations=None):
+    """
+    Oblicza przesiadkę z samochodów dla wybranych przystanków.
 
-def calculate_usage_from_modal_shift(pins, df_traffic_points):
+    Args:
+        stations_to_calculate: Lista przystanków do obliczenia
+        df_traffic_points: Dane o ruchu
+        all_stations: (opcjonalnie) Pełna lista przystanków linii (dla kontekstu sąsiadów)
     """
-    Oblicza przesiadkę z samochodów, znajdując najbliższy punkt pomiarowy dla każdej pinezki.
-    """
+    if all_stations is None:
+        all_stations = stations_to_calculate
+
     results = {}
 
     # Stałe modelu
@@ -194,10 +195,10 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
     METRO_SPEED = 35.0  # km/h
     METRO_ACCESS = 5.0  # min
 
-    # Sortujemy piny po numerze, żeby policzyć odległości między stacjami
-    sorted_pins = sorted(pins, key=lambda x: x.get('number', 0))
+    # Sortujemy PEŁNĄ linię po numerze, żeby znaleźć sąsiadów
+    sorted_all_stations = sorted(all_stations, key=lambda x: x.get('number', 0))
 
-    for i, pin in enumerate(sorted_pins):
+    for pin in stations_to_calculate:
         pin_num = pin.get('number')
         hourly_shift = [0] * 24
 
@@ -213,23 +214,31 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
                 capacity = 3000.0
 
             # 2. Oblicz parametry podróży (Metro vs Auto)
-            # Szukamy odległości do następnej stacji (lub poprzedniej dla ostatniej)
-            # Żeby oszacować czas podróży "do sąsiada"
+            # Szukamy sąsiadów w PEŁNEJ linii, nie tylko w stations_to_calculate
+            try:
+                idx = next(i for i, s in enumerate(sorted_all_stations)
+                           if s.get('number') == pin_num)
+            except StopIteration:
+                results[pin_num] = hourly_shift
+                continue
+
+            # Szukamy następnego i poprzedniego sąsiada z PEŁNEJ linii
             dist_km = 2.0  # Domyślnie
 
-            next_pin = sorted_pins[i + 1] if i < len(sorted_pins) - 1 else None
-            prev_pin = sorted_pins[i - 1] if i > 0 else None
+            next_pin = sorted_all_stations[idx + 1] if idx < len(sorted_all_stations) - 1 else None
+            prev_pin = sorted_all_stations[idx - 1] if idx > 0 else None
 
             neighbor = next_pin if next_pin else prev_pin
 
             if neighbor:
-                dist_km = haversine_distance(pin['lat'], pin['lng'], neighbor['lat'], neighbor['lng'])
+                dist_km = haversine_distance(pin['lat'], pin['lng'],
+                                             neighbor['lat'], neighbor['lng'])
 
             # Czas metrem
             t_metro = (dist_km / METRO_SPEED) * 60 + METRO_ACCESS
             u_metro = (BETA_TIME * t_metro) + METRO_BONUS
 
-            # Czas autem (Free flow) - estymacja na podstawie odległości i średniej prędkości auta w mieście (np. 30km/h)
+            # Czas autem (Free flow)
             auto_free_min = (dist_km / 30.0) * 60
 
             # 3. Pętla godzinowa
@@ -273,7 +282,83 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
     return results
 
 
+def calculate_metro_usage_for_single_station(new_station, all_existing_stations):
+    """
+    Oblicza użycie metra dla jednego konkretnego nowego przystanku
+    oraz jego sąsiadów (ponieważ nowy przystanek wpływa na ich obciążenie).
 
+    Args:
+        new_station: dict z nowym przystankiem (number, name, lat, lng)
+        all_existing_stations: Lista WSZYSTKICH istniejących przystanków (całej linii!)
+
+    Returns:
+        list: Lista dict'ów z przystankami (nowy + jego sąsiedzi)
+    """
+    if not new_station:
+        return []
+
+    new_num = new_station.get('number')
+
+    # Połącz CAŁĄ linię: wszystkie istniejące + nowy
+    all_stations = all_existing_stations + [new_station]
+    sorted_stations = sorted(all_stations, key=lambda x: x.get('number', 0))
+
+    # Znajdź indeks nowego przystanku
+    try:
+        idx = next(i for i, s in enumerate(sorted_stations) if s.get('number') == new_num)
+    except StopIteration:
+        return []
+
+    # Zbierz TYLKO przystanki do obliczenia (nowy + jego bezpośredni sąsiedzi)
+    stations_to_calculate = [new_station]
+    return_pin_numbers = {new_num}
+
+    if idx > 0:
+        prev_station = sorted_stations[idx - 1]
+        stations_to_calculate.append(prev_station)
+        return_pin_numbers.add(prev_station.get('number'))
+
+    if idx < len(sorted_stations) - 1:
+        next_station = sorted_stations[idx + 1]
+        stations_to_calculate.append(next_station)
+        return_pin_numbers.add(next_station.get('number'))
+
+    # Obliczenia z ludności - tylko dla wybranych, ale z kontekstem całej linii
+    usage_pop = calculate_usage_from_population(
+        stations_to_calculate,
+        TRAFFIC_PROFILE,
+        all_stations=all_stations  # Przekazujemy pełną linię dla kontekstu
+    )
+
+    # Obliczenia z przesiadki - tylko dla wybranych, ale z kontekstem całej linii
+    usage_shift = calculate_usage_from_modal_shift(
+        stations_to_calculate,
+        REF_TRAFFIC_POINTS,
+        all_stations=all_stations  # Przekazujemy pełną linię dla kontekstu
+    )
+
+    # Sumowanie wyników - tylko dla przystanków do zwrócenia
+    result_list = []
+    for pin_num in sorted(return_pin_numbers):
+        pop_arr = usage_pop.get(pin_num, [0] * 24)
+        shift_arr = usage_shift.get(pin_num, [0] * 24)
+        total_arr = [int(p + s) for p, s in zip(pop_arr, shift_arr)]
+
+        # Znajdź nazwę przystanku
+        station_name = next(
+            (s.get('name', f"Station {pin_num}")
+             for s in all_stations
+             if s.get('number') == pin_num),
+            f"Station {pin_num}"
+        )
+
+        result_list.append({
+            "pin_number": pin_num,
+            "station_name": station_name,
+            "hourly_usage": total_arr
+        })
+
+    return result_list
 # GŁÓWNA FUNKCJA (API)
 
 
@@ -312,6 +397,9 @@ def calculate_total_metro_usage(pins):
         print(f"Błąd podczas wypisywania tabeli: {e}")
 
     return total_usage
+
+
+
 
 
 def print_tabular_results(results_dict, pins):
