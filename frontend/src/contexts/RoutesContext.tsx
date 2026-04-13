@@ -41,7 +41,7 @@ type RoutesContextType = {
     activeRouteId: string | null;
     setActiveRouteId: (id: string | null) => void;
 
-    segments: Map<string, RoadSegment>;
+    segments: Record<string, RoadSegment>;
     setSegmentCP: (key: string, offsetX: number, offsetY: number) => void;
 };
 
@@ -105,35 +105,37 @@ export const RoutesProvider: React.FC<{ children: React.ReactNode }> = ({
         [cpOffsetsRaw]
     );
 
-    const segments = useMemo<Map<string, RoadSegment>>(() => {
-        const map = new Map<string, RoadSegment>();
+    const segments = useMemo(() => {
+        // If you use map the roads WILL NOT REDRAW ON CHANGE BEFORE REFRESH!!!!!!
+        const newSegments: Record<string, RoadSegment> = {};
+
         for (const route of routes) {
             for (let i = 0; i < route.pinIds.length - 1; i++) {
                 const a = route.pinIds[i];
                 const b = route.pinIds[i + 1];
                 const key = segmentKey(a, b);
                 const offset = cpOffsets.get(key) ?? { x: 0, y: 0 };
-                const existing = map.get(key);
-                if (existing) {
-                    if (!existing.routeIds.includes(route.id)) {
-                        map.set(key, {
-                            ...existing,
-                            routeIds: [...existing.routeIds, route.id],
-                        });
+
+                if (newSegments[key]) {
+                    if (!newSegments[key].routeIds.includes(route.id)) {
+                        newSegments[key] = {
+                            ...newSegments[key],
+                            routeIds: [...newSegments[key].routeIds, route.id],
+                        };
                     }
                 } else {
-                    map.set(key, {
+                    newSegments[key] = {
                         key,
                         pinIdA: a,
                         pinIdB: b,
                         cpOffsetX: offset.x,
                         cpOffsetY: offset.y,
                         routeIds: [route.id],
-                    });
+                    };
                 }
             }
         }
-        return map;
+        return newSegments;
     }, [routes, cpOffsets]);
 
     const addRoute = useCallback(() => {

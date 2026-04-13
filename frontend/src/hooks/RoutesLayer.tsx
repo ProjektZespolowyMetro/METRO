@@ -28,6 +28,8 @@ export default function RoadsLayer({ map }: Props) {
             map.getPane(PANE_NAME)!.style.pointerEvents = 'none';
         }
 
+        console.log('Redrawing RoadsLayer with', routes.length, 'routes');
+
         layersRef.current.forEach((l) => l.remove());
         layersRef.current = [];
 
@@ -51,7 +53,7 @@ export default function RoadsLayer({ map }: Props) {
             });
         };
 
-        for (const seg of Array.from(segments.values())) {
+        for (const seg of Object.values(segments)) {
             const pinA = pinById(seg.pinIdA);
             const pinB = pinById(seg.pinIdB);
             if (!pinA || !pinB) continue;
@@ -61,32 +63,14 @@ export default function RoadsLayer({ map }: Props) {
             );
             const n = colors.length;
 
-            /**
-             * Replace the two points below with a densely sampled curve.
-             * Everything else (band splitting) works unchanged.
-             *
-             *   const STEPS = 64;
-             *   const midLat = (pinA.lat + pinB.lat) / 2 + seg.cpOffsetX;
-             *   const midLng = (pinA.lng + pinB.lng) / 2 + seg.cpOffsetY;
-             *   const fullLine: LngLat[] = Array.from({ length: STEPS + 1 }, (_, k) => {
-             *     const u = k / STEPS;
-             *     return [
-             *       (1-u)**2 * pinA.lng + 2*(1-u)*u * midLng + u**2 * pinB.lng,
-             *       (1-u)**2 * pinA.lat + 2*(1-u)*u * midLat + u**2 * pinB.lat,
-             *     ] as LngLat;
-             *   });
-             *  doesn't work for now so do not uncomment
-             */
             const fullLine: LngLat[] = [
                 [pinA.lng, pinA.lat],
                 [pinB.lng, pinB.lat],
             ];
 
             if (n === 1) {
-                // Simple case: single color, draw as-is
                 addFeature(colors[0], fullLine);
             } else {
-                // Split the line into N equal bands by interpolating along it
                 const bands = splitIntoBands(fullLine, n);
                 bands.forEach((bandCoords, i) => {
                     addFeature(colors[i], bandCoords);
@@ -94,7 +78,7 @@ export default function RoadsLayer({ map }: Props) {
             }
         }
 
-        // One GeoJSON layer per color (batched for performance)
+        // One GeoJSON layer per color
         Object.entries(featuresByColor).forEach(([color, features]) => {
             const layer = L.geoJSON(
                 {
@@ -119,7 +103,15 @@ export default function RoadsLayer({ map }: Props) {
             layersRef.current.forEach((l) => l.remove());
             layersRef.current = [];
         };
-    }, [map, segments, routes, pins]);
+        //json bcs routes are held in an array. Deps just check if address has changed, not the values
+    }, [
+        map,
+        segments,
+        routes,
+        pins,
+        JSON.stringify(routes),
+        JSON.stringify(segments),
+    ]);
 
     return null;
 }
