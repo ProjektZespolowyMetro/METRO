@@ -1,45 +1,49 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
 
+export type ToolMode = 'select' | 'place' | 'drag' | 'delete';
+
 export type Pin = {
-    id: string; //used to identify unset pins
-    lat: number; //latitude 
-    lng: number; //longitude 
+    id: string;
+    lat: number;
+    lng: number;
     number?: number; // order of stations
     isDraft?: boolean; // temporary marker not confirmed by user yet
-    name?: string; // both are null when adding empty pins,
-    // name is unused for now
+    name?: string;
 };
 
 type PinsContextType = {
     pins: Pin[];
-    setPins: React.Dispatch<React.SetStateAction<Pin[]>>; //type of useState
-    addPin: (pin: Pin) => void;
+    setPins: React.Dispatch<React.SetStateAction<Pin[]>>;
+    addPin: (pin: Omit<Pin, 'id'> & { id?: string }) => void; // Allow id to be optional on creation
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
     clearPins: () => void;
+
+    activeTool: ToolMode;
+    setActiveTool: (tool: ToolMode) => void;
+    sendError: string | null;
+    isSending: boolean;
+    maintenanceCosts: any;
+    metroUsage: any;
+    onSendPins: () => void;
 };
+
+const PinsContext = createContext<PinsContextType | undefined>(undefined);
 
 export const usePins = () => {
     const context = useContext(PinsContext);
-    // In case of usage outside this provider throw an error
     if (!context) {
         throw new Error('usePins must be used within PinsProvider');
     }
     return context;
 };
 
-// Undefined outside this provider, default value is undefined as well.
-const PinsContext = createContext<PinsContextType | undefined>(undefined);
-
 export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
     children,
 }) => {
     const [pins, setPins] = useState<Pin[]>(() => {
-        // load from localStorage on init
         try {
             const saved = localStorage.getItem('pins');
-            //if default value (undefined) then we return an empty array.
-            //if found anything then save whatever found
             if (!saved) return [];
 
             // Do not restore unfinished draft pins from previous session.
@@ -50,16 +54,31 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     });
 
-    // save on first render and whenever array of pins is altered
+    const [activeTool, setActiveTool] = useState<ToolMode>('select');
+    const [sendError, setSendError] = useState<string | null>(null);
+    const [isSending, setIsSending] = useState(false);
+
+    // Placeholder states for future overhauled logic
+    const [maintenanceCosts] = useState({ total: 0 });
+    const [metroUsage] = useState({ daily: 0 });
+
     useEffect(() => {
         localStorage.setItem('pins', JSON.stringify(pins));
     }, [pins]);
 
-    //Copy all existing pins into a new array and append a new pin
-    const addPin = (pin: Pin) => setPins((prev) => [...prev, pin]);
+    /**
+     * Creates a functioning pin.
+     * If no ID is provided, it generates a native UUID.
+     * Note: "Roads" are no longer drawn as this logic ignores sequential indexing.
+     */
+    const addPin = (pinData: Omit<Pin, 'id'> & { id?: string }) => {
+        const newPin: Pin = {
+            ...pinData,
+            id: pinData.id || crypto.randomUUID(), // Ensures every pin has an inherent UUID
+        };
+        setPins((prev) => [...prev, newPin]);
+    };
 
-    // Instead of removing and adding pin with passed id we loop
-    // through the array to avoid copying it twice
     const updatePin = (updatedPin: Pin) =>
         setPins((prev) =>
             prev.map((p) => (p.id === updatedPin.id ? updatedPin : p))
@@ -74,10 +93,37 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
         }
     };
 
-    // Every nested component in App.tsx has access to pin logic
+    const onSendPins = async () => {
+        setIsSending(true);
+        setSendError(null);
+        try {
+            // Updated to simply log the current array of unordered pins
+            await new Promise((resolve) => setTimeout(resolve, 1500));
+            console.log('Pins synced:', pins);
+        } catch (err) {
+            setSendError('Connection error: Could not sync pins.');
+        } finally {
+            setIsSending(false);
+        }
+    };
+
     return (
         <PinsContext.Provider
-            value={{ pins, setPins, addPin, updatePin, removePin, clearPins }}
+            value={{
+                pins,
+                setPins,
+                addPin,
+                updatePin,
+                removePin,
+                clearPins,
+                activeTool,
+                setActiveTool,
+                sendError,
+                isSending,
+                maintenanceCosts,
+                metroUsage,
+                onSendPins,
+            }}
         >
             {children}
         </PinsContext.Provider>

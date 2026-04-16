@@ -1,9 +1,10 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 
-import PinMenu from '../components/PinMenu';
 import PinOverlay from '../components/PinOverlay';
+import PinMenu from '../components/unused/PinMenu';
+import RoutesLayer from '../hooks/RoutesLayer';
 
 import { usePins } from '../contexts/PinsContext';
 import { useMapInit } from '../hooks/InitMap';
@@ -39,15 +40,19 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
     const [scoreMessage, setScoreMessage] = useState<string | null>(null);
     const [rankingRefreshKey, setRankingRefreshKey] = useState(0);
 
-    const { pins, addPin, updatePin, removePin, clearPins } = usePins();
+    const { pins, addPin, updatePin, removePin, clearPins, activeTool } =
+        usePins();
 
     const map = useMapInit(mapContainerRef);
 
     usePinSync({
         map,
         pins,
+        addPin,
         updatePin,
+        removePin,
         selectedPinId,
+        activeTool,
         onSelectPinId: (id) => {
             setSelectedPinId(id);
             setForceEditSelectedPin(false);
@@ -77,10 +82,8 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
             setSendError(null);
         },
         onMapBlankLeftClick: (eventTarget) => {
-            const targetEl =
-                eventTarget instanceof Element ? eventTarget : null;
+            const targetEl = eventTarget instanceof Element ? eventTarget : null;
 
-            // Klik wewnatrz dymku edycji nie powinien anulowac tworzenia draftu.
             if (
                 targetEl?.closest('[data-pin-overlay-root="true"]') ||
                 targetEl?.closest('[data-pin-overlay-panel="true"]')
@@ -90,7 +93,6 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
 
             const selected = pins.find((p) => p.id === selectedPinId) ?? null;
 
-            // Niezapisany draft (brak danych) kasujemy przy odkliknieciu.
             if (
                 selected?.isDraft &&
                 selected.number === undefined &&
@@ -105,6 +107,35 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
         },
     });
 
+    useEffect(() => {
+        if (!map) return;
+
+        const container = map.getContainer();
+
+        const onMouseDown = (e: MouseEvent) => {
+            if (e.button !== 2) return;
+            e.preventDefault();
+            const simulated = new MouseEvent('mousedown', {
+                bubbles: true,
+                cancelable: true,
+                clientX: e.clientX,
+                clientY: e.clientY,
+                button: 0,
+            });
+            container.dispatchEvent(simulated);
+        };
+
+        const onContextMenu = (e: MouseEvent) => e.preventDefault();
+
+        container.addEventListener('mousedown', onMouseDown);
+        container.addEventListener('contextmenu', onContextMenu);
+
+        return () => {
+            container.removeEventListener('mousedown', onMouseDown);
+            container.removeEventListener('contextmenu', onContextMenu);
+        };
+    }, [map]);
+
     const selectedPin = pins.find((p) => p.id === selectedPinId) ?? null;
 
     const handleSendPins = async () => {
@@ -116,29 +147,20 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
             if (map) {
                 const target = L.latLng(firstMissing.lat, firstMissing.lng);
                 const nextZoom = Math.max(map.getZoom(), 16);
-
-                map.flyTo(target, nextZoom, {
-                    animate: true,
-                    duration: 0.6,
-                });
+                map.flyTo(target, nextZoom, { animate: true, duration: 0.6 });
             }
-
             setSelectedPinId(firstMissing.id);
             setForceEditSelectedPin(true);
-
             setSendError(
                 'Nadaj numer każdej pinezce przed wysłaniem (PPM lub „Edytuj” w dymku).'
             );
-
             return;
         }
 
         try {
             setIsSending(true);
             setSendError(null);
-
             const data = await sendPinsToBackend(pins);
-
             setMaintenanceCosts(data.maintenance_costs ?? null);
             setMetroUsage(data.metro_usage ?? null);
             setTotalLengthMeters(data.total_length_meters ?? null);
@@ -160,7 +182,11 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
             return;
         }
 
-        const profit = calculateDailyProfitSummary(metroUsage, maintenanceCosts, TICKET_PRICE_USD);
+        const profit = calculateDailyProfitSummary(
+            metroUsage,
+            maintenanceCosts,
+            TICKET_PRICE_USD
+        );
         if (!profit) {
             setScoreMessage('Najpierw policz linię (Send pins).');
             return;
@@ -181,21 +207,18 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
             setScoreMessage(`Wynik zapisany: ${result.line_name}.`);
             setRankingRefreshKey((v) => v + 1);
         } catch (err) {
-            setScoreMessage(err instanceof Error ? err.message : 'Nie udało się zapisać wyniku.');
+            setScoreMessage(
+                err instanceof Error
+                    ? err.message
+                    : 'Nie udało się zapisać wyniku.'
+            );
         } finally {
             setIsSavingScore(false);
         }
     };
 
     return (
-        <div
-            style={{
-                position: 'relative',
-                width: '100%',
-                height: '100vh',
-            }}
-        >
-            {/* MENU PANEL */}
+        <div style={{ position: 'relative', width: '100%', height: '100vh' }}>
             <PinMenu
                 sendError={sendError}
                 isSending={isSending}
@@ -220,16 +243,10 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
                 onSaveScore={handleSaveScore}
             />
 
-            {/* MAP CONTAINER */}
-            <div
-                ref={mapContainerRef}
-                style={{
-                    width: '100%',
-                    height: '100%',
-                }}
-            />
+            <div ref={mapContainerRef} style={{ width: '100%', height: '100%' }} />
 
-            {/* SELECTED PIN OVERLAY */}
+            <RoutesLayer map={map} />
+
             {map && selectedPin && (
                 <PinOverlay
                     map={map}
@@ -239,9 +256,7 @@ export default function MainMap({ authToken, currentUsername, onLogout }: Props)
                     removePin={removePin}
                     metroUsage={metroUsage}
                     forceEdit={forceEditSelectedPin}
-                    onForceEditConsumed={() =>
-                        setForceEditSelectedPin(false)
-                    }
+                    onForceEditConsumed={() => setForceEditSelectedPin(false)}
                     onClose={() => {
                         if (
                             selectedPin.isDraft &&

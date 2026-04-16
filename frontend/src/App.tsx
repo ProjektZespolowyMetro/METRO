@@ -2,9 +2,12 @@ import React, { useState } from 'react';
 import './App.css';
 import MainMap from './screens/MainMap';
 import { PinsProvider } from './contexts/PinsContext';
-import './utils/pinIcon.css';
+import './css/pinIcon.css';
 import AuthLanding from './screens/AuthLanding';
 import { loginUser, registerUser } from './services/AuthAndRankingApi';
+import { MenuProvider } from './contexts/MenuContext';
+import TopMenu from './components/TopMenu';
+import { RoutesProvider } from './contexts/RoutesContext';
 
 function App() {
     const [authToken, setAuthToken] = useState<string | null>(() =>
@@ -41,13 +44,18 @@ function App() {
     return (
         <div className='App'>
             {authToken && currentUsername ? (
-                <PinsProvider>
-                    <MainMap
-                        authToken={authToken}
-                        currentUsername={currentUsername}
-                        onLogout={handleLogout}
-                    />
-                </PinsProvider>
+                <RoutesProvider>
+                    <PinsProvider>
+                        <MenuProvider>
+                            <TopMenu />
+                            <MainMap
+                                authToken={authToken}
+                                currentUsername={currentUsername}
+                                onLogout={handleLogout}
+                            />
+                        </MenuProvider>
+                    </PinsProvider>
+                </RoutesProvider>
             ) : (
                 <AuthLanding onLogin={handleLogin} onRegister={handleRegister} />
             )}

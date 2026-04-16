@@ -1,7 +1,7 @@
 import MetroFinanceTable from './MetroFinanceTable';
-import SendPinsButton from './SendPinsButton';
-import DeletePinsButton from './DeletePinsButton';
-import RankingTable from './RankingTable';
+import SendPinsButton from '../SendPinsButton';
+import DeletePinsButton from '../DeletePinsButton';
+import RankingTable from '../RankingTable';
 
 type Props = {
     sendError: string | null;
@@ -66,7 +66,13 @@ export default function PinMenu({
                         marginBottom: 8,
                     }}
                 >
-                    <div style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>
+                    <div
+                        style={{
+                            fontSize: 14,
+                            fontWeight: 700,
+                            color: '#111827',
+                        }}
+                    >
                         METRO
                     </div>
                     <div style={{ fontSize: 11, color: '#6b7280' }}>
@@ -139,7 +145,13 @@ export default function PinMenu({
                         </div>
                     )}
 
-                    <div style={{ display: 'grid', gap: 10, justifyItems: 'center' }}>
+                    <div
+                        style={{
+                            display: 'grid',
+                            gap: 10,
+                            justifyItems: 'center',
+                        }}
+                    >
                         <DeletePinsButton onClick={onDeletePins} />
 
                         <div

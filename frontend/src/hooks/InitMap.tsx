@@ -18,6 +18,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         const mapInstance = L.map(containerRef.current, {
             minZoom: 12,
             maxZoom: 16,
+            zoomControl: false,
             maxBounds: cracowBounds,
             maxBoundsViscosity: 1.0,
             preferCanvas: true, // Optimization: Renders GeoJSONs on Canvas instead of SVG
@@ -81,6 +82,12 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
                     console.error(`Failed to load ${file.name}:`, err)
                 );
         });
+
+        L.control
+            .zoom({
+                position: 'bottomright',
+            })
+            .addTo(mapInstance);
 
         setMap(mapInstance);
 
