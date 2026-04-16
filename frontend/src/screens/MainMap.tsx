@@ -11,23 +11,33 @@ import { usePinSync } from '../hooks/Pins';
 
 import {
     sendPinsToBackend,
-    MetroUsageByPinNumber,
+    calculateDailyProfitSummary,
 } from '../services/SendPinsToApi';
+import { submitScore } from '../services/AuthAndRankingApi';
 
-export default function MainMap() {
+const TICKET_PRICE_USD = 1.5;
+
+type Props = {
+    authToken: string;
+    currentUsername: string;
+    onLogout: () => void;
+};
+
+export default function MainMap({ authToken, currentUsername, onLogout }: Props) {
     const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-    const [isAddMode, setIsAddMode] = useState(true);
-
-    const [constructionCosts, setConstructionCosts] = useState<any | null>(null);
     const [maintenanceCosts, setMaintenanceCosts] = useState<any>(null);
     const [metroUsage, setMetroUsage] = useState<any>(null);
+    const [totalLengthMeters, setTotalLengthMeters] = useState<number | null>(null);
 
     const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
     const [forceEditSelectedPin, setForceEditSelectedPin] = useState(false);
 
     const [sendError, setSendError] = useState<string | null>(null);
     const [isSending, setIsSending] = useState(false);
+    const [isSavingScore, setIsSavingScore] = useState(false);
+    const [scoreMessage, setScoreMessage] = useState<string | null>(null);
+    const [rankingRefreshKey, setRankingRefreshKey] = useState(0);
 
     const { pins, addPin, updatePin, removePin, clearPins } = usePins();
 
@@ -36,11 +46,8 @@ export default function MainMap() {
     usePinSync({
         map,
         pins,
-        addPin,
         updatePin,
-        removePin,
         selectedPinId,
-        isAddMode,
         onSelectPinId: (id) => {
             setSelectedPinId(id);
             setForceEditSelectedPin(false);
@@ -49,6 +56,51 @@ export default function MainMap() {
         onRequestEditPinId: (id) => {
             setSelectedPinId(id);
             setForceEditSelectedPin(true);
+            setSendError(null);
+        },
+        onMapBlankRightClick: (lat, lng) => {
+            const existingDraft = pins.find((p) => p.isDraft);
+            if (existingDraft) {
+                removePin(existingDraft.id);
+            }
+
+            const draftPin = {
+                id: crypto.randomUUID(),
+                lat,
+                lng,
+                isDraft: true,
+            };
+
+            addPin(draftPin);
+            setSelectedPinId(draftPin.id);
+            setForceEditSelectedPin(true);
+            setSendError(null);
+        },
+        onMapBlankLeftClick: (eventTarget) => {
+            const targetEl =
+                eventTarget instanceof Element ? eventTarget : null;
+
+            // Klik wewnatrz dymku edycji nie powinien anulowac tworzenia draftu.
+            if (
+                targetEl?.closest('[data-pin-overlay-root="true"]') ||
+                targetEl?.closest('[data-pin-overlay-panel="true"]')
+            ) {
+                return;
+            }
+
+            const selected = pins.find((p) => p.id === selectedPinId) ?? null;
+
+            // Niezapisany draft (brak danych) kasujemy przy odkliknieciu.
+            if (
+                selected?.isDraft &&
+                selected.number === undefined &&
+                !(selected.name && selected.name.trim())
+            ) {
+                removePin(selected.id);
+            }
+
+            setSelectedPinId(null);
+            setForceEditSelectedPin(false);
             setSendError(null);
         },
     });
@@ -89,13 +141,49 @@ export default function MainMap() {
 
             setMaintenanceCosts(data.maintenance_costs ?? null);
             setMetroUsage(data.metro_usage ?? null);
-            setConstructionCosts(data.construction_costs ?? null);
+            setTotalLengthMeters(data.total_length_meters ?? null);
+            setScoreMessage(null);
         } catch (e) {
             setSendError(
                 e instanceof Error ? e.message : 'Nie udało się wysłać pinów.'
             );
         } finally {
             setIsSending(false);
+        }
+    };
+
+    const canSaveScore = Boolean(maintenanceCosts) && Boolean(metroUsage);
+
+    const handleSaveScore = async () => {
+        if (!authToken) {
+            setScoreMessage('Zaloguj się, aby zapisać wynik.');
+            return;
+        }
+
+        const profit = calculateDailyProfitSummary(metroUsage, maintenanceCosts, TICKET_PRICE_USD);
+        if (!profit) {
+            setScoreMessage('Najpierw policz linię (Send pins).');
+            return;
+        }
+
+        try {
+            setIsSavingScore(true);
+            setScoreMessage(null);
+
+            const result = await submitScore(authToken, {
+                line_name: `Linia ${pins.length} stacji`,
+                daily_profit_usd: profit.dailyProfitUsd,
+                total_length_meters: totalLengthMeters ?? 0,
+                num_stations: pins.length,
+                train_frequency_minutes: maintenanceCosts?.frequency_minutes ?? 5,
+            });
+
+            setScoreMessage(`Wynik zapisany: ${result.line_name}.`);
+            setRankingRefreshKey((v) => v + 1);
+        } catch (err) {
+            setScoreMessage(err instanceof Error ? err.message : 'Nie udało się zapisać wyniku.');
+        } finally {
+            setIsSavingScore(false);
         }
     };
 
@@ -109,20 +197,27 @@ export default function MainMap() {
         >
             {/* MENU PANEL */}
             <PinMenu
-                isAddMode={isAddMode}
-                setIsAddMode={setIsAddMode}
                 sendError={sendError}
                 isSending={isSending}
                 maintenanceCosts={maintenanceCosts}
                 metroUsage={metroUsage}
+                canSaveScore={canSaveScore}
+                isSavingScore={isSavingScore}
+                scoreMessage={scoreMessage}
+                rankingRefreshKey={rankingRefreshKey}
+                currentUsername={currentUsername}
+                onLogout={onLogout}
                 onDeletePins={() => {
                     clearPins();
                     setSelectedPinId(null);
                     setForceEditSelectedPin(false);
                     setMetroUsage(null);
                     setSendError(null);
+                    setTotalLengthMeters(null);
+                    setScoreMessage(null);
                 }}
                 onSendPins={handleSendPins}
+                onSaveScore={handleSaveScore}
             />
 
             {/* MAP CONTAINER */}
@@ -148,6 +243,14 @@ export default function MainMap() {
                         setForceEditSelectedPin(false)
                     }
                     onClose={() => {
+                        if (
+                            selectedPin.isDraft &&
+                            selectedPin.number === undefined &&
+                            !(selectedPin.name && selectedPin.name.trim())
+                        ) {
+                            removePin(selectedPin.id);
+                        }
+
                         setSelectedPinId(null);
                         setForceEditSelectedPin(false);
                     }}

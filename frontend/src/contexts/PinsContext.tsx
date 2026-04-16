@@ -5,6 +5,7 @@ export type Pin = {
     lat: number; //latitude 
     lng: number; //longitude 
     number?: number; // order of stations
+    isDraft?: boolean; // temporary marker not confirmed by user yet
     name?: string; // both are null when adding empty pins,
     // name is unused for now
 };
@@ -39,7 +40,11 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
             const saved = localStorage.getItem('pins');
             //if default value (undefined) then we return an empty array.
             //if found anything then save whatever found
-            return saved ? JSON.parse(saved) : [];
+            if (!saved) return [];
+
+            // Do not restore unfinished draft pins from previous session.
+            const parsed = JSON.parse(saved) as Pin[];
+            return parsed.filter((pin) => !pin.isDraft);
         } catch {
             return [];
         }

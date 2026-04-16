@@ -1,5 +1,3 @@
-import { Pin } from '../contexts/PinsContext';
-
 export type MetroUsageByPinNumber = Record<number, number[]>;
 
 export type MaintenanceCosts = {
@@ -28,6 +26,12 @@ export type SendPinsResponse = {
     maintenance_costs: MaintenanceCosts;
 };
 
+export type DailyProfitSummary = {
+    totalDailyRides: number;
+    dailyRevenueUsd: number;
+    dailyProfitUsd: number;
+};
+
 export async function sendPinsToBackend(pins: any[], train_frequency = 5): Promise<SendPinsResponse> {
     const res = await fetch('http://127.0.0.1:8000/api/pins/',        {
         method: 'POST',
@@ -40,4 +44,28 @@ export async function sendPinsToBackend(pins: any[], train_frequency = 5): Promi
     }
 
     return res.json();
+}
+
+export function calculateDailyProfitSummary(
+    metroUsage: MetroUsageByPinNumber | { error: string } | null,
+    maintenanceCosts: MaintenanceCosts | null,
+    ticketPriceUsd: number
+): DailyProfitSummary | null {
+    if (!metroUsage || !maintenanceCosts) return null;
+    if ('error' in metroUsage) return null;
+
+    let totalDailyRides = 0;
+    for (const values of Object.values(metroUsage)) {
+        if (!Array.isArray(values)) continue;
+        totalDailyRides += values.reduce((sum, value) => sum + (Number(value) || 0), 0);
+    }
+
+    const dailyRevenueUsd = totalDailyRides * ticketPriceUsd;
+    const dailyProfitUsd = dailyRevenueUsd - maintenanceCosts.daily_cost_usd;
+
+    return {
+        totalDailyRides,
+        dailyRevenueUsd,
+        dailyProfitUsd,
+    };
 }

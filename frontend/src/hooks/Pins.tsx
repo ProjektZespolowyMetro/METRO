@@ -6,25 +6,23 @@ import { createPinIcon } from '../utils/MapUtils';
 type UsePinSyncProps = {
     map: L.Map | null;
     pins: Pin[];
-    addPin: (pin: Pin) => void;
     updatePin: (updatedPin: Pin) => void;
-    removePin: (id: string) => void;
-    isAddMode: boolean;
     selectedPinId: string | null;
-    onSelectPinId: (id: string) => void;
+    onSelectPinId: (id: string | null) => void;
     onRequestEditPinId: (id: string) => void;
+    onMapBlankRightClick: (lat: number, lng: number) => void;
+    onMapBlankLeftClick: (eventTarget: EventTarget | null) => void;
 };
 
 export function usePinSync({
                                map,
                                pins,
-                               addPin,
                                updatePin,
-                               removePin,
-                               isAddMode,
                                selectedPinId,
                                onSelectPinId,
                                onRequestEditPinId,
+                               onMapBlankRightClick,
+                               onMapBlankLeftClick,
                            }: UsePinSyncProps) {
     const markersLayerRef = useRef<L.LayerGroup | null>(null);
     const drawnRoadLayerRef = useRef<L.Polyline | null>(null);
@@ -36,34 +34,22 @@ export function usePinSync({
             markersLayerRef.current = L.layerGroup().addTo(map);
         }
 
-        const handleMapClick = (e: L.LeafletMouseEvent) => {
-            if (!isAddMode) return;
-            const newPin: Pin = {
-                id: crypto.randomUUID(),
-                lat: e.latlng.lat,
-                lng: e.latlng.lng,
-            };
-            addPin(newPin);
+        const handleMapClick = (e: L.LeafletMouseEvent) =>
+            onMapBlankLeftClick(e.originalEvent?.target ?? null);
+
+        const handleMapContextMenu = (e: L.LeafletMouseEvent) => {
+            L.DomEvent.preventDefault(e.originalEvent);
+            onMapBlankRightClick(e.latlng.lat, e.latlng.lng);
         };
 
         map.on('click', handleMapClick);
+        map.on('contextmenu', handleMapContextMenu);
 
         return () => {
             map.off('click', handleMapClick);
+            map.off('contextmenu', handleMapContextMenu);
         };
-    }, [map, addPin, isAddMode]);
-    useEffect(() => {
-        if (!map) return;
-
-        const el = map.getContainer();
-        const prev = el.style.cursor;
-
-        el.style.cursor = isAddMode ? 'crosshair' : '';
-
-        return () => {
-            el.style.cursor = prev;
-        };
-    }, [map, isAddMode]);
+    }, [map, onMapBlankLeftClick, onMapBlankRightClick]);
     useEffect(() => {
         if (!map || !markersLayerRef.current) return;
 
@@ -73,7 +59,7 @@ export function usePinSync({
             const isSelected = pin.id === selectedPinId;
 
             const marker = L.marker([pin.lat, pin.lng], {
-                icon: createPinIcon(pin.number, isSelected),
+                icon: createPinIcon(pin.number, isSelected, Boolean(pin.isDraft)),
                 draggable: true,
                 zIndexOffset: isSelected ? 1000 : 0,
             }).addTo(markersLayerRef.current!);
@@ -99,7 +85,7 @@ export function usePinSync({
         }
 
         const numberedPins = [...pins]
-            .filter((p) => p.number !== undefined)
+            .filter((p) => !p.isDraft && p.number !== undefined)
             .sort((a, b) => a.number! - b.number!);
 
         if (numberedPins.length >= 2) {
@@ -115,7 +101,6 @@ export function usePinSync({
         map,
         pins,
         updatePin,
-        removePin,
         selectedPinId,
         onSelectPinId,
         onRequestEditPinId,

@@ -1,0 +1,176 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;800&family=IBM+Plex+Mono:wght@500&display=swap');
+
+:root {
+    --auth-bg-1: #f4f6f3;
+    --auth-bg-2: #e6efe8;
+    --auth-ink: #172022;
+    --auth-muted: #5b676c;
+    --auth-card: rgba(255, 255, 255, 0.86);
+    --auth-border: rgba(23, 32, 34, 0.12);
+    --auth-accent: #0f766e;
+    --auth-accent-2: #ea580c;
+}
+
+.auth-landing {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    overflow: hidden;
+    font-family: 'Outfit', sans-serif;
+    color: var(--auth-ink);
+    background: linear-gradient(135deg, var(--auth-bg-1) 0%, var(--auth-bg-2) 100%);
+}
+
+.auth-landing__bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        url('../assets/background.png') calc(50% - 37px) bottom / cover no-repeat,
+        radial-gradient(circle at 10% 15%, rgba(15, 118, 110, 0.2) 0 18%, transparent 40%),
+        radial-gradient(circle at 82% 8%, rgba(234, 88, 12, 0.16) 0 20%, transparent 42%),
+        radial-gradient(circle at 88% 88%, rgba(15, 118, 110, 0.13) 0 16%, transparent 34%);
+    opacity: 0.92;
+}
+
+.auth-panel {
+    position: relative;
+    z-index: 1;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 36px;
+    box-sizing: border-box;
+}
+
+.auth-panel__brand {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.auth-panel__brand h1 {
+    margin: 6px 0 0;
+    font-size: clamp(24px, 3vw, 34px);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+}
+
+.auth-panel__brand p {
+    margin: 0;
+    max-width: 500px;
+    color: var(--auth-muted);
+    font-size: 14px;
+    line-height: 1.45;
+}
+
+.auth-panel__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--auth-border);
+    border-radius: 999px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    background: rgba(255, 255, 255, 0.65);
+}
+
+.auth-panel__card {
+    border: 1px solid var(--auth-border);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.88);
+    box-shadow: 0 30px 65px rgba(23, 32, 34, 0.2);
+    backdrop-filter: blur(12px);
+    padding: 20px;
+    width: min(440px, calc(100vw - 32px));
+}
+
+.auth-panel__tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.auth-panel__tabs button {
+    border: 1px solid var(--auth-border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.7);
+    color: #213034;
+    font-size: 14px;
+    font-weight: 700;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.auth-panel__tabs .is-active {
+    background: linear-gradient(120deg, var(--auth-accent) 0%, #14b8a6 100%);
+    color: #ffffff;
+    border-color: transparent;
+}
+
+.auth-form {
+    display: grid;
+    gap: 10px;
+}
+
+.auth-form label {
+    display: grid;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #27363a;
+}
+
+.auth-form input {
+    border: 1px solid rgba(23, 32, 34, 0.18);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #182529;
+    padding: 11px 12px;
+    font-size: 14px;
+    outline: none;
+}
+
+.auth-form input:focus {
+    border-color: var(--auth-accent);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.16);
+}
+
+.auth-form__error {
+    border-radius: 10px;
+    background: rgba(248, 113, 113, 0.14);
+    border: 1px solid rgba(220, 38, 38, 0.28);
+    color: #991b1b;
+    font-size: 12px;
+    padding: 8px 10px;
+}
+
+.auth-form > button {
+    margin-top: 6px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(120deg, var(--auth-accent) 0%, var(--auth-accent-2) 100%);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.auth-form > button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+}
+
+@media (max-width: 860px) {
+    .auth-panel {
+        padding: 20px;
+    }
+}

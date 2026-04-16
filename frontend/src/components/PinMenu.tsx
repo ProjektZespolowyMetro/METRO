@@ -1,31 +1,40 @@
 import MetroFinanceTable from './MetroFinanceTable';
 import SendPinsButton from './SendPinsButton';
 import DeletePinsButton from './DeletePinsButton';
-import React from "react";
+import RankingTable from './RankingTable';
 
 type Props = {
-    isAddMode: boolean;
-    setIsAddMode: React.Dispatch<React.SetStateAction<boolean>>;
-
     sendError: string | null;
     isSending: boolean;
 
     maintenanceCosts: any;
     metroUsage: any;
+    canSaveScore: boolean;
+    isSavingScore: boolean;
+    scoreMessage: string | null;
+    rankingRefreshKey: number;
+    currentUsername: string;
+    onLogout: () => void;
 
     onDeletePins: () => void;
     onSendPins: () => void;
+    onSaveScore: () => void;
 };
 
 export default function PinMenu({
-    isAddMode,
-    setIsAddMode,
     sendError,
     isSending,
     maintenanceCosts,
     metroUsage,
+    canSaveScore,
+    isSavingScore,
+    scoreMessage,
+    rankingRefreshKey,
+    currentUsername,
+    onLogout,
     onDeletePins,
     onSendPins,
+    onSaveScore,
 }: Props) {
     return (
         <div
@@ -74,49 +83,43 @@ export default function PinMenu({
                     }}
                 >
                     <div><strong>LPM</strong>: wybierz pinezkę</div>
-                    <div><strong>PPM</strong>: edytuj numer/nazwę</div>
+                    <div><strong>PPM (puste miejsce)</strong>: nowy tymczasowy pin</div>
+                    <div><strong>PPM (na pinie)</strong>: edytuj numer/nazwę</div>
                     <div><strong>Drag</strong>: przesuń pinezkę</div>
                 </div>
 
-                <div
-                    style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'space-between',
-                        gap: 12,
-                        padding: '8px 10px',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: 12,
-                        background: 'rgba(255,255,255,0.7)',
-                        marginBottom: 10,
-                    }}
-                >
-                    <div style={{ fontSize: 12, color: '#111827', fontWeight: 600 }}>
-                        Tryb dodawania pinów
-                    </div>
-
-                    <button
-                        onClick={(e) => {
-                            e.preventDefault();
-                            e.stopPropagation();
-                            setIsAddMode((v) => !v);
-                        }}
+                <div style={{ display: 'grid', gap: 10 }}>
+                    <div
                         style={{
-                            padding: '6px 10px',
-                            borderRadius: 10,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
                             border: '1px solid #e5e7eb',
-                            background: isAddMode ? '#16a34a' : '#f3f4f6',
-                            color: isAddMode ? 'white' : '#111827',
-                            fontWeight: 700,
-                            cursor: 'pointer',
-                            minWidth: 56,
+                            borderRadius: 12,
+                            background: 'rgba(255,255,255,0.75)',
+                            padding: '8px 10px',
                         }}
                     >
-                        {isAddMode ? 'ON' : 'OFF'}
-                    </button>
-                </div>
+                        <div style={{ fontSize: 12, color: '#111827' }}>
+                            Gracz: <strong>{currentUsername}</strong>
+                        </div>
+                        <button
+                            onClick={onLogout}
+                            style={{
+                                borderRadius: 10,
+                                border: '1px solid #d1d5db',
+                                background: '#f3f4f6',
+                                color: '#111827',
+                                fontWeight: 700,
+                                cursor: 'pointer',
+                                padding: '5px 8px',
+                                fontSize: 11,
+                            }}
+                        >
+                            Wyloguj
+                        </button>
+                    </div>
 
-                <div style={{ display: 'grid', gap: 10 }}>
                     {sendError && (
                         <div
                             style={{
@@ -153,6 +156,29 @@ export default function PinMenu({
                                 Liczenie… czekaj
                             </div>
                         )}
+
+                        <button
+                            onClick={onSaveScore}
+                            disabled={!canSaveScore || isSavingScore}
+                            style={{
+                                borderRadius: 10,
+                                border: '1px solid #d1d5db',
+                                background: canSaveScore ? '#0f766e' : '#d1d5db',
+                                color: 'white',
+                                fontWeight: 700,
+                                cursor: canSaveScore ? 'pointer' : 'not-allowed',
+                                padding: '8px 10px',
+                                width: '100%',
+                            }}
+                        >
+                            {isSavingScore ? 'Zapisywanie...' : 'Zapisz wynik do rankingu'}
+                        </button>
+
+                        {scoreMessage && (
+                            <div style={{ fontSize: 11, color: '#374151', textAlign: 'center' }}>
+                                {scoreMessage}
+                            </div>
+                        )}
                     </div>
 
                     <div style={{ marginTop: 12 }}>
@@ -162,6 +188,8 @@ export default function PinMenu({
                             ticketPriceUsd={1.5}
                         />
                     </div>
+
+                    <RankingTable refreshKey={rankingRefreshKey} />
                 </div>
             </div>
         </div>
