@@ -1,0 +1,17 @@
+.street-label {
+    fill: #444;
+    font-family: sans-serif;
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    display: none; /* Hidden at outer zoom */
+    paint-order: stroke;
+    stroke: #ffffff;
+    stroke-width: 3px;
+}
+
+
+.leaflet-zoom-17 .street-label,
+.leaflet-zoom-18 .street-label {
+    display: block;
+}

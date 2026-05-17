@@ -1,6 +1,7 @@
 import { useEffect, useState, RefObject, useRef } from 'react';
 import L from 'leaflet';
 import 'leaflet.vectorgrid';
+import 'leaflet-textpath';
 
 export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
     const [map, setMap] = useState<L.Map | null>(null);
@@ -21,7 +22,7 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
             zoomControl: false,
             maxBounds: cracowBounds,
             maxBoundsViscosity: 1.0,
-            preferCanvas: true, // Optimization: Renders GeoJSONs on Canvas instead of SVG
+            //preferCanvas: true, // Optimization: Renders GeoJSONs on Canvas instead of SVG
         }).setView([50.0487253, 20.0033734], 13);
 
         // MBTiles pane
@@ -57,6 +58,59 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         // Streets pane below MBTiles
         mapInstance.createPane('streetsPane');
         mapInstance.getPane('streetsPane')!.style.zIndex = '400';
+
+        const streetFiles = [{ name: 'cracow-streets1.geojson'},
+            { name: 'cracow-streets2.geojson'} ,
+            { name: 'cracow-streets3.geojson'} ,
+            { name: 'cracow-streets4.geojson'}
+        ];
+
+        const streetLabelGroup = L.layerGroup();
+
+        streetFiles.forEach((file) => {
+
+        fetch(file.name)
+            .then((res) => res.json())
+            .then((geojson) => {
+                L.geoJSON(geojson, {
+
+                style: {
+                    opacity: 0
+                    },
+
+
+                onEachFeature: (feature, layer) => {
+                    if (!feature.properties?.ulica) return;
+
+                    if (layer instanceof L.Polyline) {
+                        layer.setText(feature.properties.ulica, {
+                            center: true,
+                            offset: -5,
+                            attributes: {
+                                class: 'street-label', // For CSS styling
+                                'font-weight': 'bold'
+                            }
+                        });
+                    }
+                }
+
+                }).addTo(streetLabelGroup);
+            });
+
+        });
+
+        mapInstance.on('zoomend', () => {
+    const zoom = mapInstance.getZoom();
+    if (zoom >= 16) {
+        if (!mapInstance.hasLayer(streetLabelGroup)) {
+            streetLabelGroup.addTo(mapInstance);
+        }
+    } else {
+        if (mapInstance.hasLayer(streetLabelGroup)) {
+            streetLabelGroup.removeFrom(mapInstance);
+        }
+    }
+});
 
         const geojsonFiles = [
             { name: 'road.geojson', style: { color: '#34495e', weight: 1.5 } },
