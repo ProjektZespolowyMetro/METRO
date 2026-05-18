@@ -2,6 +2,7 @@ import React from 'react';
 import { usePins } from '../contexts/PinsContext';
 import { useMetroStats } from '../hooks/useMetroStats';
 import DeletePinsButton from '../components/DeletePinsButton';
+import SendPinsButton from '../components/SendPinsButton';
 import StatReadout from '../components/ui/StatReadout';
 import { ToolbarBtn } from '../components/ui/ToolbarBtn';
 import Divider from '../components/ui/Divider';
@@ -13,6 +14,9 @@ export default function Pins() {
         clearPins,
         maintenanceCosts,
         metroUsage,
+        onSendPins,
+        isSending,
+        sendError,
     } = usePins();
 
     const stats = useMetroStats(metroUsage, maintenanceCosts);
@@ -73,8 +77,25 @@ export default function Pins() {
 
             {/* GROUP 3: ACTIONS */}
             <div style={{ display: 'flex', gap: '10px', marginLeft: 'auto' }}>
+                <SendPinsButton
+                    onClick={onSendPins}
+                    disabled={isSending}
+                    label={isSending ? 'Liczenie...' : 'Send pins'}
+                />
                 <DeletePinsButton onClick={clearPins} />
             </div>
+            {sendError && (
+                <div
+                    style={{
+                        marginLeft: 12,
+                        fontSize: 12,
+                        color: '#dc2626',
+                        whiteSpace: 'nowrap',
+                    }}
+                >
+                    {sendError}
+                </div>
+            )}
         </div>
     );
 }

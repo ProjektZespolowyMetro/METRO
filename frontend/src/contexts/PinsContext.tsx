@@ -1,4 +1,9 @@
 import React, { createContext, useState, useEffect, useContext } from 'react';
+import {
+    sendPinsToBackend,
+    MaintenanceCosts,
+    MetroUsageByPinNumber,
+} from '../services/SendPinsToApi';
 
 export type ToolMode = 'select' | 'place' | 'drag' | 'delete';
 
@@ -23,8 +28,9 @@ type PinsContextType = {
     setActiveTool: (tool: ToolMode) => void;
     sendError: string | null;
     isSending: boolean;
-    maintenanceCosts: any;
-    metroUsage: any;
+    maintenanceCosts: MaintenanceCosts | null;
+    metroUsage: MetroUsageByPinNumber | { error: string } | null;
+    totalLengthMeters: number | null;
     onSendPins: () => void;
 };
 
@@ -58,9 +64,14 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
     const [sendError, setSendError] = useState<string | null>(null);
     const [isSending, setIsSending] = useState(false);
 
-    // Placeholder states for future overhauled logic
-    const [maintenanceCosts] = useState({ total: 0 });
-    const [metroUsage] = useState({ daily: 0 });
+    const [maintenanceCosts, setMaintenanceCosts] =
+        useState<MaintenanceCosts | null>(null);
+    const [metroUsage, setMetroUsage] = useState<
+        MetroUsageByPinNumber | { error: string } | null
+    >(null);
+    const [totalLengthMeters, setTotalLengthMeters] = useState<number | null>(
+        null
+    );
 
     useEffect(() => {
         localStorage.setItem('pins', JSON.stringify(pins));
@@ -90,18 +101,43 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
     const clearPins = () => {
         if (window.confirm('Are you sure you want to delete all pins?')) {
             setPins([]);
+            setMaintenanceCosts(null);
+            setMetroUsage(null);
+            setTotalLengthMeters(null);
+            setSendError(null);
         }
     };
 
     const onSendPins = async () => {
+        if (isSending) return;
+
+        const firstMissing = pins.find((p) => p.number === undefined);
+        if (firstMissing) {
+            setSendError('Nadaj numer każdej pinezce przed wysłaniem.');
+            return;
+        }
+
         setIsSending(true);
         setSendError(null);
+
         try {
-            // Updated to simply log the current array of unordered pins
-            await new Promise((resolve) => setTimeout(resolve, 1500));
-            console.log('Pins synced:', pins);
+            const data = await sendPinsToBackend(pins);
+            setMaintenanceCosts(data.maintenance_costs ?? null);
+
+            if (data.metro_usage && 'error' in data.metro_usage) {
+                setMetroUsage(null);
+                setSendError(data.metro_usage.error || 'Błąd kalkulatora.');
+            } else {
+                setMetroUsage(data.metro_usage ?? null);
+            }
+
+            setTotalLengthMeters(data.total_length_meters ?? null);
         } catch (err) {
-            setSendError('Connection error: Could not sync pins.');
+            setSendError(
+                err instanceof Error
+                    ? err.message
+                    : 'Connection error: Could not sync pins.'
+            );
         } finally {
             setIsSending(false);
         }
@@ -122,6 +158,7 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
                 isSending,
                 maintenanceCosts,
                 metroUsage,
+                totalLengthMeters,
                 onSendPins,
             }}
         >

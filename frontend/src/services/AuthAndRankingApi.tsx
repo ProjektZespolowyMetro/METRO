@@ -13,7 +13,7 @@ export type RankingEntry = {
     created_at: string;
 };
 
-const API_BASE = 'http://127.0.0.1:8000/api';
+const API_BASE = (process.env.REACT_APP_API_URL ?? '').replace(/\/$/, '') || '/api';
 
 async function readJsonOrThrow(res: Response) {
     const contentType = res.headers.get('content-type') || '';

@@ -293,12 +293,11 @@ class ReceivePinsView(APIView):
         print(segments)
         print("Total length:", total_length)
 
-        # Mateusz, do sth about it
         metro_usage_results = {}
 
         try:
-            print(" call calc total_metro_usage ")
-            # metro_usage_results = calculate_total_metro_usage(pins)
+            print("call calc total_metro_usage")
+            metro_usage_results = calculate_total_metro_usage(pins)
         except Exception as e:
             print(f"calculator error {e}")
             metro_usage_results = {"error": str(e)}
@@ -317,7 +316,7 @@ class ReceivePinsView(APIView):
                 "pins": pins,
                 "segments": segments,
                 "total_length_meters": round(total_length, 2),
-                # "metro_usage": metro_usage_results, # to leci do przerobienia jako osobna funkcja
+                "metro_usage": metro_usage_results,
                 "construction_costs": construction_costs,  # to jest szybkie, ale jak sądzisz że lepiej to przeniesc do fronta to smialo
                 "maintenance_costs": maintenance_costs,  # tak jak powyżej
             },

@@ -32,8 +32,10 @@ export type DailyProfitSummary = {
     dailyProfitUsd: number;
 };
 
+const API_BASE = (process.env.REACT_APP_API_URL ?? '').replace(/\/$/, '') || '/api';
+
 export async function sendPinsToBackend(pins: any[], train_frequency = 5): Promise<SendPinsResponse> {
-    const res = await fetch('http://127.0.0.1:8000/api/pins/',        {
+    const res = await fetch(`${API_BASE}/pins/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ pins, train_frequency }),
