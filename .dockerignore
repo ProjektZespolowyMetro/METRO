@@ -1,0 +1,34 @@
+# Globalny .dockerignore (root projektu) - używany przez backend/Dockerfile
+# i nginx/Dockerfile, które budują z kontekstem = root.
+
+.git
+.gitignore
+.idea
+.vscode
+README.md
+
+# Python
+**/__pycache__/
+*.pyc
+*.pyo
+*.pyd
+**/.venv/
+.venv/
+.pytest_cache/
+.mypy_cache/
+
+# Backend
+backend/.env
+backend/db.sqlite3
+
+# Frontend
+frontend/node_modules
+frontend/build
+frontend/.env
+frontend/.env.local
+
+# Logi
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
