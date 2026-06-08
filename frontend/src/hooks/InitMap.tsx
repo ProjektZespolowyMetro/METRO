@@ -59,58 +59,94 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         mapInstance.createPane('streetsPane');
         mapInstance.getPane('streetsPane')!.style.zIndex = '400';
 
-        const streetFiles = [{ name: 'cracow-streets1.geojson'},
-            { name: 'cracow-streets2.geojson'} ,
-            { name: 'cracow-streets3.geojson'} ,
-            { name: 'cracow-streets4.geojson'}
+        const streetFiles = [
+            { name: 'cracow-streets1.geojson' },
+            { name: 'cracow-streets2.geojson' },
+            { name: 'cracow-streets3.geojson' },
+            { name: 'cracow-streets4.geojson' },
         ];
 
         const streetLabelGroup = L.layerGroup();
 
         streetFiles.forEach((file) => {
+            fetch(file.name)
+                .then((res) => res.json())
+                .then((geojson) => {
+                    L.geoJSON(geojson, {
+                        style: {
+                            opacity: 0,
+                        },
 
-        fetch(file.name)
-            .then((res) => res.json())
-            .then((geojson) => {
-                L.geoJSON(geojson, {
+                        onEachFeature: (feature, layer) => {
+                            if (!feature.properties?.ulica) return;
 
-                style: {
-                    opacity: 0
-                    },
-
-
-                onEachFeature: (feature, layer) => {
-                    if (!feature.properties?.ulica) return;
-
-                    if (layer instanceof L.Polyline) {
-                        layer.setText(feature.properties.ulica, {
-                            center: true,
-                            offset: -5,
-                            attributes: {
-                                class: 'street-label', // For CSS styling
-                                'font-weight': 'bold'
+                            if (layer instanceof L.Polyline) {
+                                layer.setText(feature.properties.ulica, {
+                                    center: true,
+                                    offset: -5,
+                                    attributes: {
+                                        class: 'street-label', // For CSS styling
+                                        'font-weight': 'bold',
+                                    },
+                                });
                             }
-                        });
-                    }
-                }
-
-                }).addTo(streetLabelGroup);
-            });
-
+                        },
+                    }).addTo(streetLabelGroup);
+                });
         });
 
+        let streetLabelsLoaded = false;
+
         mapInstance.on('zoomend', () => {
-    const zoom = mapInstance.getZoom();
-    if (zoom >= 16) {
-        if (!mapInstance.hasLayer(streetLabelGroup)) {
-            streetLabelGroup.addTo(mapInstance);
-        }
-    } else {
-        if (mapInstance.hasLayer(streetLabelGroup)) {
-            streetLabelGroup.removeFrom(mapInstance);
-        }
-    }
-});
+            const zoom = mapInstance.getZoom();
+
+            if (zoom >= 16) {
+                if (!streetLabelsLoaded) {
+                    streetLabelsLoaded = true;
+
+                    streetFiles.forEach((file) => {
+                        fetch(file.name)
+                            .then((res) => res.json())
+                            .then((geojson: GeoJSON.FeatureCollection) => {
+                                geojson.features = geojson.features.filter(
+                                    (f) => f.properties?.ulica
+                                );
+                                L.geoJSON(geojson, {
+                                    style: { opacity: 0 },
+                                    onEachFeature: (
+                                        feature: GeoJSON.Feature,
+                                        layer: L.Layer
+                                    ) => {
+                                        if (layer instanceof L.Polyline) {
+                                            layer.setText(
+                                                feature.properties!.ulica,
+                                                {
+                                                    center: true,
+                                                    offset: -5,
+                                                    attributes: {
+                                                        class: 'street-label',
+                                                        'font-weight': 'bold',
+                                                    },
+                                                }
+                                            );
+                                        }
+                                    },
+                                }).addTo(streetLabelGroup);
+                            });
+                    });
+
+                    streetLabelGroup.addTo(mapInstance);
+                } else {
+                    if (!mapInstance.hasLayer(streetLabelGroup)) {
+                        streetLabelGroup.addTo(mapInstance);
+                    }
+                }
+            } else {
+                if (mapInstance.hasLayer(streetLabelGroup)) {
+                    streetLabelGroup.removeFrom(mapInstance);
+                }
+            }
+        });
 
         const geojsonFiles = [
             { name: 'road.geojson', style: { color: '#34495e', weight: 1.5 } },
