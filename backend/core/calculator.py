@@ -103,9 +103,30 @@ def find_nearest_traffic_point(lat, lng, df_points):
     return df_points.iloc[nearest_idx]
 
 
-# ---------------------------------------------------------
-# 1. OBLICZENIA Z LUDNOŚCI (Area Population)
-# ---------------------------------------------------------
+# współczynniki użycia przy możliwości skorzystania z innych srodkow komunikacji
+METRO_CHOICE_BUS_AND_TRAM = 0.25
+METRO_CHOICE_BUS_ONLY = 0.35
+METRO_CHOICE_TRAM_ONLY = 0.30
+METRO_CHOICE_NO_SURFACE_PT = 0.60
+
+
+def get_metro_choice_coefficient(has_bus, has_tram):
+    """
+    Zwraca współczynnik udziału metra w popycie PT na podstawie dostępności
+    przystanków autobusowych i tramwajowych w promieniu stacji.
+    """
+    if has_bus == 1 and has_tram == 1:
+        return METRO_CHOICE_BUS_AND_TRAM
+    if has_bus == 1 and has_tram == 0:
+        return METRO_CHOICE_BUS_ONLY
+    if has_bus == 0 and has_tram == 1:
+        return METRO_CHOICE_TRAM_ONLY
+    return METRO_CHOICE_NO_SURFACE_PT
+
+
+
+
+
 
 def calculate_usage_from_population(pins, profile):
     """
@@ -128,6 +149,8 @@ def calculate_usage_from_population(pins, profile):
         pop_data = calculate_population_for_pins(pins)
     else:
         pop_data = {}
+
+    bus_tram_info = calculate_bus_tram_for_pins(pins)
 
     for pin in pins:
         pin_num = pin.get('number')
@@ -155,13 +178,10 @@ def calculate_usage_from_population(pins, profile):
 
         eff_pop = (ring_0_300 * W_300) + (ring_300_500 * W_500) + (ring_500_800 * W_800)
 
-        # Stały wybór metra (można rozbudować o logikę tramwaj/autobus jak wcześniej)
-        # Dla uproszczenia przy dynamicznych punktach przyjmujemy średnią 0.45
-        # lub staramy się zgadnąć na podstawie danych z pinu
-        # dogadać na nastepnym spodkaniu
-        # Pobierz informacje o dostępności przystanków
-        bus_tram_info = calculate_bus_tram_for_pins(pins)
-        metro_choice = bus_tram_info[pin_num]['metro_choice']
+        pin_access = bus_tram_info.get(pin_num, {})
+        has_bus = pin_access.get('has_bus', 0)
+        has_tram = pin_access.get('has_tram', 0)
+        metro_choice = get_metro_choice_coefficient(has_bus, has_tram)
 
         daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
 
@@ -176,9 +196,6 @@ def calculate_usage_from_population(pins, profile):
     return results
 
 
-# ---------------------------------------------------------
-# 2. OBLICZENIA Z PRZESIADKI (Modal Shift)
-# ---------------------------------------------------------
 
 def calculate_usage_from_modal_shift(pins, df_traffic_points):
     """
