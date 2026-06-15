@@ -22,6 +22,15 @@ class NewStationsEndpointTests(APITestCase):
 
     MOCK_HOURLY = list(range(24))
 
+    def setUp(self):
+        super().setUp()
+        self._print_patcher = patch("builtins.print")
+        self._print_patcher.start()
+
+    def tearDown(self):
+        self._print_patcher.stop()
+        super().tearDown()
+
     @patch.object(
         CalculateNewStationsUsageView,
         "generate_hourly_usage_for_station",

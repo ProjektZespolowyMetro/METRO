@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -11,6 +13,15 @@ class PinsEndpointTests(APITestCase):
         {"number": 1, "lat": 50.0647, "lng": 19.9450, "name": "Centrum"},
         {"number": 2, "lat": 50.0810, "lng": 19.8960, "name": "Bronowice"},
     ]
+
+    def setUp(self):
+        super().setUp()
+        self._print_patcher = patch("builtins.print")
+        self._print_patcher.start()
+
+    def tearDown(self):
+        self._print_patcher.stop()
+        super().tearDown()
 
     def test_post_pins_success(self):
         response = self.client.post(
