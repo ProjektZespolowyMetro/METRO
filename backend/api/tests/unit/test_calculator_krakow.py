@@ -5,9 +5,6 @@ import pandas as pd
 from django.test import SimpleTestCase
 
 from api.tests.fixtures.krakow_stations import (
-    CALIBRATED_CENTER_GRAVITY,
-    CALIBRATED_METRO_CHOICE,
-    CALIBRATED_SHIFT_TO_POP_RATIO,
     KRAKOW_BUSY_STATION,
     KRAKOW_METRO_LINE,
     KRAKOW_QUIET_STATION,
@@ -20,14 +17,9 @@ from api.tests.fixtures.krakow_stations import (
     traffic_dataframe,
 )
 from core.calculator import (
-    BPR_ALPHA,
-    BPR_BETA,
-    BPR_SATURATION_CAP,
     CENTER_GRAVITY_ZONES,
     KRAKOW_CENTER_LAT,
     KRAKOW_CENTER_LNG,
-    MODAL_SHIFT_ADDRESSABLE_SHARE,
-    MODAL_SHIFT_CAPTURE_RATE,
     TRAFFIC_PROFILE,
     calculate_total_metro_usage,
     calculate_usage_from_modal_shift,

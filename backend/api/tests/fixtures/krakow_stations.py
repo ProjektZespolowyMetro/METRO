@@ -32,6 +32,26 @@ _HOUR_4_BELINY = [
     1353, 1118, 1128, 1115, 1098, 1155, 1258, 1234, 1130, 1050,
     841, 572, 384, 267,
 ]
+_HOUR_12_ARMII_KRAJOWEJ = [
+    1504, 771, 535, 540, 599, 1035, 2913, 6414, 9516, 10085,
+    8692, 8252, 8136, 8367, 8854, 10006, 11348, 11402, 10956, 9759,
+    8563, 6643, 5035, 2914,
+]
+_HOUR_14_PIASTOWSKA = [
+    1380, 751, 494, 399, 434, 717, 1977, 4366, 5909, 6178,
+    5459, 5186, 5122, 5184, 5410, 5814, 6366, 6209, 6198, 5626,
+    5241, 4419, 3454, 2383,
+]
+_HOUR_20_STELLA = [
+    2615, 1461, 902, 694, 832, 1590, 5107, 9817, 11456, 10951,
+    10837, 10767, 11092, 11287, 11587, 12262, 13584, 13002, 12441, 12056,
+    11430, 9288, 7078, 4685,
+]
+_HOUR_21_LISTOPADA = [
+    1409, 907, 573, 413, 446, 700, 1958, 3751, 4507, 4562,
+    4569, 4565, 4726, 4682, 4689, 4963, 5005, 4766, 4903, 4760,
+    4673, 3986, 3093, 2295,
+]
 
 
 def _traffic_record(
@@ -95,6 +115,38 @@ TRAFFIC_INTERSECTIONS = {
         "2 477",
         _HOUR_4_BELINY,
     ),
+    "armii_krajowej": _traffic_record(
+        12,
+        "Armii Krajowej – Zarzecze",
+        50.075784942948644,
+        19.88854377140792,
+        "9 113",
+        _HOUR_12_ARMII_KRAJOWEJ,
+    ),
+    "piastowska": _traffic_record(
+        14,
+        "Piastowska – Armii Krajowej – Nawojki",
+        50.070056864563824,
+        19.90398157257015,
+        "8 986",
+        _HOUR_14_PIASTOWSKA,
+    ),
+    "stella_sawickiego": _traffic_record(
+        20,
+        "Stella-Sawickiego – Wiślicka – al. Bora-Komorowskiego",
+        50.08769816524363,
+        20.00136705741837,
+        "9296",
+        _HOUR_20_STELLA,
+    ),
+    "listopada": _traffic_record(
+        21,
+        "al. 29 Listopada – Opolska – Lublańska",
+        50.08614757092223,
+        19.954695217179623,
+        "8 443",
+        _HOUR_21_LISTOPADA,
+    ),
 }
 
 
@@ -155,6 +207,30 @@ KRAKOW_QUIET_STATION = metro_station(
     has_bus=1, has_tram=0,
 )
 
+# Nowa trasa: zachód → centrum → wschód (4 stacje, inna niż KRAKOW_METRO_LINE)
+KRAKOW_METRO_LINE_WEST_EAST = [
+    metro_station(
+        101, "armii_krajowej",
+        pop_300m=6_500, pop_500m=12_000, pop_800m=20_000,
+        has_bus=1, has_tram=1,
+    ),
+    metro_station(
+        102, "piastowska",
+        pop_300m=7_800, pop_500m=14_500, pop_800m=23_000,
+        has_bus=1, has_tram=1,
+    ),
+    metro_station(
+        103, "mickiewicza",
+        pop_300m=12_000, pop_500m=22_000, pop_800m=35_000,
+        has_bus=1, has_tram=1,
+    ),
+    metro_station(
+        104, "stella_sawickiego",
+        pop_300m=9_000, pop_500m=16_500, pop_800m=27_000,
+        has_bus=1, has_tram=0,
+    ),
+]
+
 
 def population_mock(stations):
     return {
@@ -187,6 +263,42 @@ def traffic_dataframe(keys=None):
     return pd.DataFrame(rows)
 
 
+def usage_breakdown(stations, traffic_df, profile):
+    """
+    Zwraca dzienne sumy: ludność, przesiadka, razem — z mockami i podanym profilem.
+    """
+    from unittest.mock import patch
+
+    from core.calculator import (
+        calculate_usage_from_modal_shift,
+        calculate_usage_from_population,
+    )
+
+    with patch(
+        "core.calculator.calculate_population_for_pins",
+        return_value=population_mock(stations),
+    ), patch(
+        "core.calculator.calculate_bus_tram_for_pins",
+        return_value=bus_tram_mock(stations),
+    ):
+        pop = calculate_usage_from_population(stations, profile)
+        shift = calculate_usage_from_modal_shift(stations, traffic_df)
+
+    breakdown = {}
+    for station in stations:
+        num = station["number"]
+        pop_daily = sum(pop[num])
+        shift_daily = sum(shift[num])
+        breakdown[num] = {
+            "name": station["name"],
+            "traffic_key": station["traffic_key"],
+            "pop_daily": pop_daily,
+            "shift_daily": shift_daily,
+            "total_daily": pop_daily + shift_daily,
+        }
+    return breakdown
+
+
 # Wartości referencyjne do późniejszej weryfikacji eksperckiej (obecny model + dane CSV).
 # Po zmianie logiki kalkulatora — zaktualizuj świadomie (patrz test_calculator_krakow.py).
 REFERENCE_MODAL_SHIFT_DAILY = {
@@ -207,22 +319,10 @@ REFERENCE_POPULATION_DAILY = {
     3: 7_416,   # Matecznego — eff_pop≈21525, metro_choice=0.35 (tylko autobus)
 }
 
-# Widełki stosunku przesiadka/ludność po kalibracji (0.65 × 0.60 + strefy Rynku)
-CALIBRATED_SHIFT_TO_POP_RATIO = {
-    "mickiewicza": (0.55, 0.75),
-    "mogilska": (0.55, 0.75),
-    "matecznego": (0.85, 1.15),
-}
-
-# Oczekiwane współczynniki na linii testowej
-CALIBRATED_METRO_CHOICE = {
-    "mickiewicza": 0.25,  # bus + tram
-    "mogilska": 0.25,      # bus + tram
-    "matecznego": 0.35,    # bus only
-}
-
-CALIBRATED_CENTER_GRAVITY = {
-    "mickiewicza": 1.00,   # strefa rdzenia (<2 km od Rynku)
-    "mogilska": 0.88,      # centrum szerokie (2–4 km)
-    "matecznego": 0.88,    # centrum szerokie (2–4 km)
+# Trasa zachód–wschód (KRAKOW_METRO_LINE_WEST_EAST) — baseline po kalibracji 0.65/0.60
+REFERENCE_WEST_EAST_LINE = {
+    101: {"pop": 3_562, "shift": 3_253, "total": 6_815, "metro_choice": 0.25, "gravity": 0.88},
+    102: {"pop": 4_176, "shift": 2_076, "total": 6_252, "metro_choice": 0.25, "gravity": 0.88},
+    103: {"pop": 6_359, "shift": 5_129, "total": 11_488, "metro_choice": 0.25, "gravity": 1.00},
+    104: {"pop": 6_796, "shift": 7_891, "total": 14_687, "metro_choice": 0.35, "gravity": 0.72},
 }
