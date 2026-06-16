@@ -5,24 +5,61 @@ import pandas as pd
 from django.test import SimpleTestCase
 
 from api.tests.fixtures.krakow_stations import (
+    CALIBRATED_CENTER_GRAVITY,
+    CALIBRATED_METRO_CHOICE,
+    CALIBRATED_SHIFT_TO_POP_RATIO,
     KRAKOW_BUSY_STATION,
     KRAKOW_METRO_LINE,
     KRAKOW_QUIET_STATION,
     REFERENCE_MODAL_SHIFT_DAILY,
     REFERENCE_POPULATION_DAILY,
+    REFERENCE_TOTAL_DAILY,
     TRAFFIC_INTERSECTIONS,
     bus_tram_mock,
     population_mock,
     traffic_dataframe,
 )
 from core.calculator import (
+    BPR_ALPHA,
+    BPR_BETA,
+    BPR_SATURATION_CAP,
+    CENTER_GRAVITY_ZONES,
+    KRAKOW_CENTER_LAT,
+    KRAKOW_CENTER_LNG,
+    MODAL_SHIFT_ADDRESSABLE_SHARE,
+    MODAL_SHIFT_CAPTURE_RATE,
     TRAFFIC_PROFILE,
     calculate_total_metro_usage,
     calculate_usage_from_modal_shift,
     calculate_usage_from_population,
     find_nearest_traffic_point,
+    get_center_gravity_coefficient,
     get_metro_choice_coefficient,
 )
+
+
+class KrakowCenterGravityTests(SimpleTestCase):
+    """Strefy premii bliskości Rynku Głównego."""
+
+    def test_rynek_is_highest_zone(self):
+        coeff = get_center_gravity_coefficient(KRAKOW_CENTER_LAT, KRAKOW_CENTER_LNG)
+        self.assertEqual(coeff, CENTER_GRAVITY_ZONES[0][1])
+
+    def test_mickiewicza_closer_than_wielicka(self):
+        mick = get_center_gravity_coefficient(
+            KRAKOW_METRO_LINE[0]["lat"], KRAKOW_METRO_LINE[0]["lng"],
+        )
+        wiel = get_center_gravity_coefficient(
+            KRAKOW_BUSY_STATION["lat"], KRAKOW_BUSY_STATION["lng"],
+        )
+        self.assertGreaterEqual(mick, wiel)
+
+    def test_zones_decrease_with_distance(self):
+        near = get_center_gravity_coefficient(50.062, 19.938)   # ~0.2 km od Rynku
+        mid = get_center_gravity_coefficient(50.05, 19.90)      # ~3 km
+        far = get_center_gravity_coefficient(50.01, 19.85)      # ~8 km
+        self.assertGreater(near, mid)
+        self.assertGreater(mid, far)
 
 
 class KrakowTrafficMappingTests(SimpleTestCase):
@@ -91,16 +128,15 @@ class KrakowModalShiftTests(SimpleTestCase):
         self.assertAlmostEqual(daily, ref, delta=ref * 0.15)
 
     def test_reference_modal_shift_ordering(self):
-        """Względna kolejność: Wielicka >> Mickiewicza >> Beliny."""
+        """Względna kolejność przesiadki: Wielicka > Matecznego > Mickiewicza > Beliny."""
         shifts = {
-            key: self._daily_shift(
-                KRAKOW_BUSY_STATION if key == "wielicka"
-                else KRAKOW_METRO_LINE[0] if key == "mickiewicza"
-                else KRAKOW_QUIET_STATION
-            )
-            for key in ("wielicka", "mickiewicza", "beliny")
+            "wielicka": self._daily_shift(KRAKOW_BUSY_STATION),
+            "matecznego": self._daily_shift(KRAKOW_METRO_LINE[2]),
+            "mickiewicza": self._daily_shift(KRAKOW_METRO_LINE[0]),
+            "beliny": self._daily_shift(KRAKOW_QUIET_STATION),
         }
-        self.assertGreater(shifts["wielicka"], shifts["mickiewicza"])
+        self.assertGreater(shifts["wielicka"], shifts["matecznego"])
+        self.assertGreater(shifts["matecznego"], shifts["mickiewicza"])
         self.assertGreater(shifts["mickiewicza"], shifts["beliny"])
 
 
@@ -227,6 +263,25 @@ class KrakowTotalMetroUsageTests(SimpleTestCase):
             total = calculate_total_metro_usage(KRAKOW_METRO_LINE)
 
         self.assertGreater(sum(total[1]), sum(total[2]))
+
+    @patch("builtins.print")
+    @patch("core.calculator.print_tabular_results")
+    @patch("core.calculator.calculate_bus_tram_for_pins")
+    @patch("core.calculator.calculate_population_for_pins")
+    def test_reference_total_daily_line(
+        self, mock_population, mock_bus_tram, _mock_print, _mock_stdout,
+    ):
+        mock_population.return_value = population_mock(KRAKOW_METRO_LINE)
+        mock_bus_tram.return_value = bus_tram_mock(KRAKOW_METRO_LINE)
+        traffic_df = traffic_dataframe()
+
+        with patch("core.calculator.REF_TRAFFIC_POINTS", traffic_df):
+            total = calculate_total_metro_usage(KRAKOW_METRO_LINE)
+
+        for station in KRAKOW_METRO_LINE:
+            num = station["number"]
+            ref = REFERENCE_TOTAL_DAILY[num]
+            self.assertAlmostEqual(sum(total[num]), ref, delta=ref * 0.05)
 
     @patch("core.calculator.print_tabular_results")
     @patch("core.calculator.calculate_bus_tram_for_pins")

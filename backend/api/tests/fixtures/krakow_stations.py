@@ -190,13 +190,39 @@ def traffic_dataframe(keys=None):
 # Wartości referencyjne do późniejszej weryfikacji eksperckiej (obecny model + dane CSV).
 # Po zmianie logiki kalkulatora — zaktualizuj świadomie (patrz test_calculator_krakow.py).
 REFERENCE_MODAL_SHIFT_DAILY = {
-    "wielicka": 98_726,    # ~14949 aut/h o 8:00, przepustowość 9145
-    "mickiewicza": 10_399, # centrum — al. Mickiewicza / Piłsudskiego
-    "beliny": 1_090,       # ciche skrzyżowanie na Kazimierzu
+    "wielicka": 6_609,
+    "mickiewicza": 2_697,
+    "matecznego": 4_565,
+    "beliny": 422,
+}
+REFERENCE_TOTAL_DAILY = {
+    1: 10_406,   # Mickiewicza
+    2: 7_827,    # Mogilska
+    3: 14_841,   # Matecznego
 }
 REFERENCE_POPULATION_DAILY = {
     # profil równomierny (sumy dobowe), ludność z mocków linii metra
     1: 6_360,   # Mickiewicza — eff_pop≈25850, metro_choice=0.25
     2: 4_680,   # Mogilska — eff_pop≈19000, metro_choice=0.25
     3: 7_416,   # Matecznego — eff_pop≈21525, metro_choice=0.35 (tylko autobus)
+}
+
+# Widełki stosunku przesiadka/ludność po kalibracji (0.65 × 0.60 + strefy Rynku)
+CALIBRATED_SHIFT_TO_POP_RATIO = {
+    "mickiewicza": (0.55, 0.75),
+    "mogilska": (0.55, 0.75),
+    "matecznego": (0.85, 1.15),
+}
+
+# Oczekiwane współczynniki na linii testowej
+CALIBRATED_METRO_CHOICE = {
+    "mickiewicza": 0.25,  # bus + tram
+    "mogilska": 0.25,      # bus + tram
+    "matecznego": 0.35,    # bus only
+}
+
+CALIBRATED_CENTER_GRAVITY = {
+    "mickiewicza": 1.00,   # strefa rdzenia (<2 km od Rynku)
+    "mogilska": 0.88,      # centrum szerokie (2–4 km)
+    "matecznego": 0.88,    # centrum szerokie (2–4 km)
 }
