@@ -26,7 +26,7 @@ def calculate_bus_tram_for_pins(pins_list, stations_file='data/stations.geojson'
         radius_m:  Promień wyszukiwania w metrach (default 500m)
 
     Returns:
-        Słownik:  {pin_number: {'has_bus': 0/1, 'has_tram': 0/1, 'metro_choice': 0.xx}}
+        Słownik:  {pin_number: {'has_bus': 0/1, 'has_tram': 0/1, 'bus_dist': ..., 'tram_dist': ...}}
     """
     results = {}
 
@@ -59,25 +59,17 @@ def calculate_bus_tram_for_pins(pins_list, stations_file='data/stations.geojson'
             has_bus = 1 if bus_dist_km <= radius_km else 0
             has_tram = 1 if tram_dist_km <= radius_km else 0
 
-            # Ustalenie współczynnika metro_choice
-            if has_bus == 1 and has_tram == 1:
-                metro_choice = 0.25
-                print(f"Pin {pin_number} [{lat}, {lng}] ✓ BUS + TRAM -> metro_choice = 0.25")
-            elif has_bus == 1 and has_tram == 0:
-                metro_choice = 0.35
-                print(f"Pin {pin_number} [{lat}, {lng}] ✓ BUS -> metro_choice = 0.35")
-            elif has_bus == 0 and has_tram == 1:
-                metro_choice = 0.30
-                print(f"Pin {pin_number} [{lat}, {lng}] ✓ TRAM -> metro_choice = 0.30")
-            else:
-                metro_choice = 0.60
-                print(f"Pin {pin_number} [{lat}, {lng}] ✗ BRAK BUS/TRAM -> metro_choice = 0.60")
+            access_label = (
+                "BUS + TRAM" if has_bus and has_tram else
+                "BUS" if has_bus else
+                "TRAM" if has_tram else
+                "BRAK BUS/TRAM"
+            )
+            print(f"Pin {pin_number} [{lat}, {lng}] {access_label}")
 
-            # Zapisz wynik
             results[pin_number] = {
                 'has_bus': has_bus,
                 'has_tram': has_tram,
-                'metro_choice': metro_choice,
                 'bus_dist': round(bus_dist_km, 3) if bus_station else None,
                 'tram_dist': round(tram_dist_km, 3) if tram_station else None
             }
@@ -90,7 +82,6 @@ def calculate_bus_tram_for_pins(pins_list, stations_file='data/stations.geojson'
             results[pin_number] = {
                 'has_bus': 0,
                 'has_tram': 0,
-                'metro_choice': 0.60
             }
 
     return results
