@@ -103,9 +103,62 @@ def find_nearest_traffic_point(lat, lng, df_points):
     return df_points.iloc[nearest_idx]
 
 
-# ---------------------------------------------------------
-# 1. OBLICZENIA Z LUDNOŚCI (Area Population)
-# ---------------------------------------------------------
+# współczynniki użycia przy możliwości skorzystania z innych srodkow komunikacji
+METRO_CHOICE_BUS_AND_TRAM = 0.25
+METRO_CHOICE_BUS_ONLY = 0.35
+METRO_CHOICE_TRAM_ONLY = 0.30
+METRO_CHOICE_NO_SURFACE_PT = 0.60
+
+
+def get_metro_choice_coefficient(has_bus, has_tram):
+    """
+    Zwraca współczynnik udziału metra w popycie PT na podstawie dostępności
+    przystanków autobusowych i tramwajowych w promieniu stacji.
+    """
+    if has_bus == 1 and has_tram == 1:
+        return METRO_CHOICE_BUS_AND_TRAM
+    if has_bus == 1 and has_tram == 0:
+        return METRO_CHOICE_BUS_ONLY
+    if has_bus == 0 and has_tram == 1:
+        return METRO_CHOICE_TRAM_ONLY
+    return METRO_CHOICE_NO_SURFACE_PT
+
+
+# --- Modal shift: kalibracja przesiadki z aut + strefy bliskości centrum (Rynek) ---
+
+KRAKOW_CENTER_LAT = 50.0616
+KRAKOW_CENTER_LNG = 19.9373
+
+# Strefy odległości od Rynku Głównego → mnożnik popytu przesiadkowego
+CENTER_GRAVITY_ZONES = (
+    (2.0, 1.00),   # 0–2 km: rdzeń (Stare Miasto, Kazimierz)
+    (4.0, 0.88),   # 2–4 km: centrum szerokie
+    (7.0, 0.72),   # 4–7 km: pierścień środkowy
+    (float("inf"), 0.58),  # 7+ km: peryferie
+)
+
+MODAL_SHIFT_ADDRESSABLE_SHARE = 0.65   # ułamek ruchu aut adresowalny dla metra
+MODAL_SHIFT_CAPTURE_RATE = 0.60        # realna frakcja przesiadki (diversion factor)
+BPR_SATURATION_CAP = 1.0               # limit nasycenia w funkcji BPR
+BPR_ALPHA = 0.15
+BPR_BETA = 2
+
+
+def get_center_gravity_coefficient(lat, lng):
+    """
+    Zwraca mnożnik popytu przesiadkowego wg odległości stacji od Rynku Głównego.
+    Im bliżej centrum, tym wyższy współczynnik.
+    """
+    dist_km = haversine_distance(lat, lng, KRAKOW_CENTER_LAT, KRAKOW_CENTER_LNG)
+    for max_dist_km, coefficient in CENTER_GRAVITY_ZONES:
+        if dist_km <= max_dist_km:
+            return coefficient
+    return CENTER_GRAVITY_ZONES[-1][1]
+
+
+
+
+
 
 def calculate_usage_from_population(pins, profile):
     """
@@ -128,6 +181,8 @@ def calculate_usage_from_population(pins, profile):
         pop_data = calculate_population_for_pins(pins)
     else:
         pop_data = {}
+
+    bus_tram_info = calculate_bus_tram_for_pins(pins)
 
     for pin in pins:
         pin_num = pin.get('number')
@@ -155,13 +210,10 @@ def calculate_usage_from_population(pins, profile):
 
         eff_pop = (ring_0_300 * W_300) + (ring_300_500 * W_500) + (ring_500_800 * W_800)
 
-        # Stały wybór metra (można rozbudować o logikę tramwaj/autobus jak wcześniej)
-        # Dla uproszczenia przy dynamicznych punktach przyjmujemy średnią 0.45
-        # lub staramy się zgadnąć na podstawie danych z pinu
-        # dogadać na nastepnym spodkaniu
-        # Pobierz informacje o dostępności przystanków
-        bus_tram_info = calculate_bus_tram_for_pins(pins)
-        metro_choice = bus_tram_info[pin_num]['metro_choice']
+        pin_access = bus_tram_info.get(pin_num, {})
+        has_bus = pin_access.get('has_bus', 0)
+        has_tram = pin_access.get('has_tram', 0)
+        metro_choice = get_metro_choice_coefficient(has_bus, has_tram)
 
         daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
 
@@ -176,9 +228,6 @@ def calculate_usage_from_population(pins, profile):
     return results
 
 
-# ---------------------------------------------------------
-# 2. OBLICZENIA Z PRZESIADKI (Modal Shift)
-# ---------------------------------------------------------
 
 def calculate_usage_from_modal_shift(pins, df_traffic_points):
     """
@@ -186,7 +235,7 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
     """
     results = {}
 
-    # Stałe modelu
+    # Stałe modelu logitowego
     OCCUPANCY = 1.3
     AUTO_SHARE_BASELINE = 0.44
     BETA_TIME = -0.04
@@ -200,6 +249,7 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
     for i, pin in enumerate(sorted_pins):
         pin_num = pin.get('number')
         hourly_shift = [0] * 24
+        center_gravity = get_center_gravity_coefficient(pin['lat'], pin['lng'])
 
         # 1. Znajdź najbliższy punkt z danymi o ruchu
         traffic_data = find_nearest_traffic_point(pin['lat'], pin['lng'], df_traffic_points)
@@ -213,8 +263,6 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
                 capacity = 3000.0
 
             # 2. Oblicz parametry podróży (Metro vs Auto)
-            # Szukamy odległości do następnej stacji (lub poprzedniej dla ostatniej)
-            # Żeby oszacować czas podróży "do sąsiada"
             dist_km = 2.0  # Domyślnie
 
             next_pin = sorted_pins[i + 1] if i < len(sorted_pins) - 1 else None
@@ -225,11 +273,9 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
             if neighbor:
                 dist_km = haversine_distance(pin['lat'], pin['lng'], neighbor['lat'], neighbor['lng'])
 
-            # Czas metrem
             t_metro = (dist_km / METRO_SPEED) * 60 + METRO_ACCESS
             u_metro = (BETA_TIME * t_metro) + METRO_BONUS
 
-            # Czas autem (Free flow) - estymacja na podstawie odległości i średniej prędkości auta w mieście (np. 30km/h)
             auto_free_min = (dist_km / 30.0) * 60
 
             # 3. Pętla godzinowa
@@ -246,27 +292,29 @@ def calculate_usage_from_modal_shift(pins, df_traffic_points):
                 if vol_car <= 0 or capacity <= 0:
                     continue
 
-                # Model Logitowy & BPR
-                people_in_cars_now = vol_car * OCCUPANCY
+                addressable_vol = vol_car * MODAL_SHIFT_ADDRESSABLE_SHARE
+                people_in_cars_now = addressable_vol * OCCUPANCY
                 total_travelers = people_in_cars_now / AUTO_SHARE_BASELINE
 
-                # Funkcja BPR (czas w korku)
-                saturation = vol_car / capacity
-                t_auto_cur = auto_free_min * (1 + 0.5 * (saturation ** 4))
+                saturation = min(vol_car / capacity, BPR_SATURATION_CAP)
+                t_auto_cur = auto_free_min * (1 + BPR_ALPHA * (saturation ** BPR_BETA))
 
                 u_auto = BETA_TIME * t_auto_cur
 
                 exp_auto = np.exp(u_auto)
                 exp_metro = np.exp(u_metro)
 
-                # Prawdopodobieństwo wyboru auta po wprowadzeniu metra
                 prob_auto_new = exp_auto / (exp_auto + exp_metro)
 
                 people_in_cars_new = total_travelers * prob_auto_new
 
-                # Różnica to pasażerowie, którzy przesiedli się do metra
-                shift = max(0, people_in_cars_now - people_in_cars_new)
-                hourly_shift[h] = int(shift)
+                shift_raw = max(0, people_in_cars_now - people_in_cars_new)
+                shift = int(
+                    shift_raw
+                    * MODAL_SHIFT_CAPTURE_RATE
+                    * center_gravity
+                )
+                hourly_shift[h] = shift
 
         results[pin_num] = hourly_shift
 
