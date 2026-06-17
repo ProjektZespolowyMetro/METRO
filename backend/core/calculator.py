@@ -137,8 +137,17 @@ CENTER_GRAVITY_ZONES = (
     (float("inf"), 0.58),  # 7+ km: peryferie
 )
 
+# Premia centrum dla ludności (hotele, turystyka, pracownicy dojeżdżający)
+CENTER_GRAVITY_POPULATION_ZONES = (
+    (1.5, 2.62),   # ścisłe centrum (było 3.50, −25%)
+    (3.0, 1.80),   # centrum wewnętrzne (było 2.40)
+    (5.0, 1.31),   # centrum szerokie (było 1.75)
+    (8.0, 1.00),   # pierścień środkowy (było 1.30)
+    (float("inf"), 1.00),
+)
+
 MODAL_SHIFT_ADDRESSABLE_SHARE = 0.65   # ułamek ruchu aut adresowalny dla metra
-MODAL_SHIFT_CAPTURE_RATE = 0.60        # realna frakcja przesiadki (diversion factor)
+MODAL_SHIFT_CAPTURE_RATE = 1.20        # podwojona frakcja przesiadki (było 0.60)
 BPR_SATURATION_CAP = 1.0               # limit nasycenia w funkcji BPR
 BPR_ALPHA = 0.15
 BPR_BETA = 2
@@ -149,11 +158,23 @@ def get_center_gravity_coefficient(lat, lng):
     Zwraca mnożnik popytu przesiadkowego wg odległości stacji od Rynku Głównego.
     Im bliżej centrum, tym wyższy współczynnik.
     """
+    return _center_gravity_from_zones(lat, lng, CENTER_GRAVITY_ZONES)
+
+
+def get_center_gravity_population_coefficient(lat, lng):
+    """
+    Zwraca mnożnik popytu z ludności wg odległości od Rynku (hotele, praca, turystyka).
+    W ścisłym centrum do ×2.62.
+    """
+    return _center_gravity_from_zones(lat, lng, CENTER_GRAVITY_POPULATION_ZONES)
+
+
+def _center_gravity_from_zones(lat, lng, zones):
     dist_km = haversine_distance(lat, lng, KRAKOW_CENTER_LAT, KRAKOW_CENTER_LNG)
-    for max_dist_km, coefficient in CENTER_GRAVITY_ZONES:
+    for max_dist_km, coefficient in zones:
         if dist_km <= max_dist_km:
             return coefficient
-    return CENTER_GRAVITY_ZONES[-1][1]
+    return zones[-1][1]
 
 
 
@@ -214,8 +235,11 @@ def calculate_usage_from_population(pins, profile):
         has_bus = pin_access.get('has_bus', 0)
         has_tram = pin_access.get('has_tram', 0)
         metro_choice = get_metro_choice_coefficient(has_bus, has_tram)
+        pop_gravity = get_center_gravity_population_coefficient(pin['lat'], pin['lng'])
 
-        daily_demand = eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice
+        daily_demand = (
+            eff_pop * MOBILITY_RATE * PUT_SHARE * metro_choice * pop_gravity
+        )
 
         # Rozkład godzinowy
         if profile is not None:
