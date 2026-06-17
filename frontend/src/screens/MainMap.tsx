@@ -82,6 +82,10 @@ export default function MainMap(_props: Props) {
             setSelectedPinId(null);
             setForceEditSelectedPin(false);
         },
+        onPinPlaced: (id) => {
+            setSelectedPinId(id);
+            setForceEditSelectedPin(true);
+        },
     });
 
     useEffect(() => {
