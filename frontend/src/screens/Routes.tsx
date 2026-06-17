@@ -1,21 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { useRoutes } from '../contexts/RoutesContext';
-import { usePins } from '../contexts/PinsContext';
+import { usePins, Pin } from '../contexts/PinsContext';
 import PinSequenceEditor from '../components/routes/PinSequence';
 import RouteTab from '../components/routes/RouteTab';
 import Divider from '../components/ui/Divider';
 import { ToolbarBtn } from '../components/ui/ToolbarBtn';
 import StatReadout from '../components/ui/StatReadout';
-import { sendPinsToBackend } from '../services/SendPinsToApi';
+import {
+    ConstructionCosts,
+    sendPinsToBackend,
+} from '../services/SendPinsToApi';
 
-type RouteDataMap = Record<
-    string,
-    {
-        construction_costs: {
-            tunnel_cost_millions_usd: number;
-        };
-    }
->;
+type RouteCostState =
+    | { status: 'idle' }
+    | { status: 'loading' }
+    | { status: 'ready'; construction_costs: ConstructionCosts; total_length_meters: number }
+    | { status: 'error' };
+
+function pinsForRouteSequence(
+    pinIds: string[],
+    pinById: Map<string, Pin>
+): Array<Pin & { number: number }> {
+    return pinIds
+        .map((id, index) => {
+            const pin = pinById.get(id);
+            if (!pin) return null;
+            return {
+                ...pin,
+                number: index + 1,
+            };
+        })
+        .filter((p): p is Pin & { number: number } => p !== null);
+}
+
+function formatTunnelCost(millions?: number): string {
+    if (millions === undefined) return '—';
+    return `$${millions.toLocaleString(undefined, { maximumFractionDigits: 2 })}M`;
+}
 
 export default function Routes() {
     const {
@@ -30,66 +51,90 @@ export default function Routes() {
     } = useRoutes();
     const { pins } = usePins();
 
-    const [routeData, setRouteData] = useState<RouteDataMap>({});
+    const [routeCosts, setRouteCosts] = useState<Record<string, RouteCostState>>({});
+    const fetchVersionRef = useRef<Record<string, number>>({});
+
+    const pinById = useMemo(() => new Map(pins.map((p) => [p.id, p])), [pins]);
+
+    const routesKey = JSON.stringify(
+        routes.map((r) => ({ id: r.id, pinIds: r.pinIds }))
+    );
+    const pinsKey = JSON.stringify(
+        pins.map((p) => ({ id: p.id, lat: p.lat, lng: p.lng, number: p.number }))
+    );
 
     useEffect(() => {
-        const pinById = new Map(pins.map((p) => [p.id, p]));
+        const activeIds = new Set(routes.map((r) => r.id));
+
+        setRouteCosts((prev) => {
+            const next = { ...prev };
+            Object.keys(next).forEach((id) => {
+                if (!activeIds.has(id)) delete next[id];
+            });
+            return next;
+        });
 
         routes.forEach((route) => {
-            const resolvedPins = route.pinIds
-                .map((id) => pinById.get(id))
-                .filter((p): p is NonNullable<typeof p> => p !== undefined);
+            const orderedPins = pinsForRouteSequence(route.pinIds, pinById);
 
-            if (resolvedPins.length === 0) {
-                setRouteData((prev) => {
-                    const next = { ...prev };
-                    delete next[route.id];
-                    return next;
-                });
+            if (orderedPins.length < 2) {
+                setRouteCosts((prev) => ({ ...prev, [route.id]: { status: 'idle' } }));
                 return;
             }
 
-            sendPinsToBackend(resolvedPins).then((data) => {
-                setRouteData((prev) => ({
-                    ...prev,
-                    [route.id]: {
-                        construction_costs: data.construction_costs,
-                    },
-                }));
-            });
-        });
+            const version = (fetchVersionRef.current[route.id] ?? 0) + 1;
+            fetchVersionRef.current[route.id] = version;
 
-        const activeIds = new Set(routes.map((r) => r.id));
-        setRouteData((prev) => {
-            const pruned = { ...prev };
-            Object.keys(pruned).forEach((id) => {
-                if (!activeIds.has(id)) delete pruned[id];
-            });
-            return pruned;
+            setRouteCosts((prev) => ({ ...prev, [route.id]: { status: 'loading' } }));
+
+            sendPinsToBackend(orderedPins)
+                .then((data) => {
+                    if (fetchVersionRef.current[route.id] !== version) return;
+                    setRouteCosts((prev) => ({
+                        ...prev,
+                        [route.id]: {
+                            status: 'ready',
+                            construction_costs: data.construction_costs,
+                            total_length_meters: data.total_length_meters,
+                        },
+                    }));
+                })
+                .catch(() => {
+                    if (fetchVersionRef.current[route.id] !== version) return;
+                    setRouteCosts((prev) => ({
+                        ...prev,
+                        [route.id]: { status: 'error' },
+                    }));
+                });
         });
-    }, [
-        JSON.stringify(routes.map((r) => ({ id: r.id, pinIds: r.pinIds }))),
-        JSON.stringify(pins),
-    ]);
+    }, [routesKey, pinsKey, pinById, routes]);
 
     const activeRoute = routes.find((r) => r.id === activeRouteId) ?? null;
+    const activeCost = activeRouteId ? routeCosts[activeRouteId] : undefined;
+
     const sharedCount = Object.values(segments).filter(
         (s) => s.routeIds.length > 1
     ).length;
 
-    const activeTunnelCost = activeRouteId
-        ? routeData[activeRouteId]?.construction_costs?.tunnel_cost_millions_usd
-        : undefined;
+    const tunnelCostLabel = (() => {
+        if (!activeRouteId || !activeCost) return '—';
+        if (activeCost.status === 'loading') return '...';
+        if (activeCost.status === 'error') return 'błąd API';
+        if (activeCost.status === 'idle') return '—';
+        return formatTunnelCost(
+            activeCost.construction_costs.tunnel_cost_millions_usd
+        );
+    })();
 
-    const tunnelCostLabel =
-        activeTunnelCost !== undefined
-            ? `$${activeTunnelCost.toLocaleString()}M`
-            : '—';
+    const tunnelLengthLabel = (() => {
+        if (!activeCost || activeCost.status !== 'ready') return null;
+        const km = activeCost.construction_costs.tunnel_length_km;
+        return `${km.toLocaleString(undefined, { maximumFractionDigits: 2 })} km`;
+    })();
 
     return (
         <div style={containerStyle}>
             <div style={scrollWrapperStyle}>
-                {/* GROUP 1: ACTIONS */}
                 <div style={groupStyle}>
                     <ToolbarBtn
                         icon='＋'
@@ -105,7 +150,6 @@ export default function Routes() {
                     )}
                 </div>
 
-                {/* GROUP 2: ROUTE TABS */}
                 {routes.length > 0 && (
                     <>
                         <Divider />
@@ -129,7 +173,6 @@ export default function Routes() {
                     </>
                 )}
 
-                {/* GROUP 3: PIN SEQUENCE */}
                 {activeRoute && (
                     <>
                         <Divider />
@@ -143,14 +186,42 @@ export default function Routes() {
                     </>
                 )}
 
-                {/* GROUP 4: STATS */}
                 <div style={statsContainerStyle}>
+                    {activeRoute && (
+                        <>
+                            <Divider />
+                            <StatReadout
+                                label='Tunnel Cost'
+                                value={tunnelCostLabel}
+                                color={
+                                    activeCost?.status === 'error'
+                                        ? '#dc2626'
+                                        : '#2563eb'
+                                }
+                                isBold={activeCost?.status === 'ready'}
+                            />
+                            {tunnelLengthLabel && (
+                                <StatReadout
+                                    label='Tunnel Length'
+                                    value={tunnelLengthLabel}
+                                    color='#6b7280'
+                                />
+                            )}
+                            {activeCost?.status === 'idle' &&
+                                activeRoute.pinIds.length < 2 && (
+                                    <span style={hintStyle}>
+                                        min. 2 przystanki
+                                    </span>
+                                )}
+                        </>
+                    )}
+
                     {Object.keys(segments).length > 0 && (
                         <>
                             <Divider />
                             <StatReadout
                                 label='Roads'
-                                value={String(Object.keys(segments).length)} // Use Object.keys().length
+                                value={String(Object.keys(segments).length)}
                                 color='#6b7280'
                             />
                             <StatReadout
@@ -161,24 +232,11 @@ export default function Routes() {
                             />
                         </>
                     )}
-                    {activeRouteId && (
-                        <>
-                            <Divider />
-                            {/* 5. Updated Label and Value */}
-                            <StatReadout
-                                label='Tunnel Cost'
-                                value={tunnelCostLabel}
-                                color='#6b7280'
-                            />
-                        </>
-                    )}
                 </div>
             </div>
         </div>
     );
 }
-
-// --- Styles ---
 
 const containerStyle: React.CSSProperties = {
     width: '100%',
@@ -204,6 +262,7 @@ const groupStyle: React.CSSProperties = {
     display: 'flex',
     gap: '4px',
     alignItems: 'center',
+    flexShrink: 0,
 };
 
 const statsContainerStyle: React.CSSProperties = {
@@ -211,4 +270,11 @@ const statsContainerStyle: React.CSSProperties = {
     gap: '20px',
     alignItems: 'center',
     marginLeft: 'auto',
+    flexShrink: 0,
+};
+
+const hintStyle: React.CSSProperties = {
+    fontSize: '11px',
+    color: '#9ca3af',
+    whiteSpace: 'nowrap',
 };
