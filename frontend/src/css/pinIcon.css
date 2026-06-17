@@ -33,6 +33,21 @@
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.22);
 }
 
+/* Tymczasowy pin tworzony PPM na pustym miejscu. */
+.pin--draft {
+    background: #f97316;
+    animation: pin-bounce 0.7s ease-in-out infinite alternate;
+}
+
+@keyframes pin-bounce {
+    from {
+        transform: translateY(0);
+    }
+    to {
+        transform: translateY(-7px);
+    }
+}
+
 /* Wyróżnienie wybranego pina */
 .pin--selected::before {
     content: '';

@@ -6,13 +6,15 @@ import { createPinIcon } from '../utils/MapUtils';
 type UsePinSyncProps = {
     map: L.Map | null;
     pins: Pin[];
-    addPin: (pin: Pin) => void;
+    addPin: (pin: Omit<Pin, 'id'> & { id?: string }) => void;
     updatePin: (updatedPin: Pin) => void;
     removePin: (id: string) => void;
     activeTool: ToolMode;
     selectedPinId: string | null;
-    onSelectPinId: (id: string) => void;
+    onSelectPinId: (id: string | null) => void;
     onRequestEditPinId: (id: string) => void;
+    onMapBlankRightClick: (lat: number, lng: number) => void;
+    onMapBlankLeftClick: (eventTarget: EventTarget | null) => void;
 };
 
 export function usePinSync({
@@ -25,6 +27,8 @@ export function usePinSync({
     selectedPinId,
     onSelectPinId,
     onRequestEditPinId,
+    onMapBlankRightClick,
+    onMapBlankLeftClick,
 }: UsePinSyncProps) {
     const markersLayerRef = useRef<L.LayerGroup | null>(null);
     const drawnRoadLayerRef = useRef<L.Polyline | null>(null);
@@ -43,18 +47,29 @@ export function usePinSync({
 
         const handleClick = (e: L.LeafletMouseEvent) => {
             if (activeTool !== 'place' || e.originalEvent.button !== 0) return;
-            addPin({
-                id: crypto.randomUUID(),
-                lat: e.latlng.lat,
-                lng: e.latlng.lng,
-            });
+            onMapBlankLeftClick(e.originalEvent?.target ?? null);
+            addPin({ lat: e.latlng.lat, lng: e.latlng.lng });
+        };
+
+        const handleMapClick = (e: L.LeafletMouseEvent) => {
+            if (activeTool === 'place') return;
+            onMapBlankLeftClick(e.originalEvent?.target ?? null);
+        };
+
+        const handleMapContextMenu = (e: L.LeafletMouseEvent) => {
+            L.DomEvent.preventDefault(e.originalEvent);
+            onMapBlankRightClick(e.latlng.lat, e.latlng.lng);
         };
 
         map.on('click', handleClick);
+        map.on('click', handleMapClick);
+        map.on('contextmenu', handleMapContextMenu);
         return () => {
             map.off('click', handleClick);
+            map.off('click', handleMapClick);
+            map.off('contextmenu', handleMapContextMenu);
         };
-    }, [map, addPin, activeTool]);
+    }, [map, addPin, activeTool, onMapBlankLeftClick, onMapBlankRightClick]);
 
     useEffect(() => {
         if (!map) return;
@@ -179,7 +194,7 @@ export function usePinSync({
         pins.forEach((pin) => {
             const isSelected = pin.id === selectedPinId;
             const marker = L.marker([pin.lat, pin.lng], {
-                icon: createPinIcon(pin.number, isSelected),
+                icon: createPinIcon(pin.number, isSelected, Boolean(pin.isDraft)),
                 draggable: activeTool === 'drag',
                 zIndexOffset: isSelected ? 1000 : 0,
             }).addTo(markersLayer);
@@ -206,6 +221,24 @@ export function usePinSync({
                 });
             }
         });
+
+        if (drawnRoadLayerRef.current) {
+            drawnRoadLayerRef.current.remove();
+        }
+
+        const numberedPins = [...pins]
+            .filter((p) => !p.isDraft && p.number !== undefined)
+            .sort((a, b) => a.number! - b.number!);
+
+        if (numberedPins.length >= 2) {
+            const latlngs = numberedPins.map(
+                (p) => [p.lat, p.lng] as [number, number]
+            );
+            drawnRoadLayerRef.current = L.polyline(latlngs, {
+                color: 'blue',
+                weight: 5,
+            }).addTo(map);
+        }
     }, [
         map,
         pins,

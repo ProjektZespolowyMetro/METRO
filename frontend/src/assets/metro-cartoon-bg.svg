@@ -1,0 +1,85 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="roof" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#d4c9e8"/>
+      <stop offset="1" stop-color="#b6a7d5"/>
+    </linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f6b78f"/>
+      <stop offset="1" stop-color="#d78668"/>
+    </linearGradient>
+    <linearGradient id="trainWhite" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff"/>
+      <stop offset="1" stop-color="#dedff7"/>
+    </linearGradient>
+    <linearGradient id="windowBlue" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1f2f85"/>
+      <stop offset="1" stop-color="#111a4a"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1600" height="900" fill="#e7eef4"/>
+
+  <path d="M0 0H1600V640H0V0Z" fill="url(#roof)"/>
+  <path d="M110 635C300 610 520 606 800 606C1080 606 1300 610 1490 635V900H110V635Z" fill="url(#floor)"/>
+
+  <g opacity="0.25" stroke="#6d5798" fill="none" stroke-width="4">
+    <path d="M80 620C220 420 450 300 800 300C1150 300 1380 420 1520 620"/>
+    <path d="M140 620C260 455 470 360 800 360C1130 360 1340 455 1460 620"/>
+    <path d="M200 620C305 500 500 430 800 430C1100 430 1295 500 1400 620"/>
+  </g>
+
+  <rect x="560" y="145" width="480" height="190" rx="8" fill="#9cc2cf" stroke="#546d8a" stroke-width="6"/>
+  <g stroke="#55718f" stroke-width="3" opacity="0.65">
+    <path d="M590 145V335"/>
+    <path d="M620 145V335"/>
+    <path d="M650 145V335"/>
+    <path d="M680 145V335"/>
+    <path d="M710 145V335"/>
+    <path d="M740 145V335"/>
+    <path d="M770 145V335"/>
+    <path d="M800 145V335"/>
+    <path d="M830 145V335"/>
+    <path d="M860 145V335"/>
+    <path d="M890 145V335"/>
+    <path d="M920 145V335"/>
+    <path d="M950 145V335"/>
+    <path d="M980 145V335"/>
+    <path d="M1010 145V335"/>
+  </g>
+
+  <g transform="translate(0,40)">
+    <path d="M100 290L420 250V520H0V430L100 290Z" fill="url(#trainWhite)" stroke="#ca275f" stroke-width="8"/>
+    <rect x="120" y="300" width="86" height="160" rx="12" fill="url(#windowBlue)"/>
+    <rect x="225" y="286" width="150" height="190" rx="8" fill="#f0efff" stroke="#22255a" stroke-width="4"/>
+    <g fill="#232a69">
+      <rect x="240" y="308" width="30" height="145"/>
+      <rect x="282" y="308" width="30" height="145"/>
+      <rect x="324" y="308" width="30" height="145"/>
+    </g>
+    <path d="M8 510H420" stroke="#ca275f" stroke-width="6"/>
+  </g>
+
+  <g transform="translate(1600,40) scale(-1,1)">
+    <path d="M100 290L420 250V520H0V430L100 290Z" fill="url(#trainWhite)" stroke="#ca275f" stroke-width="8"/>
+    <rect x="120" y="300" width="86" height="160" rx="12" fill="url(#windowBlue)"/>
+    <rect x="225" y="286" width="150" height="190" rx="8" fill="#f0efff" stroke="#22255a" stroke-width="4"/>
+    <g fill="#232a69">
+      <rect x="240" y="308" width="30" height="145"/>
+      <rect x="282" y="308" width="30" height="145"/>
+      <rect x="324" y="308" width="30" height="145"/>
+    </g>
+    <path d="M8 510H420" stroke="#ca275f" stroke-width="6"/>
+  </g>
+
+  <rect x="730" y="350" width="140" height="255" rx="6" fill="#4d3258"/>
+  <rect x="705" y="600" width="190" height="28" rx="4" fill="#b9acd8"/>
+  <text x="748" y="390" fill="#ffc77b" font-family="monospace" font-size="24">Peron 6</text>
+  <text x="748" y="425" fill="#ffc77b" font-family="monospace" font-size="24">→ Peron 7</text>
+  <rect x="760" y="470" width="80" height="8" fill="#ffd97a"/>
+  <rect x="760" y="500" width="80" height="8" fill="#ffd97a"/>
+  <rect x="760" y="530" width="80" height="8" fill="#ffd97a"/>
+
+  <path d="M150 580L1450 530" stroke="#a83f66" stroke-width="10"/>
+  <path d="M150 615L1450 565" stroke="#e9c56e" stroke-width="10"/>
+</svg>

@@ -43,6 +43,7 @@ export default function PinOverlay({
                                        onForceEditConsumed,
                                        onClose,
                                    }: Props) {
+        const isDraft = Boolean(pin.isDraft);
     const [pos, setPos] = useState<{ x: number; y: number } | null>(null);
 
     const [expandedUsage, setExpandedUsage] = useState(false);
@@ -122,6 +123,7 @@ export default function PinOverlay({
         updatePin({
             ...pin,
             number: n,
+            isDraft: false,
             name: draftName.trim() === '' ? undefined : draftName.trim(),
         });
 
@@ -130,6 +132,7 @@ export default function PinOverlay({
 
     return createPortal(
         <div
+            data-pin-overlay-root="true"
             style={{
                 position: 'absolute',
                 left: pos.x,
@@ -155,7 +158,7 @@ export default function PinOverlay({
                 }}
             >
                 <strong style={{ whiteSpace: 'nowrap' }}>
-                    {pin.name ?? 'Pin'}
+                    {pin.name ?? (isDraft ? 'Nowy pin' : 'Pin')}
                 </strong>
 
                 <span style={{ opacity: 0.9, whiteSpace: 'nowrap' }}>
@@ -174,6 +177,21 @@ export default function PinOverlay({
                         }}
                     >
                         Brak numeru
+                    </span>
+                )}
+
+                {isDraft && (
+                    <span
+                        style={{
+                            marginLeft: 6,
+                            padding: '2px 6px',
+                            borderRadius: 999,
+                            background: '#c2410c',
+                            fontSize: 10,
+                            whiteSpace: 'nowrap',
+                        }}
+                    >
+                        Tymczasowy
                     </span>
                 )}
 
@@ -245,6 +263,7 @@ export default function PinOverlay({
             {/* PANEL EDYCJI */}
             {editMode && (
                 <div
+                    data-pin-overlay-panel="true"
                     style={{
                         marginTop: 8,
                         background: 'white',
@@ -325,9 +344,14 @@ export default function PinOverlay({
                         </button>
                         <button
                             onClick={() => {
-                                setDraftNumber(pin.number?.toString() ?? '');
-                                setDraftName(pin.name ?? '');
-                                setEditMode(false);
+                                if (isDraft) {
+                                    removePin(pin.id);
+                                    onClose();
+                                } else {
+                                    setDraftNumber(pin.number?.toString() ?? '');
+                                    setDraftName(pin.name ?? '');
+                                    setEditMode(false);
+                                }
                             }}
                             style={{
                                 background: 'white',
@@ -339,7 +363,7 @@ export default function PinOverlay({
                                 fontSize: 12,
                             }}
                         >
-                            Anuluj
+                            {isDraft ? 'Anuluj tworzenie' : 'Anuluj'}
                         </button>
 
                         <button
@@ -374,6 +398,7 @@ export default function PinOverlay({
             {/* PANEL 24h */}
             {expandedUsage && (
                 <div
+                    data-pin-overlay-panel="true"
                     style={{
                         marginTop: 8,
                         background: 'white',

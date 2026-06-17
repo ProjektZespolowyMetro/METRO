@@ -1,11 +1,15 @@
 import math
 
 from core.calculator import calculate_total_metro_usage
-from django.http import HttpResponse
-from django.views import View
+from django.contrib.auth import authenticate
+from django.contrib.auth.models import User
+from django.db import IntegrityError
 from rest_framework import status
+from rest_framework.authtoken.models import Token
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from .models import GameScore
 
 # STAŁE BUDOWY METRA
 METRO_TUNNEL_COST_PER_KM = 238.21  # mln USD za km tunelu
@@ -14,6 +18,139 @@ METRO_STATION_COST = 80  # mln USD za stację
 # STAŁE UTRZYMANIA METRA DZIENNIE
 METRO_DAILY_MAINTENANCE_5MIN = 10000  # USD za dzień (kursy co 5 minut)
 METRO_DAILY_MAINTENANCE_10MIN = 20000  # USD za dzień (kursy co 10 minut)
+
+
+
+def calculate_total_daily_rides(metro_usage):
+    if not isinstance(metro_usage, dict) or "error" in metro_usage:
+        return 0
+
+    total = 0
+    for _, values in metro_usage.items():
+        if not isinstance(values, list):
+            continue
+        total += sum(float(v) for v in values)
+    return total
+
+
+class RegisterView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = (request.data.get("username") or "").strip()
+        password = request.data.get("password") or ""
+
+        if len(username) < 3:
+            return Response(
+                {"error": "Username must have at least 3 characters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if len(password) < 6:
+            return Response(
+                {"error": "Password must have at least 6 characters."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            user = User.objects.create_user(username=username, password=password)
+        except IntegrityError:
+            return Response(
+                {"error": "Username already exists."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        token = Token.objects.create(user=user)
+        return Response(
+            {"username": user.username, "token": token.key},
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class LoginView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = (request.data.get("username") or "").strip()
+        password = request.data.get("password") or ""
+
+        user = authenticate(username=username, password=password)
+        if not user:
+            return Response(
+                {"error": "Invalid username or password."},
+                status=status.HTTP_401_UNAUTHORIZED,
+            )
+
+        token, _ = Token.objects.get_or_create(user=user)
+        return Response(
+            {"username": user.username, "token": token.key},
+            status=status.HTTP_200_OK,
+        )
+
+
+class SaveScoreView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            daily_profit_usd = float(request.data.get("daily_profit_usd"))
+        except (TypeError, ValueError):
+            return Response(
+                {"error": "daily_profit_usd must be a number."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        line_name = (request.data.get("line_name") or "Linia metra").strip()[:64]
+        total_length_meters = float(request.data.get("total_length_meters") or 0)
+        num_stations = int(request.data.get("num_stations") or 0)
+        train_frequency_minutes = int(request.data.get("train_frequency_minutes") or 5)
+
+        score = GameScore.objects.create(
+            user=request.user,
+            line_name=line_name,
+            daily_profit_usd=daily_profit_usd,
+            total_length_meters=total_length_meters,
+            num_stations=num_stations,
+            train_frequency_minutes=train_frequency_minutes,
+        )
+
+        return Response(
+            {
+                "id": score.id,
+                "daily_profit_usd": score.daily_profit_usd,
+                "line_name": score.line_name,
+            },
+            status=status.HTTP_201_CREATED,
+        )
+
+
+class RankingView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        try:
+            limit = int(request.query_params.get("limit", 10))
+        except ValueError:
+            limit = 10
+
+        limit = max(1, min(limit, 100))
+        scores = GameScore.objects.select_related("user").all()[:limit]
+
+        results = []
+        for idx, score in enumerate(scores, start=1):
+            results.append(
+                {
+                    "rank": idx,
+                    "username": score.user.username,
+                    "line_name": score.line_name,
+                    "daily_profit_usd": score.daily_profit_usd,
+                    "num_stations": score.num_stations,
+                    "total_length_meters": score.total_length_meters,
+                    "created_at": score.created_at,
+                }
+            )
+
+        return Response({"results": results}, status=status.HTTP_200_OK)
 
 
 class ReceivePinsView(APIView):
@@ -156,12 +293,11 @@ class ReceivePinsView(APIView):
         print(segments)
         print("Total length:", total_length)
 
-        # Mateusz, do sth about it
         metro_usage_results = {}
 
         try:
-            print(" call calc total_metro_usage ")
-            # metro_usage_results = calculate_total_metro_usage(pins)
+            print("call calc total_metro_usage")
+            metro_usage_results = calculate_total_metro_usage(pins)
         except Exception as e:
             print(f"calculator error {e}")
             metro_usage_results = {"error": str(e)}
@@ -180,7 +316,7 @@ class ReceivePinsView(APIView):
                 "pins": pins,
                 "segments": segments,
                 "total_length_meters": round(total_length, 2),
-                # "metro_usage": metro_usage_results, # to leci do przerobienia jako osobna funkcja
+                "metro_usage": metro_usage_results,
                 "construction_costs": construction_costs,  # to jest szybkie, ale jak sądzisz że lepiej to przeniesc do fronta to smialo
                 "maintenance_costs": maintenance_costs,  # tak jak powyżej
             },

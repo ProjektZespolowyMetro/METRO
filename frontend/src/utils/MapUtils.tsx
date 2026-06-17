@@ -1,11 +1,16 @@
 import L from 'leaflet';
 
-export function createPinIcon(number?: number, isSelected: boolean = false) {
+export function createPinIcon(
+    number?: number,
+    isSelected: boolean = false,
+    isDraft: boolean = false
+) {
     const isNumbered = number !== undefined;
 
     const classes = [
         'pin',
         isNumbered ? 'pin--numbered' : 'pin--dot',
+        isDraft ? 'pin--draft' : '',
         isSelected ? 'pin--selected' : '',
     ]
         .filter(Boolean)
