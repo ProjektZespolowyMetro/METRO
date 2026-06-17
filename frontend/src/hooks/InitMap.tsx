@@ -28,8 +28,13 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
         mapInstance.createPane('mbtilesPane');
         mapInstance.getPane('mbtilesPane')!.style.zIndex = '450';
 
+        const tilesBase = (process.env.REACT_APP_TILES_URL ?? '/tiles').replace(
+            /\/$/,
+            ''
+        );
+
         L.vectorGrid
-            .protobuf('http://127.0.0.1:8000/tiles/{z}/{x}/{y}.pbf', {
+            .protobuf(`${tilesBase}/{z}/{x}/{y}.pbf`, {
                 // @ts-ignore: VectorGrid adds .tile to L.Canvas
                 rendererFactory: L.Canvas.tile || (L.canvas as any).tile,
                 vectorTileLayerStyles: {
