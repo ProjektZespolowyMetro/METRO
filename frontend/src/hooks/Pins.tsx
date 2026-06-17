@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { Pin, ToolMode } from '../contexts/PinsContext';
 import { createPinIcon } from '../utils/MapUtils';
+import { newId } from '../utils/id';
 
 type UsePinSyncProps = {
     map: L.Map | null;
@@ -55,7 +56,7 @@ export function usePinSync({
                 removePin(existingDraft.id);
             }
 
-            const id = crypto.randomUUID();
+            const id = newId();
             addPin({
                 id,
                 lat: e.latlng.lat,

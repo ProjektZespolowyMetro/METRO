@@ -4,6 +4,7 @@ import {
     MaintenanceCosts,
     MetroUsageByPinNumber,
 } from '../services/SendPinsToApi';
+import { newId } from '../utils/id';
 
 export type ToolMode = 'select' | 'place' | 'drag' | 'delete';
 
@@ -85,7 +86,7 @@ export const PinsProvider: React.FC<{ children: React.ReactNode }> = ({
     const addPin = (pinData: Omit<Pin, 'id'> & { id?: string }) => {
         const newPin: Pin = {
             ...pinData,
-            id: pinData.id || crypto.randomUUID(), // Ensures every pin has an inherent UUID
+            id: pinData.id || newId(),
         };
         setPins((prev) => [...prev, newPin]);
     };

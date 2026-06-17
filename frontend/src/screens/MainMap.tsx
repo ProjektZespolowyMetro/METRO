@@ -7,6 +7,7 @@ import RoutesLayer from '../hooks/RoutesLayer';
 import { usePins } from '../contexts/PinsContext';
 import { useMapInit } from '../hooks/InitMap';
 import { usePinSync } from '../hooks/Pins';
+import { newId } from '../utils/id';
 
 
 type Props = {
@@ -49,7 +50,7 @@ export default function MainMap(_props: Props) {
             }
 
             const draftPin = {
-                id: crypto.randomUUID(),
+                id: newId(),
                 lat,
                 lng,
                 isDraft: true,
