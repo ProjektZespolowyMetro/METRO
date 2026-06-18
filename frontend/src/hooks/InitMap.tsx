@@ -24,14 +24,21 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
             preferCanvas: true, // Optimization: Renders GeoJSONs on Canvas instead of SVG
         }).setView([50.0487253, 20.0033734], 13);
 
-        // MBTiles pane
+        // MBTiles pane — pointer-events off, żeby kliknięcia trafiały w mapę (piny).
         mapInstance.createPane('mbtilesPane');
         mapInstance.getPane('mbtilesPane')!.style.zIndex = '450';
+        mapInstance.getPane('mbtilesPane')!.style.pointerEvents = 'none';
+
+        const tilesBase = (process.env.REACT_APP_TILES_URL ?? '/tiles').replace(
+            /\/$/,
+            ''
+        );
 
         L.vectorGrid
-            .protobuf('http://127.0.0.1:8000/tiles/{z}/{x}/{y}.pbf', {
+            .protobuf(`${tilesBase}/{z}/{x}/{y}.pbf`, {
                 // @ts-ignore: VectorGrid adds .tile to L.Canvas
                 rendererFactory: L.Canvas.tile || (L.canvas as any).tile,
+                interactive: false,
                 vectorTileLayerStyles: {
                     highway_krakow: (properties: any, zoom: number) => {
                         const isMain = [
@@ -54,9 +61,10 @@ export function useMapInit(containerRef: RefObject<HTMLDivElement | null>) {
             })
             .addTo(mapInstance);
 
-        // Streets pane below MBTiles
+        // Streets pane below MBTiles (też bez przechwytywania kliknięć)
         mapInstance.createPane('streetsPane');
         mapInstance.getPane('streetsPane')!.style.zIndex = '400';
+        mapInstance.getPane('streetsPane')!.style.pointerEvents = 'none';
 
         const geojsonFiles = [
             { name: 'road.geojson', style: { color: '#34495e', weight: 1.5 } },

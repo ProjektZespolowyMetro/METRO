@@ -5,9 +5,11 @@
 #   docker compose --profile dev  up --build   # backend (gunicorn) + CRA dev server -> http://localhost:3000
 #   docker compose up backend                  # sam backend -> http://localhost:8000
 #
-# SECRET_KEY (wymagany przez Django) bierzemy ze zmiennej środowiskowej lub z pliku .env w roocie projektu.
-# Przykład .env:
-#   SECRET_KEY=cos-bardzo-tajnego
+# Zmienne w pliku .env w katalogu głównym (patrz env.example):
+#   SECRET_KEY=...
+#   DJANGO_DEBUG=False
+#   DJANGO_ALLOWED_HOSTS=twoja-domena.pl,127.0.0.1
+#   DJANGO_CSRF_TRUSTED_ORIGINS=https://twoja-domena.pl
 
 services:
   backend:
@@ -18,6 +20,9 @@ services:
     container_name: metro-backend
     environment:
       SECRET_KEY: ${SECRET_KEY:-dev-insecure-secret-key-change-me}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-True}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,backend}
+      DJANGO_CSRF_TRUSTED_ORIGINS: ${DJANGO_CSRF_TRUSTED_ORIGINS:-}
       PYTHONUNBUFFERED: "1"
     # Persistencja bazy SQLite na hoście (plik musi istnieć przed pierwszym startem;
     # jest już w repo jako backend/db.sqlite3).
@@ -27,8 +32,11 @@ services:
     command: >
       sh -c "python manage.py migrate --noinput &&
              gunicorn --bind 0.0.0.0:8000 --workers 3 metro.wsgi:application"
+    expose:
+      - "8000"
+    # Dostęp z hosta tylko lokalnie (debug); na serwerze wystarczy nginx :80
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     restart: unless-stopped
     healthcheck:
       test: ["CMD-SHELL", "curl -fsS http://localhost:8000/admin/login/ >/dev/null || exit 1"]

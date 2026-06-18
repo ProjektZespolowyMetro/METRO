@@ -6,6 +6,7 @@ import React, {
     useMemo,
     useEffect,
 } from 'react';
+import { newId } from '../utils/id';
 
 export type RouteColor =
     | '#2563eb'
@@ -139,7 +140,7 @@ export const RoutesProvider: React.FC<{ children: React.ReactNode }> = ({
     }, [routes, cpOffsets]);
 
     const addRoute = useCallback(() => {
-        const id = crypto.randomUUID();
+        const id = newId();
         const newRoute: Route = {
             id,
             name: `Route ${routes.length + 1}`,

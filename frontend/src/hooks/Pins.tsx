@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import L from 'leaflet';
 import { Pin, ToolMode } from '../contexts/PinsContext';
 import { createPinIcon } from '../utils/MapUtils';
+import { newId } from '../utils/id';
 
 type UsePinSyncProps = {
     map: L.Map | null;
@@ -15,6 +16,7 @@ type UsePinSyncProps = {
     onRequestEditPinId: (id: string) => void;
     onMapBlankRightClick: (lat: number, lng: number) => void;
     onMapBlankLeftClick: (eventTarget: EventTarget | null) => void;
+    onPinPlaced?: (id: string) => void;
 };
 
 export function usePinSync({
@@ -29,6 +31,7 @@ export function usePinSync({
     onRequestEditPinId,
     onMapBlankRightClick,
     onMapBlankLeftClick,
+    onPinPlaced,
 }: UsePinSyncProps) {
     const markersLayerRef = useRef<L.LayerGroup | null>(null);
     const drawnRoadLayerRef = useRef<L.Polyline | null>(null);
@@ -47,8 +50,20 @@ export function usePinSync({
 
         const handleClick = (e: L.LeafletMouseEvent) => {
             if (activeTool !== 'place' || e.originalEvent.button !== 0) return;
-            onMapBlankLeftClick(e.originalEvent?.target ?? null);
-            addPin({ lat: e.latlng.lat, lng: e.latlng.lng });
+
+            const existingDraft = pinsRef.current.find((p) => p.isDraft);
+            if (existingDraft) {
+                removePin(existingDraft.id);
+            }
+
+            const id = newId();
+            addPin({
+                id,
+                lat: e.latlng.lat,
+                lng: e.latlng.lng,
+                isDraft: true,
+            });
+            onPinPlaced?.(id);
         };
 
         const handleMapClick = (e: L.LeafletMouseEvent) => {
@@ -69,7 +84,7 @@ export function usePinSync({
             map.off('click', handleMapClick);
             map.off('contextmenu', handleMapContextMenu);
         };
-    }, [map, addPin, activeTool, onMapBlankLeftClick, onMapBlankRightClick]);
+    }, [map, addPin, removePin, activeTool, onMapBlankLeftClick, onMapBlankRightClick, onPinPlaced]);
 
     useEffect(() => {
         if (!map) return;
